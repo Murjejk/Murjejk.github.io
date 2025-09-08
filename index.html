@@ -5,105 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Log</title>
   <style>
-    /* Grundläggande styling */
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-
-    header {
-      background: #3b82f6;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    main {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-
-    .card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      margin-bottom: 2rem;
-    }
-
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    form input, form button {
-      padding: 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    form input {
-      flex: 1;
-      min-width: 120px;
-    }
-
-    form button {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    form button:hover {
-      background: #2563eb;
-    }
-
-    h2 {
-      margin-bottom: 1rem;
-      font-size: 1.3rem;
-      color: #111;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 0.8rem;
-      text-align: center;
-    }
-
-    th {
-      background: #f1f5f9;
-    }
-
-    tr:nth-child(even) {
-      background: #f9fafb;
-    }
-
-    .empty-message {
-      text-align: center;
-      margin-top: 1rem;
-      color: #666;
-    }
+    body { font-family: Arial, sans-serif; background: #f7f9fc; margin:0; padding:0; color:#333; }
+    header { background:#3b82f6; color:white; text-align:center; padding:1rem 0; font-size:1.5rem; font-weight:bold; }
+    main { max-width:800px; margin:2rem auto; padding:1rem; }
+    .card { background:white; padding:1.5rem; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:2rem; }
+    form { display:flex; flex-wrap:wrap; gap:1rem; }
+    form input, form button { padding:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1rem; }
+    form input { flex:1; min-width:120px; }
+    form button { background:#3b82f6; color:white; border:none; cursor:pointer; transition:background 0.2s; }
+    form button:hover { background:#2563eb; }
+    h2 { margin-bottom:1rem; font-size:1.3rem; color:#111; }
+    table { width:100%; border-collapse:collapse; margin-top:1rem; }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:center; }
+    th { background:#f1f5f9; }
+    tr:nth-child(even) { background:#f9fafb; }
+    .empty-message { text-align:center; margin-top:1rem; color:#666; }
   </style>
 </head>
 <body>
   <header>🏋️ Training Log</header>
   <main>
-    <!-- Formulär för ny träning -->
     <section class="card">
       <h2>Lägg till träning</h2>
       <form id="logForm">
@@ -114,7 +35,6 @@
       </form>
     </section>
 
-    <!-- Tabell för träningshistorik -->
     <section class="card">
       <h2>Träningshistorik</h2>
       <div id="tableContainer">
@@ -123,11 +43,9 @@
     </section>
   </main>
 
-  <!-- JavaScript -->
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbx7BWwDvniVuTyeoXgz9wUARi-E2xLa1SzoDYbQLMD0cheXWDyzQrNwquEmXCLy70RD/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzV8EkZzTLtgLGVRq3O0fV98MTJPXuldiQcj-3mSIHaYBNfH5bpq7IWzWxcszk8Plzn/exec";
 
-    // Hantera formulär submit
     document.getElementById("logForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const exercise = document.getElementById("exercise").value;
@@ -153,7 +71,6 @@
       }
     });
 
-    // Ladda data från Google Sheets
     async function loadData() {
       const container = document.getElementById("tableContainer");
 
@@ -166,28 +83,24 @@
           return;
         }
 
-        let tableHTML = `
-          <table>
-            <thead>
-              <tr>
-                <th>Exercise</th>
-                <th>Weight (kg)</th>
-                <th>Reps</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
+        let tableHTML = `<table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Weight (kg)</th>
+              <th>Reps</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>`;
 
         data.slice(1).forEach(row => {
-          tableHTML += `
-            <tr>
-              <td>${row[0]}</td>
-              <td>${row[1]}</td>
-              <td>${row[2]}</td>
-              <td>${row[3]}</td>
-            </tr>
-          `;
+          tableHTML += `<tr>
+            <td>${row[0]}</td>
+            <td>${row[1]}</td>
+            <td>${row[2]}</td>
+            <td>${row[3]}</td>
+          </tr>`;
         });
 
         tableHTML += `</tbody></table>`;
