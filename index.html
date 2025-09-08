@@ -5,43 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Log</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #1e1e1e; margin:0; padding:0; color:#f1f1f1; }
-    header { background:#2c2c2c; color:#f1f1f1; text-align:center; padding:1rem 0; font-size:1.5rem; font-weight:bold; border-bottom:2px solid #444; }
-    main { padding:1rem; margin-bottom:70px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin:0; padding:0;
+      color:#ddd;
+      font-size: 0.9rem;
+      background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+    }
+    header {
+      background:#2a2a2a;
+      color:#f1f1f1;
+      text-align:center;
+      padding:0.8rem 0;
+      font-size:1.2rem;
+      font-weight:bold;
+      border-bottom:1px solid #444;
+    }
+    main { padding:0.8rem; margin-bottom:70px; }
 
-    .card { background:#2c2c2c; padding:1.2rem; border-radius:12px; margin-bottom:1rem; border:1px solid #444; }
-    h2 { margin-bottom:1rem; font-size:1.2rem; color:#fff; }
+    .card {
+      background:#2a2a2a;
+      padding:0.8rem;
+      border-radius:8px;
+      margin-bottom:0.8rem;
+      border:1px solid #444;
+    }
+    h2 { margin-bottom:0.6rem; font-size:1rem; color:#fff; }
 
-    ul { list-style:none; padding:0; margin:0; }
-    ul li { padding:0.8rem; border-bottom:1px solid #444; cursor:pointer; }
+    ul { list-style:none; padding:0; margin:0; font-size:0.9rem; }
+    ul li { padding:0.5rem; border-bottom:1px solid #444; cursor:pointer; }
     ul li:hover { background:#333; }
 
-    .exercises { display:none; padding-left:1rem; font-size:0.9rem; }
-    .exercises li { border:none; padding:0.4rem 0; color:#bbb; }
+    .exercises { display:none; padding-left:1rem; font-size:0.8rem; }
+    .exercises li { border:none; padding:0.3rem 0; color:#bbb; cursor:pointer; }
+    .exercises li:hover { color:#3b82f6; }
 
-    form { display:flex; flex-wrap:wrap; gap:0.6rem; }
+    form { display:flex; flex-wrap:wrap; gap:0.4rem; font-size:0.9rem; }
     form input, form select, form button {
-      padding:0.7rem; border:1px solid #555; border-radius:8px; font-size:1rem; background:#1e1e1e; color:#f1f1f1;
+      padding:0.5rem; border:1px solid #555; border-radius:6px;
+      font-size:0.85rem; background:#1e1e1e; color:#f1f1f1;
     }
-    form input, form select { flex:1; min-width:120px; }
+    form input, form select { flex:1; min-width:100px; }
     form button { background:#3b82f6; color:white; border:none; cursor:pointer; }
     form button:hover { background:#2563eb; }
 
-    table { width:100%; border-collapse:collapse; margin-top:1rem; font-size:0.9rem; }
-    th, td { border:1px solid #444; padding:0.6rem; text-align:center; }
+    table { width:100%; border-collapse:collapse; margin-top:0.6rem; font-size:0.8rem; }
+    th, td { border:1px solid #444; padding:0.4rem; text-align:center; }
     th { background:#3b3b3b; }
     tr:nth-child(even) { background:#2a2a2a; }
 
-    .empty-message { text-align:center; margin-top:1rem; color:#aaa; }
+    .empty-message { text-align:center; margin-top:0.6rem; color:#aaa; font-size:0.8rem; }
 
     /* Bottom nav bar */
     nav { 
       position:fixed; bottom:0; left:0; right:0; 
-      background:#2c2c2c; display:flex; justify-content:space-around; 
-      padding:0.5rem 0; border-top:2px solid #444; 
+      background:#2a2a2a; display:flex; justify-content:space-around; 
+      padding:0.3rem 0; border-top:1px solid #444; 
     }
     nav button {
-      background:none; border:none; color:#f1f1f1; font-size:1.2rem; 
+      background:none; border:none; color:#f1f1f1; font-size:1rem; 
       display:flex; flex-direction:column; align-items:center; cursor:pointer;
     }
     nav button.active { color:#3b82f6; }
@@ -60,22 +82,22 @@
       <ul>
         <li onclick="toggleExercises(this)">Pass 1: Bröst, Biceps, Mage
           <ul class="exercises">
-            <li>Bänkpress (Bröst)</li>
-            <li>Hantelcurl (Biceps)</li>
-            <li>Crunches (Mage)</li>
+            <li onclick="prefillExercise('Bänkpress','Bröst')">Bänkpress (Bröst)</li>
+            <li onclick="prefillExercise('Hantelcurl','Biceps')">Hantelcurl (Biceps)</li>
+            <li onclick="prefillExercise('Crunches','Mage')">Crunches (Mage)</li>
           </ul>
         </li>
         <li onclick="toggleExercises(this)">Pass 2: Rygg, Triceps, Vader
           <ul class="exercises">
-            <li>Latsdrag (Rygg)</li>
-            <li>Triceps pushdown (Triceps)</li>
-            <li>Stående vadpress (Vader)</li>
+            <li onclick="prefillExercise('Latsdrag','Rygg')">Latsdrag (Rygg)</li>
+            <li onclick="prefillExercise('Triceps pushdown','Triceps')">Triceps pushdown (Triceps)</li>
+            <li onclick="prefillExercise('Stående vadpress','Vader')">Stående vadpress (Vader)</li>
           </ul>
         </li>
         <li onclick="toggleExercises(this)">Pass 3: Axlar, Handleder
           <ul class="exercises">
-            <li>Militärpress (Axlar)</li>
-            <li>Hantelrotation (Handleder)</li>
+            <li onclick="prefillExercise('Militärpress','Axlar')">Militärpress (Axlar)</li>
+            <li onclick="prefillExercise('Hantelrotation','Handleder')">Hantelrotation (Handleder)</li>
           </ul>
         </li>
       </ul>
@@ -96,6 +118,16 @@
         <li>Lår</li>
         <li>Säte</li>
       </ul>
+    </section>
+
+    <!-- Kroppsvikt -->
+    <section id="kroppsvikt" class="card">
+      <h2>Kroppsvikt</h2>
+      <p id="latestWeight">Laddar senaste vikt...</p>
+      <form id="weightForm">
+        <input type="number" id="newWeight" name="newWeight" placeholder="Ny vikt (kg)" required>
+        <button type="submit">Spara</button>
+      </form>
     </section>
 
     <!-- Lägg till övning -->
@@ -131,6 +163,7 @@
   <nav>
     <button onclick="showSection('pass', this)" class="active">📋<span>Pass</span></button>
     <button onclick="showSection('muskelgrupper', this)">💪<span>Muskelgrupper</span></button>
+    <button onclick="showSection('kroppsvikt', this)">⚖️<span>Kroppsvikt</span></button>
     <button onclick="showSection('ovningar', this)">➕<span>Lägg till</span></button>
   </nav>
 
@@ -143,17 +176,32 @@
       document.getElementById(id).classList.add("active");
       document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+
+      if (id === "kroppsvikt") loadLatestWeight();
     }
 
-    // Toggle exercises
+    // Toggle exercises in pass
     function toggleExercises(el) {
       const exercises = el.querySelector(".exercises");
       exercises.style.display = exercises.style.display === "block" ? "none" : "block";
     }
 
-    // Form handling
+    // Prefill form with exercise
+    function prefillExercise(exercise, muscle) {
+      document.getElementById("exercise").value = exercise;
+      document.getElementById("primary").value = muscle;
+      document.getElementById("reps").value = 10;   
+      document.getElementById("weight").value = ""; 
+      document.getElementById("effort").value = "Rätt"; 
+      showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+    }
+
+    // Add training log
     document.getElementById("logForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const today = new Date().toISOString().split("T")[0];
+
       const formData = new FormData();
       formData.append("exercise", document.getElementById("exercise").value);
       formData.append("weight", document.getElementById("weight").value);
@@ -161,6 +209,7 @@
       formData.append("primary", document.getElementById("primary").value);
       formData.append("secondary", document.getElementById("secondary").value);
       formData.append("effort", document.getElementById("effort").value);
+      formData.append("date", today);
 
       try {
         const response = await fetch(API_URL, { method: "POST", body: formData });
@@ -176,6 +225,36 @@
       }
     });
 
+    // Add body weight
+    document.getElementById("weightForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const today = new Date().toISOString().split("T")[0];
+      const newWeight = document.getElementById("newWeight").value;
+
+      const formData = new FormData();
+      formData.append("exercise", "Kroppsvikt");
+      formData.append("weight", newWeight);
+      formData.append("reps", 1);
+      formData.append("primary", "Allmänt");
+      formData.append("secondary", "");
+      formData.append("effort", "Rätt");
+      formData.append("date", today);
+
+      try {
+        const response = await fetch(API_URL, { method: "POST", body: formData });
+        const result = await response.json();
+        if (result.status === "success") {
+          document.getElementById("weightForm").reset();
+          loadLatestWeight();
+        } else {
+          alert("Kunde inte spara kroppsvikten.");
+        }
+      } catch (err) {
+        alert("Fel vid anslutning till Google Sheets: " + err);
+      }
+    });
+
+    // Load training history
     async function loadData() {
       const container = document.getElementById("tableContainer");
       try {
@@ -217,6 +296,31 @@
         container.innerHTML = tableHTML;
       } catch (err) {
         container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
+      }
+    }
+
+    // Load latest body weight
+    async function loadLatestWeight() {
+      const weightDisplay = document.getElementById("latestWeight");
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        if (!data || data.length <= 1) {
+          weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
+          return;
+        }
+
+        const reversed = [...data].reverse();
+        const weightRow = reversed.find(row => row[0] === "Kroppsvikt");
+
+        if (weightRow) {
+          weightDisplay.innerText = `Senaste kroppsvikt: ${weightRow[1]} kg (${weightRow[6]})`;
+        } else {
+          weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
+        }
+      } catch (err) {
+        weightDisplay.innerText = `Fel vid hämtning av kroppsvikt: ${err}`;
       }
     }
 
