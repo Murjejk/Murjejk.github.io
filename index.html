@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Log</title>
   <style>
+    /* Grundläggande styling */
     body {
       font-family: Arial, sans-serif;
       background: #f7f9fc;
@@ -102,8 +103,9 @@
 <body>
   <header>🏋️ Training Log</header>
   <main>
+    <!-- Formulär för ny träning -->
     <section class="card">
-      <h2>Add Training Entry</h2>
+      <h2>Lägg till träning</h2>
       <form id="logForm">
         <input type="text" id="exercise" placeholder="Exercise" required>
         <input type="number" id="weight" placeholder="Weight (kg)" required>
@@ -112,71 +114,87 @@
       </form>
     </section>
 
+    <!-- Tabell för träningshistorik -->
     <section class="card">
-      <h2>Training History</h2>
+      <h2>Träningshistorik</h2>
       <div id="tableContainer">
-        <p class="empty-message">Loading entries...</p>
+        <p class="empty-message">Laddar poster...</p>
       </div>
     </section>
   </main>
 
+  <!-- JavaScript -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx7BWwDvniVuTyeoXgz9wUARi-E2xLa1SzoDYbQLMD0cheXWDyzQrNwquEmXCLy70RD/exec";
 
-    // Handle form submit
+    // Hantera formulär submit
     document.getElementById("logForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const exercise = document.getElementById("exercise").value;
       const weight = document.getElementById("weight").value;
       const reps = document.getElementById("reps").value;
 
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ exercise, weight, reps }),
-        headers: { "Content-Type": "application/json" }
-      });
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ exercise, weight, reps }),
+          headers: { "Content-Type": "application/json" }
+        });
 
-      document.getElementById("logForm").reset();
-      loadData();
+        const result = await response.json();
+        if (result.status === "success") {
+          document.getElementById("logForm").reset();
+          loadData();
+        } else {
+          alert("Kunde inte spara träningsposten.");
+        }
+      } catch (err) {
+        alert("Fel vid anslutning till Google Sheets: " + err);
+      }
     });
 
-    // Load data from Google Sheets
+    // Ladda data från Google Sheets
     async function loadData() {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-
       const container = document.getElementById("tableContainer");
-      if (!data || data.length <= 1) {
-        container.innerHTML = `<p class="empty-message">No training logs yet.</p>`;
-        return;
-      }
 
-      let tableHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Exercise</th>
-              <th>Weight (kg)</th>
-              <th>Reps</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
 
-      data.slice(1).forEach(row => {
-        tableHTML += `
-          <tr>
-            <td>${row[0]}</td>
-            <td>${row[1]}</td>
-            <td>${row[2]}</td>
-            <td>${row[3]}</td>
-          </tr>
+        if (!data || data.length <= 1) {
+          container.innerHTML = `<p class="empty-message">Inga träningsposter ännu.</p>`;
+          return;
+        }
+
+        let tableHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Exercise</th>
+                <th>Weight (kg)</th>
+                <th>Reps</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
         `;
-      });
 
-      tableHTML += `</tbody></table>`;
-      container.innerHTML = tableHTML;
+        data.slice(1).forEach(row => {
+          tableHTML += `
+            <tr>
+              <td>${row[0]}</td>
+              <td>${row[1]}</td>
+              <td>${row[2]}</td>
+              <td>${row[3]}</td>
+            </tr>
+          `;
+        });
+
+        tableHTML += `</tbody></table>`;
+        container.innerHTML = tableHTML;
+      } catch (err) {
+        container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
+      }
     }
 
     loadData();
