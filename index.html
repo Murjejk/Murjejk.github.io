@@ -44,19 +44,24 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzV8EkZzTLtgLGVRq3O0fV98MTJPXuldiQcj-3mSIHaYBNfH5bpq7IWzWxcszk8Plzn/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbx63ciwNr7F9zm7dVT8w7YbuGB-vpnbGE-9Ykli5Wmjxgkfkx5rwbOxrxjPwOVQDgeq/exec";
 
+    // Skicka formulär med FormData istället för JSON
     document.getElementById("logForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const exercise = document.getElementById("exercise").value;
       const weight = document.getElementById("weight").value;
       const reps = document.getElementById("reps").value;
 
+      const formData = new FormData();
+      formData.append("exercise", exercise);
+      formData.append("weight", weight);
+      formData.append("reps", reps);
+
       try {
         const response = await fetch(API_URL, {
           method: "POST",
-          body: JSON.stringify({ exercise, weight, reps }),
-          headers: { "Content-Type": "application/json" }
+          body: formData
         });
 
         const result = await response.json();
@@ -71,6 +76,7 @@
       }
     });
 
+    // Ladda data
     async function loadData() {
       const container = document.getElementById("tableContainer");
 
