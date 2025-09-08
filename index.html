@@ -7,11 +7,11 @@
   <style>
     body { font-family: Arial, sans-serif; background: #f7f9fc; margin:0; padding:0; color:#333; }
     header { background:#3b82f6; color:white; text-align:center; padding:1rem 0; font-size:1.5rem; font-weight:bold; }
-    main { max-width:800px; margin:2rem auto; padding:1rem; }
+    main { max-width:900px; margin:2rem auto; padding:1rem; }
     .card { background:white; padding:1.5rem; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:2rem; }
     form { display:flex; flex-wrap:wrap; gap:1rem; }
-    form input, form button { padding:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1rem; }
-    form input { flex:1; min-width:120px; }
+    form input, form select, form button { padding:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1rem; }
+    form input, form select { flex:1; min-width:120px; }
     form button { background:#3b82f6; color:white; border:none; cursor:pointer; transition:background 0.2s; }
     form button:hover { background:#2563eb; }
     h2 { margin-bottom:1rem; font-size:1.3rem; color:#111; }
@@ -28,9 +28,17 @@
     <section class="card">
       <h2>Lägg till träning</h2>
       <form id="logForm">
-        <input type="text" id="exercise" placeholder="Exercise" required>
-        <input type="number" id="weight" placeholder="Weight (kg)" required>
-        <input type="number" id="reps" placeholder="Reps" required>
+        <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
+        <input type="number" id="weight" name="weight" placeholder="Weight (kg)" required>
+        <input type="number" id="reps" name="reps" placeholder="Reps" required>
+        <input type="text" id="primary" name="primary" placeholder="Primär muskelgrupp" required>
+        <input type="text" id="secondary" name="secondary" placeholder="Sekundär muskelgrupp">
+        <select id="effort" name="effort" required>
+          <option value="" disabled selected>Insats</option>
+          <option value="Lätt">Lätt</option>
+          <option value="Rätt">Rätt</option>
+          <option value="Svår">Svår</option>
+        </select>
         <button type="submit">Add</button>
       </form>
     </section>
@@ -46,24 +54,21 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx63ciwNr7F9zm7dVT8w7YbuGB-vpnbGE-9Ykli5Wmjxgkfkx5rwbOxrxjPwOVQDgeq/exec";
 
-    // Skicka formulär med FormData istället för JSON
     document.getElementById("logForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const exercise = document.getElementById("exercise").value;
-      const weight = document.getElementById("weight").value;
-      const reps = document.getElementById("reps").value;
-
       const formData = new FormData();
-      formData.append("exercise", exercise);
-      formData.append("weight", weight);
-      formData.append("reps", reps);
+      formData.append("exercise", document.getElementById("exercise").value);
+      formData.append("weight", document.getElementById("weight").value);
+      formData.append("reps", document.getElementById("reps").value);
+      formData.append("primary", document.getElementById("primary").value);
+      formData.append("secondary", document.getElementById("secondary").value);
+      formData.append("effort", document.getElementById("effort").value);
 
       try {
         const response = await fetch(API_URL, {
           method: "POST",
           body: formData
         });
-
         const result = await response.json();
         if (result.status === "success") {
           document.getElementById("logForm").reset();
@@ -76,10 +81,8 @@
       }
     });
 
-    // Ladda data
     async function loadData() {
       const container = document.getElementById("tableContainer");
-
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
@@ -95,6 +98,9 @@
               <th>Exercise</th>
               <th>Weight (kg)</th>
               <th>Reps</th>
+              <th>Primär muskelgrupp</th>
+              <th>Sekundär muskelgrupp</th>
+              <th>Insats</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -106,6 +112,9 @@
             <td>${row[1]}</td>
             <td>${row[2]}</td>
             <td>${row[3]}</td>
+            <td>${row[4]}</td>
+            <td>${row[5]}</td>
+            <td>${row[6]}</td>
           </tr>`;
         });
 
