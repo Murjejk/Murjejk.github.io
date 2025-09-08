@@ -1,1 +1,221 @@
+/* ==============================
+   Global styling
+============================== */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #ddd;
+  font-size: 0.9rem;
+  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+}
 
+header {
+  background: #2a2a2a;
+  color: #f1f1f1;
+  text-align: center;
+  padding: 0.8rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+}
+
+/* ==============================
+   Main container
+============================== */
+main {
+  padding: 0.8rem;
+  margin-bottom: 70px; /* space for navbar */
+}
+
+.card {
+  background: #2a2a2a;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  border: 1px solid #444;
+}
+
+h2, h3 {
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+/* ==============================
+   Lists
+============================== */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+ul li {
+  padding: 0.5rem;
+  border-bottom: 1px solid #444;
+  cursor: pointer;
+}
+
+ul li:hover {
+  background: #333;
+}
+
+.exercises {
+  display: none;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+}
+
+.exercises li {
+  border: none;
+  padding: 0.3rem 0;
+  color: #bbb;
+}
+
+.exercises li:hover {
+  color: #3b82f6;
+}
+
+/* ==============================
+   Forms
+============================== */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+form input,
+form select,
+form button {
+  padding: 0.5rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: #1e1e1e;
+  color: #f1f1f1;
+}
+
+form input,
+form select {
+  flex: 1;
+  min-width: 100px;
+}
+
+form button {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+form button:hover {
+  background: #2563eb;
+}
+
+/* ==============================
+   Tables
+============================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  display: block;
+  overflow-x: auto;
+}
+
+th,
+td {
+  border: 1px solid #444;
+  padding: 0.4rem;
+  text-align: center;
+}
+
+th {
+  background: #3b3b3b;
+}
+
+tr:nth-child(even) {
+  background: #2a2a2a;
+}
+
+.empty-message {
+  text-align: center;
+  margin-top: 0.6rem;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+/* ==============================
+   Bottom nav
+============================== */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #2a2a2a;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.3rem 0;
+  border-top: 1px solid #444;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: #f1f1f1;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+nav button.active {
+  color: #3b82f6;
+}
+
+/* ==============================
+   Sections
+============================== */
+section {
+  display: none;
+}
+
+section.active {
+  display: block;
+}
+
+/* ==============================
+   Canvas graf
+============================== */
+canvas {
+  width: 100% !important;
+  height: 150px !important;
+}
+
+/* ==============================
+   Responsive / mobilvänligt
+============================== */
+@media (max-width: 480px) {
+  body {
+    font-size: 0.85rem;
+  }
+
+  nav button span {
+    font-size: 0.65rem;
+  }
+
+  form input, form select, form button {
+    font-size: 0.8rem;
+  }
+
+  table {
+    font-size: 0.75rem;
+  }
+}
