@@ -155,7 +155,7 @@ tr:nth-child(even) {
 }
 
 /* ==============================
-   Bottom nav
+   Bottom nav with icons only
 ============================== */
 nav {
   position: fixed;
@@ -165,24 +165,45 @@ nav {
   background: #2a2a2a;
   display: flex;
   justify-content: space-around;
-  padding: 0.3rem 0;
+  padding: 0.5rem 0; /* justera höjd efter ikoner */
   border-top: 1px solid #444;
+  z-index: 1000;
 }
 
 nav button {
   background: none;
   border: none;
-  color: #f1f1f1;
-  font-size: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+  padding: 0.3rem 0;
 }
 
-nav button.active {
-  color: #3b82f6;
+.nav-icon {
+  width: 48px;
+  height: 48px;
 }
+
+/* Active state för ikonen */
+nav button.active .nav-icon {
+  filter: brightness(1.2); /* lite ljusare för aktiv ikon */
+}
+
+/* Inaktiva ikoner kan ha lätt transparent look */
+nav button:not(.active) .nav-icon {
+  opacity: 0.7;
+}
+
+/* Responsive: mindre ikoner på små skärmar */
+@media (max-width: 480px) {
+  .nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 
 /* ==============================
    Sections
