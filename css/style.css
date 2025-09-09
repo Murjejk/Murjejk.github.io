@@ -41,7 +41,7 @@ main {
 
 /* Card med ljusare semitransparent bakgrund */
 .card {
-  background: rgba(40, 40, 40, 0.55); /* ljusare grå med transparens */
+  background: rgba(80, 80, 80, 0.35); /* ljusare grå med transparens */
   padding: 0.8rem;
   border-radius: 8px;
   margin-bottom: 0.8rem;
