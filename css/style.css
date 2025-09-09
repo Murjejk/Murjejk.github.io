@@ -239,3 +239,15 @@ canvas {
   }
 }
 
+.nav-credit {
+  position: absolute;
+  right: 8px;         /* avstånd från höger */
+  top: 6px;           /* avstånd från toppen av nav-baren */
+  font-size: 0.65rem; /* liten text */
+  color: #fff;        /* vit färg */
+  opacity: 0.7;       /* lite diskret */
+  font-style: italic;
+  pointer-events: none; /* så den inte stör klick */
+}
+
+
