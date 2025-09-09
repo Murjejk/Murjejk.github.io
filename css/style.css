@@ -7,9 +7,13 @@ body {
   padding: 0;
   color: #ddd;
   font-size: 0.9rem;
-  /* Gradient från mörkgrå topp till ljusgrå botten */
-  background: linear-gradient(to bottom, #1a1a1a, #b0b0b0);
   min-height: 100vh;
+
+  /* Gradient + bakgrundsbild som täcker hela sidan */
+  background: 
+    linear-gradient(to bottom, rgba(26,26,26,0.85), rgba(176,176,176,0.85)),
+    url('../assets/images/training.png') no-repeat center center fixed;
+  background-size: cover;
 }
 
 /* ==============================
@@ -41,34 +45,11 @@ main {
   border-radius: 8px;
   margin-bottom: 0.8rem;
   border: 1px solid #555;
-  position: relative; /* behövs för bakgrundsbild */
-  z-index: 1; /* ligger ovanpå bakgrundsbild */
 }
 
 h2, h3 {
   color: #fff;
   margin-bottom: 0.6rem;
-}
-
-/* ==============================
-   Pass background image
-============================== */
-.pass-bg-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* ligger bakom kortet */
-  overflow: hidden;
-}
-
-.pass-bg-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.2; /* justera transparens */
-  border-radius: 8px;
 }
 
 /* ==============================
