@@ -9,15 +9,14 @@ body {
   font-size: 0.9rem;
   min-height: 100vh;
 
-  /* Bakgrundsbild ovanpå gradient */
+  /* Gradient först, bilden ovanpå */
   background: 
-    url('../assets/images/training.png') no-repeat,
-    linear-gradient(to bottom, rgba(26,26,26,0.8), rgba(176,176,176,0.8));
+    linear-gradient(to bottom, rgba(26,26,26,0.8), rgba(176,176,176,0.8)),
+    url('../assets/images/training.png') no-repeat;
   
-  /* Naturlig storlek och position */
-  background-size: auto;
-  background-position: 20px 50px; /* justera position */
-  background-repeat: no-repeat;
+  /* Bildens position utan att ändra gradienten */
+  background-position: 20px 50px; /* justera vänster och topp */
+  background-size: auto;           /* använder naturlig storlek */
 }
 /* ==============================
    Header
