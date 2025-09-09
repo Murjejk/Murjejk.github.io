@@ -2,26 +2,27 @@
    Global styling
 ============================== */
 body {
-  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
   color: #ddd;
   font-size: 0.9rem;
-  background: linear-gradient(180deg, #1a1a1a, #2a2a2a); /* mörk topp, ljus botten */
+  /* Gradient från mörkgrå topp till ljusgrå botten */
+  background: linear-gradient(to bottom, #1a1a1a, #b0b0b0);
+  min-height: 100vh;
 }
 
+/* ==============================
+   Header
+============================== */
 header {
-  background: #2a2a2a;
+  background: transparent;
+  color: #f1f1f1;
   text-align: center;
   padding: 0.8rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
   border-bottom: 1px solid #444;
-}
-
-header img.header-icon {
-  width: 40px;
-  height: 40px;
-  display: block;
-  margin: 0 auto;
 }
 
 /* ==============================
@@ -30,14 +31,16 @@ header img.header-icon {
 main {
   padding: 0.8rem;
   margin-bottom: 70px; /* space for navbar */
+  background: transparent;
 }
 
+/* Card med ljusare semitransparent bakgrund */
 .card {
-  background: #2a2a2a;
+  background: rgba(70, 70, 70, 0.85); /* ljusare grå med transparens */
   padding: 0.8rem;
   border-radius: 8px;
   margin-bottom: 0.8rem;
-  border: 1px solid #444;
+  border: 1px solid #555;
 }
 
 h2, h3 {
@@ -57,7 +60,7 @@ ul {
 
 ul li {
   padding: 0.5rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #555;
   cursor: pointer;
 }
 
@@ -98,7 +101,7 @@ form button {
   border: 1px solid #555;
   border-radius: 6px;
   font-size: 0.85rem;
-  background: #1e1e1e;
+  background: rgba(30, 30, 30, 0.85);
   color: #f1f1f1;
 }
 
@@ -134,17 +137,17 @@ table {
 
 th,
 td {
-  border: 1px solid #444;
+  border: 1px solid #555;
   padding: 0.4rem;
   text-align: center;
 }
 
 th {
-  background: #3b3b3b;
+  background: rgba(60, 60, 60, 0.85);
 }
 
 tr:nth-child(even) {
-  background: #2a2a2a;
+  background: rgba(70, 70, 70, 0.85);
 }
 
 .empty-message {
@@ -155,43 +158,33 @@ tr:nth-child(even) {
 }
 
 /* ==============================
-   Bottom nav with icons only
+   Bottom nav
 ============================== */
 nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: #2a2a2a;
+  background: rgba(42, 42, 42, 0.95);
   display: flex;
   justify-content: space-around;
-  padding: 0.5rem 0;
+  padding: 0.3rem 0;
   border-top: 1px solid #444;
-  z-index: 1000;
 }
 
 nav button {
   background: none;
   border: none;
+  color: #f1f1f1;
+  font-size: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   cursor: pointer;
-  padding: 0.3rem 0;
 }
 
-.nav-icon {
-  width: 48px;
-  height: 48px;
-}
-
-nav button.active .nav-icon {
-  filter: brightness(1.2);
-}
-
-nav button:not(.active) .nav-icon {
-  opacity: 0.7;
+nav button.active {
+  color: #3b82f6;
 }
 
 /* ==============================
@@ -232,15 +225,4 @@ canvas {
   table {
     font-size: 0.75rem;
   }
-
-  .nav-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  header img.header-icon {
-    width: 35px;
-    height: 35px;
-  }
 }
-
