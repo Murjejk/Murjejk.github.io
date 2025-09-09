@@ -189,7 +189,9 @@ async function loadLatestWeight() {
     const labels = weights.map(r => r[6].substring(0,10));
     const values = weights.map(r => parseFloat(r[1]));
 
-    if (window.weightChart) window.weightChart.destroy();
+    if (window.weightChart && typeof window.weightChart.destroy === 'function') {
+    window.weightChart.destroy();
+    }
     window.weightChart = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets:[{ label:'Kroppsvikt (kg)', data: values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true }] },
