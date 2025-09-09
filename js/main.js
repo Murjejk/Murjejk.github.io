@@ -3,23 +3,17 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
-// Global variabel för viktgraf
-// ==============================
-let weightChart = null;
-
-// ==============================
 // Navigering mellan sektioner
 // ==============================
 function showSection(id, btn) {
   document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-
   document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 
-  if (id === "kroppsvikt") {
-    loadLatestWeight();
-  }
+  // Ladda data för kroppsvikt eller muskelgrupp
+  if (id === "kroppsvikt") loadLatestWeight();
+  if (id === "muskel") loadMuscleGroups();
 }
 
 // ==============================
@@ -64,9 +58,7 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     if (result.status === "success") {
       document.getElementById("logForm").reset();
       loadData();
-    } else {
-      alert("Kunde inte spara träningsposten.");
-    }
+    } else alert("Kunde inte spara träningsposten.");
   } catch (err) {
     alert("Fel vid anslutning till Google Sheets: " + err);
   }
@@ -89,26 +81,15 @@ async function loadData() {
     let tableHTML = `<table>
       <thead>
         <tr>
-          <th>Exercise</th>
-          <th>Weight (kg)</th>
-          <th>Reps</th>
-          <th>Primär muskelgrupp</th>
-          <th>Sekundär muskelgrupp</th>
-          <th>Insats</th>
-          <th>Date</th>
+          <th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th>Primär muskelgrupp</th>
+          <th>Sekundär muskelgrupp</th><th>Insats</th><th>Date</th>
         </tr>
-      </thead>
-      <tbody>`;
+      </thead><tbody>`;
 
     data.slice(1).forEach(row => {
       tableHTML += `<tr>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-        <td>${row[4]}</td>
-        <td>${row[5]}</td>
-        <td>${row[6]}</td>
+        <td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td>
+        <td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td><td>${row[6]}</td>
       </tr>`;
     });
 
@@ -128,7 +109,6 @@ document.getElementById("weightForm").addEventListener("submit", async (e) => {
 
   const newWeight = document.getElementById("newWeight").value;
   if (!newWeight) return alert("Ange en vikt!");
-
   const today = new Date().toISOString().split("T")[0];
 
   const params = new URLSearchParams();
@@ -151,9 +131,7 @@ document.getElementById("weightForm").addEventListener("submit", async (e) => {
     if (result.status === "success") {
       document.getElementById("weightForm").reset();
       loadLatestWeight();
-    } else {
-      alert("Kunde inte spara kroppsvikten.");
-    }
+    } else alert("Kunde inte spara kroppsvikten.");
   } catch (err) {
     alert("Fel vid anslutning till Google Sheets: " + err);
   }
@@ -171,68 +149,30 @@ async function loadLatestWeight() {
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    if (!data || data.length <= 1) {
+    const weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt").slice(-10);
+    if (!weights.length) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
       historyContainer.innerHTML = "";
-      return;
-    }
-
-    let weights = data.slice(1)
-                      .filter(row => row[0] && row[0].trim().toLowerCase() === "kroppsvikt")
-                      .slice(-10);
-
-    if (weights.length === 0) {
-      weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
-      historyContainer.innerHTML = "";
+      if (window.weightChart) window.weightChart.destroy();
       return;
     }
 
     const latest = weights[weights.length - 1];
     weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
 
-    let tableHTML = `<table>
-      <thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
-    weights.forEach(row => {
-      tableHTML += `<tr><td>${row[6].substring(0,10)}</td><td>${row[1]}</td></tr>`;
-    });
+    let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
+    weights.forEach(row => tableHTML += `<tr><td>${row[6].substring(0,10)}</td><td>${row[1]}</td></tr>`);
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
-    const labels = weights.map(row => {
-      const dateStr = row[6].substring(0, 10);
-      const [year, month, day] = dateStr.split('-');
-      const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
-      return `${parseInt(day)} ${monthNames[parseInt(month)-1]}`;
-    });
-    const values = weights.map(row => parseFloat(row[1]));
+    const labels = weights.map(r => r[6].substring(0,10));
+    const values = weights.map(r => parseFloat(r[1]));
 
-    if (weightChart) {
-      weightChart.destroy();
-    }
-
-    weightChart = new Chart(ctx, {
+    if (window.weightChart) window.weightChart.destroy();
+    window.weightChart = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Kroppsvikt (kg)',
-          data: values,
-          borderColor: '#3b82f6',
-          backgroundColor: '#2563eb55',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 3,
-          pointBackgroundColor: '#3b82f6'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#ccc', font: { size: 6 } } },
-          y: { ticks: { color: '#ccc', font: { size: 6 } } }
-        }
-      }
+      data: { labels, datasets: [{ label: 'Kroppsvikt', data: values, borderColor: '#3b82f6', backgroundColor: '#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6' }]},
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}} } }
     });
 
   } catch (err) {
@@ -242,7 +182,92 @@ async function loadLatestWeight() {
 }
 
 // ==============================
+// Muskelgrupper med övningar från Google Sheets
+// ==============================
+async function loadMuscleGroups() {
+  const muscleList = document.getElementById("muscleList");
+  muscleList.innerHTML = "Laddar muskelgrupper...";
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      muscleList.innerHTML = "<li>Inga övningar loggade än.</li>";
+      return;
+    }
+
+    const exercises = data.slice(1);
+    const muscleGroups = {};
+    exercises.forEach(r => {
+      const muscle = r[3].trim();
+      if (!muscleGroups[muscle]) muscleGroups[muscle] = [];
+      if (r[0]) muscleGroups[muscle].push(r[0]);
+    });
+
+    muscleList.innerHTML = "";
+    Object.keys(muscleGroups).forEach(muscle => {
+      const li = document.createElement("li");
+      li.textContent = muscle;
+      const ul = document.createElement("ul");
+      ul.classList.add("exercises");
+      [...new Set(muscleGroups[muscle])].forEach(ex => {
+        const exLi = document.createElement("li");
+        exLi.textContent = ex;
+        exLi.style.cursor = "pointer";
+        exLi.addEventListener("click", () => loadExerciseHistory(ex));
+        ul.appendChild(exLi);
+      });
+      li.appendChild(ul);
+      li.addEventListener("click", () => ul.style.display = ul.style.display === "block" ? "none" : "block");
+      muscleList.appendChild(li);
+    });
+
+  } catch (err) {
+    muscleList.innerHTML = `<li>Fel vid hämtning av muskelgrupper: ${err}</li>`;
+  }
+}
+
+// ==============================
+// Ladda historik och graf för vald övning
+// ==============================
+async function loadExerciseHistory(exerciseName) {
+  const historyContainer = document.getElementById("exerciseHistory");
+  const title = document.getElementById("exerciseTitle");
+  const ctx = document.getElementById("exerciseChart").getContext("2d");
+
+  title.innerText = exerciseName;
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const filtered = data.slice(1).filter(r => r[0].trim() === exerciseName).slice(-10);
+    if (!filtered.length) {
+      historyContainer.innerHTML = "<p class='empty-message'>Ingen historik.</p>";
+      if (window.exerciseChart) window.exerciseChart.destroy();
+      return;
+    }
+
+    let tableHTML = "<table><thead><tr><th>Datum</th><th>Vikt (kg)</th><th>Reps</th></tr></thead><tbody>";
+    filtered.forEach(r => tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`);
+    tableHTML += "</tbody></table>";
+    historyContainer.innerHTML = tableHTML;
+
+    const labels = filtered.map(r => r[6].substring(0,10));
+    const values = filtered.map(r => parseFloat(r[1]));
+
+    if (window.exerciseChart) window.exerciseChart.destroy();
+    window.exerciseChart = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [{ label: exerciseName, data: values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6' }]},
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}} } }
+    });
+
+  } catch(err) {
+    historyContainer.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
+  }
+}
+
+// ==============================
 // Initial load
 // ==============================
 loadData();
-loadLatestWeight(); // Ladda även kroppsvikten direkt
+
