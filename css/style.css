@@ -48,6 +48,9 @@ h2, h3 {
   margin-bottom: 0.6rem;
 }
 
+/* ==============================
+   Pass image
+============================== */
 .pass-image-container {
   text-align: center;
   margin-top: 0.8rem;
@@ -169,7 +172,7 @@ tr:nth-child(even) {
 }
 
 /* ==============================
-   Bottom nav
+   Bottom nav with icons
 ============================== */
 nav {
   position: fixed;
@@ -186,16 +189,22 @@ nav {
 nav button {
   background: none;
   border: none;
-  color: #f1f1f1;
-  font-size: 1rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+  padding: 0;
 }
 
-nav button.active {
-  color: #3b82f6;
+nav button img {
+  width: 48px;
+  height: 48px;
+  filter: brightness(0.7); /* standard inaktiv ikon */
+  transition: filter 0.2s;
+}
+
+nav button.active img {
+  filter: brightness(1.2); /* ljusare när aktiv */
 }
 
 /* ==============================
@@ -225,8 +234,9 @@ canvas {
     font-size: 0.85rem;
   }
 
-  nav button span {
-    font-size: 0.65rem;
+  nav button img {
+    width: 36px;
+    height: 36px;
   }
 
   form input, form select, form button {
