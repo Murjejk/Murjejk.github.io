@@ -7,7 +7,10 @@ body {
   padding: 0;
   color: #ddd;
   font-size: 0.9rem;
-  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+
+  /* Gradient bakgrund: ljusgrå i botten → mörkgrå på toppen */
+  background: linear-gradient(to top, #d3d3d3, #333333);
+  min-height: 100vh;
 }
 
 header {
@@ -29,11 +32,12 @@ main {
 }
 
 .card {
-  background: #2a2a2a;
+  background: rgba(34, 34, 34, 0.9); /* lite genomskinlig så gradient syns */
   padding: 0.8rem;
   border-radius: 8px;
   margin-bottom: 0.8rem;
   border: 1px solid #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5); /* extra kontrast */
 }
 
 h2, h3 {
