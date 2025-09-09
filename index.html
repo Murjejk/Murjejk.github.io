@@ -4,15 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Log</title>
-  <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Helvetica&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header>
-   <img src="assets/icons/Dumbell.png" alt="Dumbell ikon" class="header-icon">
-</header>
+<header><img src="assets/Dumbell.png" alt="Dumbell" width="48"></header>
 
 <main>
 
@@ -46,17 +43,13 @@
   <!-- MUSKELGRUPP -->
   <section id="muskel" class="card">
     <h2>Muskelgrupper</h2>
-    <ul>
-      <li>Bröst</li>
-      <li>Biceps</li>
-      <li>Triceps</li>
-      <li>Rygg</li>
-      <li>Mage</li>
-      <li>Axlar</li>
-      <li>Vader</li>
-      <li>Handleder</li>
-      <li>Allmänt</li>
-    </ul>
+    <ul id="muscleList"></ul>
+
+    <div id="exerciseHistoryContainer">
+      <h3 id="exerciseTitle"></h3>
+      <div id="exerciseHistory"></div>
+      <canvas id="exerciseChart" width="100%" height="60"></canvas>
+    </div>
   </section>
 
   <!-- LÄGG TILL ÖVNING -->
@@ -104,24 +97,14 @@
 
 <!-- NAVIGATION -->
 <nav>
-  <button onclick="showSection('pass', this)" class="active">
-    <img src="assets/icons/pass.png" alt="Pass ikon" class="nav-icon">
-  </button>
-
-  <button onclick="showSection('muskel', this)">
-    <img src="assets/icons/muskel.png" alt="Muskel ikon" class="nav-icon">
-  </button>
-
-  <button onclick="showSection('ovningar', this)">
-    <img src="assets/icons/add.png" alt="Lägg till ikon" class="nav-icon">
-  </button>
-
-  <button onclick="showSection('kroppsvikt', this)">
-    <img src="assets/icons/weight.png" alt="Kroppsvikt ikon" class="nav-icon">
-  </button>
+  <button onclick="showSection('pass', this)" class="active"><img src="assets/pass.png" width="48"></button>
+  <button onclick="showSection('muskel', this)"><img src="assets/muscle.png" width="48"></button>
+  <button onclick="showSection('ovningar', this)"><img src="assets/add.png" width="48"></button>
+  <button onclick="showSection('kroppsvikt', this)"><img src="assets/weight.png" width="48"></button>
 </nav>
 
 <!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/main.js"></script>
 
 </body>
