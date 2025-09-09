@@ -1,4 +1,4 @@
-// weight.js
+// weight.js – komplett uppdaterad
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
@@ -7,20 +7,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJE
 // ==============================
 document.getElementById("weightForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const today = new Date().toISOString().split("T")[0];
-  const newWeight = document.getElementById("newWeight").value;
 
-  const formData = new FormData();
-  formData.append("exercise", "Kroppsvikt");
-  formData.append("weight", newWeight);
-  formData.append("reps", 1);
-  formData.append("primary", "Allmänt");
-  formData.append("secondary", "");
-  formData.append("effort", "Rätt");
-  formData.append("date", today);
+  const newWeight = document.getElementById("newWeight").value;
+  if (!newWeight) return alert("Ange en vikt!");
+
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+  const params = new URLSearchParams();
+  params.append("exercise", "Kroppsvikt");
+  params.append("weight", newWeight);
+  params.append("reps", 1);
+  params.append("primary", "Allmänt");
+  params.append("secondary", "");
+  params.append("effort", "Rätt");
+  params.append("date", today);
 
   try {
-    const response = await fetch(API_URL, { method: "POST", body: formData });
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    });
+
     const result = await response.json();
     if (result.status === "success") {
       document.getElementById("weightForm").reset();
@@ -52,7 +60,9 @@ async function loadLatestWeight() {
     }
 
     // Filtrera endast Kroppsvikt och ta de 10 senaste
-    let weights = data.slice(1).filter(row => row[0] === "Kroppsvikt").slice(-10);
+    let weights = data.slice(1)
+                      .filter(row => row[0].trim() === "Kroppsvikt")
+                      .slice(-10);
 
     if (weights.length === 0) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
@@ -62,20 +72,21 @@ async function loadLatestWeight() {
 
     // Senaste vikt
     const latest = weights[weights.length - 1];
-    weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6]})`;
+    weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
 
     // Historik-tabell (10 senaste)
     let tableHTML = `<table>
       <thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
     weights.forEach(row => {
-      tableHTML += `<tr><td>${row[6]}</td><td>${row[1]}</td></tr>`;
+      tableHTML += `<tr><td>${row[6].substring(0,10)}</td><td>${row[1]}</td></tr>`;
     });
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
     // Data för graf med förkortat datum
     const labels = weights.map(row => {
-      const dateParts = row[6].split('-'); // YYYY-MM-DD
+      const dateStr = row[6].substring(0, 10); // YYYY-MM-DD
+      const dateParts = dateStr.split('-');
       const day = parseInt(dateParts[2], 10);
       const month = parseInt(dateParts[1], 10);
       const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
@@ -84,9 +95,7 @@ async function loadLatestWeight() {
     const values = weights.map(row => parseFloat(row[1]));
 
     // Rensa gammal graf om den finns
-    if (window.weightChart) {
-      window.weightChart.destroy();
-    }
+    if (window.weightChart) window.weightChart.destroy();
 
     // Skapa graf
     window.weightChart = new Chart(ctx, {
