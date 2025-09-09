@@ -1,5 +1,3 @@
-// main.js
-
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
@@ -11,9 +9,7 @@ function showSection(id, btn) {
   document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 
-  // Ladda data för kroppsvikt eller muskelgrupp
   if (id === "kroppsvikt") loadLatestWeight();
-  if (id === "muskel") loadMuscleGroups();
 }
 
 // ==============================
@@ -58,7 +54,9 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     if (result.status === "success") {
       document.getElementById("logForm").reset();
       loadData();
-    } else alert("Kunde inte spara träningsposten.");
+    } else {
+      alert("Kunde inte spara träningsposten.");
+    }
   } catch (err) {
     alert("Fel vid anslutning till Google Sheets: " + err);
   }
@@ -81,10 +79,10 @@ async function loadData() {
     let tableHTML = `<table>
       <thead>
         <tr>
-          <th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th>Primär muskelgrupp</th>
-          <th>Sekundär muskelgrupp</th><th>Insats</th><th>Date</th>
+          <th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th>Primär muskelgrupp</th><th>Sekundär muskelgrupp</th><th>Insats</th><th>Date</th>
         </tr>
-      </thead><tbody>`;
+      </thead>
+      <tbody>`;
 
     data.slice(1).forEach(row => {
       tableHTML += `<tr>
@@ -106,7 +104,6 @@ async function loadData() {
 // ==============================
 document.getElementById("weightForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const newWeight = document.getElementById("newWeight").value;
   if (!newWeight) return alert("Ange en vikt!");
   const today = new Date().toISOString().split("T")[0];
@@ -126,12 +123,13 @@ document.getElementById("weightForm").addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString()
     });
-
     const result = await response.json();
     if (result.status === "success") {
       document.getElementById("weightForm").reset();
       loadLatestWeight();
-    } else alert("Kunde inte spara kroppsvikten.");
+    } else {
+      alert("Kunde inte spara kroppsvikten.");
+    }
   } catch (err) {
     alert("Fel vid anslutning till Google Sheets: " + err);
   }
@@ -149,11 +147,19 @@ async function loadLatestWeight() {
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    const weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt").slice(-10);
+    if (!data || data.length <= 1) {
+      weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
+      historyContainer.innerHTML = "";
+      return;
+    }
+
+    let weights = data.slice(1)
+                      .filter(row => row[0] && row[0].trim().toLowerCase() === "kroppsvikt")
+                      .slice(-10);
+
     if (!weights.length) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
       historyContainer.innerHTML = "";
-      if (window.weightChart) window.weightChart.destroy();
       return;
     }
 
@@ -165,70 +171,30 @@ async function loadLatestWeight() {
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
-    const labels = weights.map(r => r[6].substring(0,10));
+    const labels = weights.map(r => {
+      const dateStr = r[6].substring(0, 10);
+      const [year, month, day] = dateStr.split("-");
+      const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
+      return `${parseInt(day)} ${monthNames[parseInt(month)-1]}`;
+    });
     const values = weights.map(r => parseFloat(r[1]));
 
-    if (window.weightChart) window.weightChart.destroy();
+    if (window.weightChart && typeof window.weightChart.destroy === "function") window.weightChart.destroy();
+
     window.weightChart = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: [{ label: 'Kroppsvikt', data: values, borderColor: '#3b82f6', backgroundColor: '#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6' }]},
-      options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}} } }
+      type:'line',
+      data:{labels, datasets:[{label:'Kroppsvikt (kg)', data:values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6'}]},
+      options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}}}}
     });
 
-  } catch (err) {
+  } catch(err) {
     weightDisplay.innerText = `Fel vid hämtning av kroppsvikt: ${err}`;
     historyContainer.innerHTML = "";
   }
 }
 
 // ==============================
-// Muskelgrupper med övningar från Google Sheets
-// ==============================
-async function loadMuscleGroups() {
-  const muscleList = document.getElementById("muscleList");
-  muscleList.innerHTML = "Laddar muskelgrupper...";
-
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    if (!data || data.length <= 1) {
-      muscleList.innerHTML = "<li>Inga övningar loggade än.</li>";
-      return;
-    }
-
-    const exercises = data.slice(1);
-    const muscleGroups = {};
-    exercises.forEach(r => {
-      const muscle = r[3].trim();
-      if (!muscleGroups[muscle]) muscleGroups[muscle] = [];
-      if (r[0]) muscleGroups[muscle].push(r[0]);
-    });
-
-    muscleList.innerHTML = "";
-    Object.keys(muscleGroups).forEach(muscle => {
-      const li = document.createElement("li");
-      li.textContent = muscle;
-      const ul = document.createElement("ul");
-      ul.classList.add("exercises");
-      [...new Set(muscleGroups[muscle])].forEach(ex => {
-        const exLi = document.createElement("li");
-        exLi.textContent = ex;
-        exLi.style.cursor = "pointer";
-        exLi.addEventListener("click", () => loadExerciseHistory(ex));
-        ul.appendChild(exLi);
-      });
-      li.appendChild(ul);
-      li.addEventListener("click", () => ul.style.display = ul.style.display === "block" ? "none" : "block");
-      muscleList.appendChild(li);
-    });
-
-  } catch (err) {
-    muscleList.innerHTML = `<li>Fel vid hämtning av muskelgrupper: ${err}</li>`;
-  }
-}
-
-// ==============================
-// Ladda historik och graf för vald övning
+// Muskelgrupper - Övningshistorik och graf
 // ==============================
 async function loadExerciseHistory(exerciseName) {
   const historyContainer = document.getElementById("exerciseHistory");
@@ -239,10 +205,11 @@ async function loadExerciseHistory(exerciseName) {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    const filtered = data.slice(1).filter(r => r[0].trim() === exerciseName).slice(-10);
+    const filtered = data.slice(1).filter(r => r[0] && r[0].trim() === exerciseName).slice(-10);
+
     if (!filtered.length) {
       historyContainer.innerHTML = "<p class='empty-message'>Ingen historik.</p>";
-      if (window.exerciseChart) window.exerciseChart.destroy();
+      if (window.exerciseChart && typeof window.exerciseChart.destroy === "function") window.exerciseChart.destroy();
       return;
     }
 
@@ -251,14 +218,20 @@ async function loadExerciseHistory(exerciseName) {
     tableHTML += "</tbody></table>";
     historyContainer.innerHTML = tableHTML;
 
-    const labels = filtered.map(r => r[6].substring(0,10));
+    const labels = filtered.map(r => {
+      const dateStr = r[6].substring(0,10);
+      const [year, month, day] = dateStr.split("-");
+      const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
+      return `${parseInt(day)} ${monthNames[parseInt(month)-1]}`;
+    });
     const values = filtered.map(r => parseFloat(r[1]));
 
-    if (window.exerciseChart) window.exerciseChart.destroy();
+    if (window.exerciseChart && typeof window.exerciseChart.destroy === "function") window.exerciseChart.destroy();
+
     window.exerciseChart = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: [{ label: exerciseName, data: values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6' }]},
-      options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}} } }
+      type:'line',
+      data:{labels, datasets:[{label:exerciseName, data:values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#3b82f6'}]},
+      options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}}}}
     });
 
   } catch(err) {
