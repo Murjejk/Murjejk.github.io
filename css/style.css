@@ -2,25 +2,26 @@
    Global styling
 ============================== */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Helvetica', 'Arial', sans-serif;
   margin: 0;
   padding: 0;
   color: #ddd;
   font-size: 0.9rem;
-
-  /* Gradient bakgrund: ljusgrå i botten → mörkgrå på toppen */
-  background: linear-gradient(to top, #d3d3d3, #333333);
-  min-height: 100vh;
+  background: linear-gradient(180deg, #1a1a1a, #2a2a2a); /* mörk topp, ljus botten */
 }
 
 header {
   background: #2a2a2a;
-  color: #f1f1f1;
   text-align: center;
   padding: 0.8rem 0;
-  font-size: 1.2rem;
-  font-weight: bold;
   border-bottom: 1px solid #444;
+}
+
+header img.header-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin: 0 auto;
 }
 
 /* ==============================
@@ -32,12 +33,11 @@ main {
 }
 
 .card {
-  background: rgba(34, 34, 34, 0.9); /* lite genomskinlig så gradient syns */
+  background: #2a2a2a;
   padding: 0.8rem;
   border-radius: 8px;
   margin-bottom: 0.8rem;
   border: 1px solid #444;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5); /* extra kontrast */
 }
 
 h2, h3 {
@@ -165,7 +165,7 @@ nav {
   background: #2a2a2a;
   display: flex;
   justify-content: space-around;
-  padding: 0.5rem 0; /* justera höjd efter ikoner */
+  padding: 0.5rem 0;
   border-top: 1px solid #444;
   z-index: 1000;
 }
@@ -186,24 +186,13 @@ nav button {
   height: 48px;
 }
 
-/* Active state för ikonen */
 nav button.active .nav-icon {
-  filter: brightness(1.2); /* lite ljusare för aktiv ikon */
+  filter: brightness(1.2);
 }
 
-/* Inaktiva ikoner kan ha lätt transparent look */
 nav button:not(.active) .nav-icon {
   opacity: 0.7;
 }
-
-/* Responsive: mindre ikoner på små skärmar */
-@media (max-width: 480px) {
-  .nav-icon {
-    width: 40px;
-    height: 40px;
-  }
-}
-
 
 /* ==============================
    Sections
@@ -243,4 +232,15 @@ canvas {
   table {
     font-size: 0.75rem;
   }
+
+  .nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  header img.header-icon {
+    width: 35px;
+    height: 35px;
+  }
 }
+
