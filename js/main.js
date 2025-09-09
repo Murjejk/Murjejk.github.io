@@ -245,3 +245,4 @@ async function loadLatestWeight() {
 // Initial load
 // ==============================
 loadData();
+loadLatestWeight(); // Ladda även kroppsvikten direkt
