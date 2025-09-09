@@ -1,12 +1,11 @@
-// weight.js – komplett uppdaterad
-
+// weight.js – komplett färdig version
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
 // Lägg till ny kroppsvikt
 // ==============================
 document.getElementById("weightForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault(); // STOPPAR formuläret från att reloada sidan
 
   const newWeight = document.getElementById("newWeight").value;
   if (!newWeight) return alert("Ange en vikt!");
@@ -59,10 +58,10 @@ async function loadLatestWeight() {
       return;
     }
 
-    // Filtrera endast Kroppsvikt och ta de 10 senaste
+    // Filtrera endast Kroppsvikt, trim och lowercase
     let weights = data.slice(1)
-                      .filter(row => row[0].trim() === "Kroppsvikt")
-                      .slice(-10);
+                      .filter(row => row[0].trim().toLowerCase() === "kroppsvikt")
+                      .slice(-10); // senaste 10
 
     if (weights.length === 0) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
@@ -72,58 +71,56 @@ async function loadLatestWeight() {
 
     // Senaste vikt
     const latest = weights[weights.length - 1];
-    weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
+    const latestDate = latest[6] ? latest[6].substring(0,10) : "";
+    weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latestDate})`;
 
-    // Historik-tabell (10 senaste)
+    // Historik-tabell
     let tableHTML = `<table>
       <thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
     weights.forEach(row => {
-      tableHTML += `<tr><td>${row[6].substring(0,10)}</td><td>${row[1]}</td></tr>`;
+      const date = row[6] ? row[6].substring(0,10) : "";
+      tableHTML += `<tr><td>${date}</td><td>${row[1]}</td></tr>`;
     });
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
-    // Data för graf med förkortat datum
+    // Data för graf
     const labels = weights.map(row => {
-      const dateStr = row[6].substring(0, 10); // YYYY-MM-DD
-      const dateParts = dateStr.split('-');
-      const day = parseInt(dateParts[2], 10);
-      const month = parseInt(dateParts[1], 10);
-      const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
-      return `${day} ${monthNames[month-1]}`;
+      const dateStr = row[6] ? row[6].substring(0, 10) : "";
+      const parts = dateStr.split("-");
+      const day = parts[2] || "";
+      const month = parts[1] ? ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"][parseInt(parts[1])-1] : "";
+      return `${day} ${month}`;
     });
     const values = weights.map(row => parseFloat(row[1]));
 
-    // Rensa gammal graf om den finns
     if (window.weightChart) window.weightChart.destroy();
-
-    // Skapa graf
     window.weightChart = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels: labels,
+      data: { 
+        labels, 
         datasets: [{
-          label: 'Kroppsvikt (kg)',
+          label:'Kroppsvikt (kg)',
           data: values,
-          borderColor: '#3b82f6',
-          backgroundColor: '#2563eb55',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 3,
-          pointBackgroundColor: '#3b82f6'
-        }]
+          borderColor:'#3b82f6',
+          backgroundColor:'#2563eb55',
+          tension:0.3,
+          fill:true,
+          pointRadius:3,
+          pointBackgroundColor:'#3b82f6'
+        }] 
       },
       options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#ccc', font: { size: 10 } } },
-          y: { ticks: { color: '#ccc', font: { size: 10 } } }
+        responsive:true,
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ ticks:{ color:'#ccc', font:{ size:10 } } },
+          y:{ ticks:{ color:'#ccc', font:{ size:10 } } }
         }
       }
     });
 
-  } catch (err) {
+  } catch(err) {
     weightDisplay.innerText = `Fel vid hämtning av kroppsvikt: ${err}`;
     historyContainer.innerHTML = "";
   }
