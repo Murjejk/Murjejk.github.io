@@ -9,11 +9,12 @@ body {
   font-size: 0.9rem;
   min-height: 100vh;
 
-  /* Gradient + bakgrundsbild som täcker hela sidan */
-  background: 
-    linear-gradient(to bottom, rgba(26,26,26,0.85), rgba(176,176,176,0.85)),
-    url('../assets/images/training.png') no-repeat center center fixed;
-  background-size: cover;
+  /* Gradient + bakgrundsbild */
+  background: linear-gradient(to bottom, rgba(26,26,26,0.8), rgba(176,176,176,0.8)),
+              url('../assets/images/training.png') no-repeat center top;
+  
+  /* Använd bildens naturliga storlek */
+  background-size: auto;
 }
 
 /* ==============================
