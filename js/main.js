@@ -229,8 +229,8 @@ async function loadLatestWeight() {
         responsive: true,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: '#ccc', font: { size: 10 } } },
-          y: { ticks: { color: '#ccc', font: { size: 10 } } }
+          x: { ticks: { color: '#ccc', font: { size: 6 } } },
+          y: { ticks: { color: '#ccc', font: { size: 6 } } }
         }
       }
     });
