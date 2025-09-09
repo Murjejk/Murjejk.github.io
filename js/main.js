@@ -3,20 +3,22 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
+// Global variabel för viktgraf
+// ==============================
+let weightChart = null;
+
+// ==============================
 // Navigering mellan sektioner
 // ==============================
 function showSection(id, btn) {
-  // Dölj alla sektioner
   document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-  // Visa vald sektion
   document.getElementById(id).classList.add("active");
-  // Markera active knapp i navbar
+
   document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 
-  // Om kroppsvikt, ladda senaste data
   if (id === "kroppsvikt") {
-    if (typeof loadLatestWeight === "function") loadLatestWeight();
+    loadLatestWeight();
   }
 }
 
@@ -34,10 +36,9 @@ function toggleExercises(el) {
 function prefillExercise(exercise, muscle) {
   document.getElementById("exercise").value = exercise;
   document.getElementById("primary").value = muscle;
-  document.getElementById("reps").value = 10;      // default reps
-  document.getElementById("weight").value = "";    // tom vikt
-  document.getElementById("effort").value = "Rätt"; // default effort
-  // Visa Lägg till-övning sektion
+  document.getElementById("reps").value = 10;
+  document.getElementById("weight").value = "";
+  document.getElementById("effort").value = "Rätt";
   showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
 }
 
@@ -118,6 +119,7 @@ async function loadData() {
     container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
   }
 }
+
 // ==============================
 // Kroppsvikt - Lägg till ny vikt
 // ==============================
@@ -127,7 +129,7 @@ document.getElementById("weightForm").addEventListener("submit", async (e) => {
   const newWeight = document.getElementById("newWeight").value;
   if (!newWeight) return alert("Ange en vikt!");
 
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0];
 
   const params = new URLSearchParams();
   params.append("exercise", "Kroppsvikt");
@@ -175,7 +177,6 @@ async function loadLatestWeight() {
       return;
     }
 
-    // Filtrera Kroppsvikt (case-insensitive, trim) och ta de 10 senaste
     let weights = data.slice(1)
                       .filter(row => row[0] && row[0].trim().toLowerCase() === "kroppsvikt")
                       .slice(-10);
@@ -186,11 +187,9 @@ async function loadLatestWeight() {
       return;
     }
 
-    // Senaste vikt
     const latest = weights[weights.length - 1];
     weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
 
-    // Historik
     let tableHTML = `<table>
       <thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
     weights.forEach(row => {
@@ -199,18 +198,19 @@ async function loadLatestWeight() {
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
-    // Graf
     const labels = weights.map(row => {
-      const dateStr = row[6].substring(0, 10); // YYYY-MM-DD
+      const dateStr = row[6].substring(0, 10);
       const [year, month, day] = dateStr.split('-');
       const monthNames = ["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
       return `${parseInt(day)} ${monthNames[parseInt(month)-1]}`;
     });
     const values = weights.map(row => parseFloat(row[1]));
 
-    if (window.weightChart) window.weightChart.destroy();
+    if (weightChart) {
+      weightChart.destroy();
+    }
 
-    window.weightChart = new Chart(ctx, {
+    weightChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
