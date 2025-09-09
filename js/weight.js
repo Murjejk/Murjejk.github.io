@@ -1,6 +1,6 @@
 // weight.js
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxiIGPznCXtS9vg7bBhixS5cqvPsmFPIm3ikSn62bVRIuju_Ok16cXP9N2KxBCelwpr/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
 // Lägg till ny kroppsvikt
