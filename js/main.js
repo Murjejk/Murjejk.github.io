@@ -243,4 +243,3 @@ async function loadExerciseHistory(exerciseName) {
 // Initial load
 // ==============================
 loadData();
-
