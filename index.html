@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Log</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -86,11 +87,9 @@
 
     <form id="weightForm">
       <input type="number" id="newWeight" placeholder="Kroppsvikt kg">
-      <button type="submit">Spara vikt1</button>
+      <button type="submit">Spara vikt</button>
     </form>
 
-
-    
     <h3>Historik</h3>
     <div id="weightHistory"></div>
 
@@ -102,14 +101,24 @@
 
 <!-- NAVIGATION -->
 <nav>
-  <button onclick="showSection('pass', this)" class="active">Pass</button>
-  <button onclick="showSection('muskel', this)">Muskel</button>
-  <button onclick="showSection('ovningar', this)">Lägg till</button>
-  <button onclick="showSection('kroppsvikt', this)">Kroppsvikt</button>
+  <button onclick="showSection('pass', this)" class="active">
+    <img src="assets/icons/pass.png" alt="Pass ikon" class="nav-icon">
+  </button>
+
+  <button onclick="showSection('muskel', this)">
+    <img src="assets/icons/muskel.png" alt="Muskel ikon" class="nav-icon">
+  </button>
+
+  <button onclick="showSection('ovningar', this)">
+    <img src="assets/icons/add.png" alt="Lägg till ikon" class="nav-icon">
+  </button>
+
+  <button onclick="showSection('kroppsvikt', this)">
+    <img src="assets/icons/weight.png" alt="Kroppsvikt ikon" class="nav-icon">
+  </button>
 </nav>
 
 <!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/main.js"></script>
 
 </body>
