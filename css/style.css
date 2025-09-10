@@ -382,4 +382,55 @@ canvas {
 .pass-card.open .pass-exercises {
   display: block;
 }
+/* ==============================
+   pass
+============================== */
+.muscle-card {
+  background: rgba(60, 60, 60, 0.6);
+  border: 1px solid #555;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
 
+.muscle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(80, 80, 80, 0.8);
+  transition: background 0.2s;
+}
+
+.muscle-header:hover {
+  background: rgba(100, 100, 100, 0.9);
+}
+
+.muscle-header span {
+  font-weight: bold;
+}
+
+.exercise-list {
+  display: none;
+  padding: 0.8rem;
+  background: rgba(40, 40, 40, 0.7);
+}
+
+.exercise-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #444;
+  font-size: 0.95rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.exercise-list li:hover {
+  color: #3b82f6;
+}
+
+.muscle-card.open .exercise-list {
+  display: block;
+}
