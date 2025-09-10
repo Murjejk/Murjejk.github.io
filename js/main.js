@@ -227,38 +227,44 @@ async function loadMuscleGroups() {
       if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
     });
 
+    const ul = document.createElement("ul");
     for (const [muscle, exercises] of Object.entries(muscles)) {
-      const card = document.createElement("div");
-      card.className = "muskel-card";
+      const li = document.createElement("li");
+      li.className = "muscle-card"; // för pil-animation
+      li.innerHTML = `
+        <span class="muscle-title">${muscle}</span>
+        <span class="arrow">&#9662;</span>
+      `;
 
-      const header = document.createElement("div");
-      header.className = "muskel-header";
-      header.innerHTML = `<span>${muscle}</span><span class="arrow">▼</span>`;
-      card.appendChild(header);
-
-      const exList = document.createElement("ul");
-      exList.className = "pass-exercises"; // återanvänd samma stil som pass
-
+      const exUl = document.createElement("ul");
+      exUl.className = "exercises";
       exercises.forEach(ex => {
-        const li = document.createElement("li");
-        li.textContent = ex;
-        li.onclick = (ev) => {
-          ev.stopPropagation();
-          loadExerciseHistory(muscle, ex);
+        const exLi = document.createElement("li");
+        exLi.textContent = ex;
+        exLi.onclick = (ev) => { 
+          ev.stopPropagation(); 
+          loadExerciseHistory(muscle, ex); 
         };
-        exList.appendChild(li);
+        exUl.appendChild(exLi);
       });
 
-      card.appendChild(exList);
+      li.appendChild(exUl);
 
-      header.addEventListener("click", () => card.classList.toggle("open"));
-      container.appendChild(card);
+      // Toggle när man klickar på muskelgruppen
+      li.onclick = () => {
+        li.classList.toggle("open");
+        toggleExercises(li);
+      };
+
+      ul.appendChild(li);
     }
+    container.appendChild(ul);
 
   } catch (err) {
     container.innerHTML += `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
   }
 }
+
 
 // Historik och graf för enskild övning
 async function loadExerciseHistory(muscle, exercise) {
