@@ -253,73 +253,66 @@ canvas {
 /* ==============================
    Vilotid cirkulär timer
 ============================== */
-.rest-inputs {
+/* Timer input + button */
+.timer-controls {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.6rem;
-}
-
-.rest-inputs input {
-  padding: 0.5rem;
-  border: 1px solid #555;
-  border-radius: 6px;
-  background: rgba(30,30,30,0.85);
-  color: #f1f1f1;
-  font-size: 0.9rem;
-}
-
-.rest-buttons {
-  display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.rest-buttons button {
-  flex: 1;
+.timer-controls input {
   padding: 0.5rem;
-  border: none;
   border-radius: 6px;
+  border: 1px solid #555;
+  background: rgba(30,30,30,0.85);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.timer-controls button {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
   background: #3b82f6;
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.rest-buttons button:hover {
+.timer-controls button:hover {
   background: #2563eb;
 }
 
-/* Cirkel-timer större och responsiv */
+/* Circle timer */
 .circle-timer {
   position: relative;
-  width: 90%;        /* fyller 90% av förälderns bredd */
-  max-width: 300px;  /* begränsa på större skärmar */
-  aspect-ratio: 1/1; /* gör den alltid kvadratisk */
-  margin: 1rem auto;
+  width: 90vw;       /* nästan hela skärmens bredd */
+  max-width: 400px;  /* begränsa på större skärmar */
+  aspect-ratio: 1/1; /* kvadrat */
+  margin: 1rem auto; /* centrera horisontellt */
 }
 
 .circle-timer svg {
   width: 100%;
   height: 100%;
-  transform: rotate(-90deg);
+  transform: rotate(-90deg); /* start från toppen */
 }
 
-.circle-timer circle {
+.circle-timer circle.bg {
   fill: none;
+  stroke: #555;
+  stroke-width: 12;
+}
+
+.circle-timer circle.progress {
+  fill: none;
+  stroke: #3b82f6;
   stroke-width: 12;
   stroke-linecap: round;
-}
-
-.circle-timer .bg {
-  stroke: rgba(255,255,255,0.2);
-}
-
-.circle-timer .progress {
-  stroke: #3b82f6;
-  stroke-dasharray: 339.292;
-  stroke-dashoffset: 339.292;
+  stroke-dasharray: 339.292; /* 2 * π * r */
+  stroke-dashoffset: 0;
   transition: stroke-dashoffset 1s linear;
 }
 
@@ -328,14 +321,24 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.5rem;   /* större text för mobil */
   color: #fff;
+  font-size: 2rem;
   font-weight: bold;
+  text-align: center;
 }
 
-/* Extra mobilanpassning */
+/* Responsiv justering */
 @media (max-width: 480px) {
+  .circle-timer {
+    width: 95vw;
+  }
+
   #timerText {
-    font-size: 2rem;   /* ännu större på små skärmar */
+    font-size: 1.8rem;
+  }
+
+  .timer-controls input,
+  .timer-controls button {
+    font-size: 0.9rem;
   }
 }
