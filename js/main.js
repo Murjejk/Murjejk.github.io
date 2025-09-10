@@ -305,49 +305,46 @@ async function loadExerciseHistory(muscle, exercise) {
 // ==============================
 // Vilo-timer
 // ==============================
-let restTimerInterval;
-let restTimeLeft = 0;
+let restInterval;
+let restTotal;
+let restRemaining;
 
 function startRestTimer() {
-  const minutes = parseInt(document.getElementById("restMinutes").value) || 0;
-  const seconds = parseInt(document.getElementById("restSeconds").value) || 0;
-  restTimeLeft = minutes * 60 + seconds;
+  const input = document.getElementById("restTime");
+  restTotal = parseInt(input.value);
+  restRemaining = restTotal;
 
-  if (restTimeLeft <= 0) {
-    alert("Ange en tid större än 0 sekunder!");
-    return;
-  }
+  const circle = document.querySelector(".circle-timer .progress");
+  const text = document.getElementById("timerText");
 
-  clearInterval(restTimerInterval);
-  updateRestDisplay();
+  // Full cirkel = 2πr ≈ 339 (för r=54)
+  const circumference = 2 * Math.PI * 54;
 
-  restTimerInterval = setInterval(() => {
-    restTimeLeft--;
-    updateRestDisplay();
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = circumference;
 
-    if (restTimeLeft <= 0) {
-      clearInterval(restTimerInterval);
-      alert("Vilotiden är slut!");
+  clearInterval(restInterval);
+
+  text.textContent = restRemaining;
+
+  restInterval = setInterval(() => {
+    restRemaining--;
+
+    if (restRemaining < 0) {
+      clearInterval(restInterval);
+      text.textContent = "Klar! 💪";
+      return;
     }
+
+    text.textContent = restRemaining;
+
+    // Uppdatera cirkelns progress
+    const offset = circumference - (restRemaining / restTotal) * circumference;
+    circle.style.strokeDashoffset = offset;
+
   }, 1000);
 }
 
-function stopRestTimer() {
-  clearInterval(restTimerInterval);
-}
-
-function updateRestDisplay() {
-  const display = document.getElementById("restDisplay");
-  const min = Math.floor(restTimeLeft / 60);
-  const sec = restTimeLeft % 60;
-  display.textContent = `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
-  // grafisk cirkel
-  const circle = document.getElementById("restCircle");
-  const total = (parseInt(document.getElementById("restMinutes").value) * 60 + parseInt(document.getElementById("restSeconds").value)) || 1;
-  const percent = restTimeLeft / total;
-  circle.style.background = `conic-gradient(#3b82f6 ${percent*360}deg, #444 ${percent*360}deg)`;
-}
 
 // ==============================
 // Initial load
