@@ -229,27 +229,28 @@ async function loadMuscleGroups() {
 
     for (const [muscle, exercises] of Object.entries(muscles)) {
       const card = document.createElement("div");
-      card.className = "muscle-card";
+      card.className = "muskel-card";
 
       const header = document.createElement("div");
-      header.className = "muscle-header";
-      header.innerHTML = `<span>${muscle}</span><span>▼</span>`;
+      header.className = "muskel-header";
+      header.innerHTML = `<span>${muscle}</span><span class="arrow">▼</span>`;
       card.appendChild(header);
 
       const exList = document.createElement("ul");
-      exList.className = "exercise-list";
+      exList.className = "pass-exercises"; // återanvänd samma stil som pass
 
       exercises.forEach(ex => {
-        const exLi = document.createElement("li");
-        exLi.textContent = ex;
-        exLi.onclick = (ev) => { 
-          ev.stopPropagation(); 
-          loadExerciseHistory(muscle, ex); 
+        const li = document.createElement("li");
+        li.textContent = ex;
+        li.onclick = (ev) => {
+          ev.stopPropagation();
+          loadExerciseHistory(muscle, ex);
         };
-        exList.appendChild(exLi);
+        exList.appendChild(li);
       });
 
       card.appendChild(exList);
+
       header.addEventListener("click", () => card.classList.toggle("open"));
       container.appendChild(card);
     }
@@ -258,7 +259,6 @@ async function loadMuscleGroups() {
     container.innerHTML += `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
   }
 }
-
 
 // Historik och graf för enskild övning
 async function loadExerciseHistory(muscle, exercise) {
@@ -418,6 +418,56 @@ function loadPassMenu() {
 
     header.addEventListener("click", () => card.classList.toggle("open"));
     passContainer.appendChild(card);
+  });
+}
+// ==============================
+// Passmeny
+// ==============================
+function loadPassMenu() {
+  const passData = [
+    {
+      name: "Bröst, Biceps, Mage",
+      exercises: [
+        { name: "Bänkpress", muscle: "Bröst" },
+        { name: "Bicepscurl", muscle: "Biceps" },
+        { name: "Situps", muscle: "Mage" }
+      ]
+    },
+    {
+      name: "Rygg, Triceps, Vader",
+      exercises: [
+        { name: "Latsdrag", muscle: "Rygg" },
+        { name: "Tricepspress", muscle: "Triceps" },
+        { name: "Tåhävningar", muscle: "Vader" }
+      ]
+    },
+    {
+      name: "Axlar, Handleder",
+      exercises: [
+        { name: "Axelpress", muscle: "Axlar" },
+        { name: "Handledscurl", muscle: "Handleder" }
+      ]
+    }
+  ];
+
+  const container = document.getElementById("passList");
+  container.innerHTML = "";
+
+  passData.forEach(pass => {
+    const div = document.createElement("div");
+    div.className = "pass-card";
+    div.innerHTML = `<h3>${pass.name}</h3>`;
+
+    const ul = document.createElement("ul");
+    pass.exercises.forEach(ex => {
+      const li = document.createElement("li");
+      li.textContent = ex.name;
+      li.onclick = () => prefillExercise(ex.name, ex.muscle);
+      ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
+    container.appendChild(div);
   });
 }
 
