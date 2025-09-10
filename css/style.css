@@ -287,14 +287,32 @@ canvas {
 /* Circle timer */
 .circle-timer {
   position: relative;
-  width: 80vw;     /* fyller ut nästan hela skärmen */
-  max-width: 300px; /* men inte större än 300px */
-  margin: 0 auto;  /* centrerar */
+  width: 80vw;         /* fyller 80% av skärmen */
+  max-width: 300px;    /* men inte större än 300px */
+  margin: 1rem auto;
 }
 
 .circle-timer svg {
   width: 100%;
   height: auto;
+  transform: rotate(-90deg); /* gör att timern startar uppifrån */
+}
+
+.circle-timer circle {
+  fill: none;          /* INGEN fyllning – bara konturen */
+  stroke-width: 12;    /* tjocklek på cirkeln */
+}
+
+.circle-timer .bg {
+  stroke: #444;        /* bakgrundsfärg */
+}
+
+.circle-timer .progress {
+  stroke: #3b82f6;     /* framstegs-färg */
+  stroke-linecap: round;
+  stroke-dasharray: 339.292; /* beräknat utifrån radien r=54 */
+  stroke-dashoffset: 339.292; /* börjar tom */
+  transition: stroke-dashoffset 1s linear;
 }
 
 .circle-timer #timerText {
@@ -302,6 +320,7 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 5rem;
+  font-size: 1.6rem;
+  font-weight: bold;
   color: #fff;
 }
