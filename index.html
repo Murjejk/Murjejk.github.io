@@ -95,25 +95,22 @@
   </section>
   
 <!-- VILOTID -->
-<!-- VILOTID -->
 <section id="vilo" class="card">
   <h2>Vilotid</h2>
 
   <div class="timer-controls">
-    <label for="restTime">Välj tid (sek):</label>
     <input type="number" id="restTime" min="10" max="600" value="60" step="10">
     <button onclick="startRestTimer()">Starta</button>
   </div>
 
   <div class="circle-timer">
-    <svg viewBox="0 0 120 120">
+    <svg>
       <circle class="bg" cx="60" cy="60" r="54"></circle>
       <circle class="progress" cx="60" cy="60" r="54"></circle>
     </svg>
-    <div id="timerText">60</div>
+    <div id="timerText">2:00</div>
   </div>
 </section>
-
 </main>
 
 <!-- Ny text ovanför navbar -->
