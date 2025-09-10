@@ -326,3 +326,60 @@ canvas {
   color: #fff;
   font-weight: bold;
 }
+
+/* ==============================
+   pass
+============================== */
+
+.pass-card {
+  background: rgba(60, 60, 60, 0.6);
+  border: 1px solid #555;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.pass-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(80, 80, 80, 0.8);
+  transition: background 0.2s;
+}
+
+.pass-header:hover {
+  background: rgba(100, 100, 100, 0.9);
+}
+
+.pass-header span:last-child {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.pass-exercises {
+  display: none;
+  padding: 0.8rem;
+  background: rgba(40, 40, 40, 0.7);
+}
+
+.pass-exercises li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #444;
+  font-size: 0.9rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.pass-exercises li:hover {
+  color: #3b82f6;
+}
+
+.pass-card.open .pass-exercises {
+  display: block;
+}
+
