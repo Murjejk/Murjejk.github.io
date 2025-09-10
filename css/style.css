@@ -250,5 +250,50 @@ canvas {
   pointer-events: none;
 }
 
+/* ==============================
+   Vilotid cirkulär timer
+============================== */
+.circle-timer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 1rem auto;
+}
+
+.circle-timer svg {
+  transform: rotate(-90deg);
+  width: 120px;
+  height: 120px;
+}
+
+circle {
+  fill: none;
+  stroke-width: 10;
+  cx: 60;
+  cy: 60;
+  r: 54;
+}
+
+circle.bg {
+  stroke: #444;
+}
+
+circle.progress {
+  stroke: #3b82f6;
+  stroke-dasharray: 339; /* 2 * π * r (ungefär för r=54) */
+  stroke-dashoffset: 339;
+  transition: stroke-dashoffset 1s linear;
+}
+
+#timerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
 
 
