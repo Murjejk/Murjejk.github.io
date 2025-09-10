@@ -424,3 +424,14 @@ canvas {
 .muscle-card.open .exercise-list {
   display: block;
 }
+.arrow {
+  float: right;
+  display: inline-block;
+  transition: transform 0.3s ease; /* mjuk rotation */
+}
+
+/* När kortet är öppet */
+.muscle-card.open .arrow {
+  transform: rotate(180deg);
+}
+
