@@ -253,56 +253,19 @@ canvas {
 /* ==============================
    Vilotid cirkulär timer
 ============================== */
-.rest-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.6rem;
-}
-
-.rest-inputs input {
-  padding: 0.5rem;
-  border: 1px solid #555;
-  border-radius: 6px;
-  background: rgba(30,30,30,0.85);
-  color: #f1f1f1;
-  font-size: 0.9rem;
-}
-
-.rest-buttons {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.rest-buttons button {
-  flex: 1;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 6px;
-  background: #3b82f6;
-  color: #fff;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.rest-buttons button:hover {
-  background: #2563eb;
-}
-
-/* Cirkel-timer bibehålls som tidigare */
+/* Cirkel-timer större och responsiv */
 .circle-timer {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 90%;        /* fyller 90% av förälderns bredd */
+  max-width: 300px;  /* begränsa på större skärmar */
+  aspect-ratio: 1/1; /* gör den alltid kvadratisk */
   margin: 1rem auto;
 }
 
 .circle-timer svg {
-  transform: rotate(-90deg);
   width: 100%;
   height: 100%;
+  transform: rotate(-90deg);
 }
 
 .circle-timer circle {
@@ -327,7 +290,14 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.2rem;
+  font-size: 1.5rem;   /* större text för mobil */
   color: #fff;
   font-weight: bold;
+}
+
+/* Extra mobilanpassning */
+@media (max-width: 480px) {
+  #timerText {
+    font-size: 2rem;   /* ännu större på små skärmar */
+  }
 }
