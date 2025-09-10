@@ -305,7 +305,7 @@ async function loadExerciseHistory(muscle, exercise) {
 // ==============================
 // Vilo-timer
 // ==============================
-let restTimerInterval;
+let restTimerAnimation;
 
 function startRestTimer() {
   const input = document.getElementById("restTime");
@@ -323,10 +323,9 @@ function startRestTimer() {
   progressCircle.style.strokeDasharray = circumference;
   progressCircle.style.strokeDashoffset = 0;
 
-  let elapsed = 0;
+  if (restTimerAnimation) cancelAnimationFrame(restTimerAnimation);
 
-  // Stoppa eventuell tidigare timer
-  if (restTimerInterval) clearInterval(restTimerInterval);
+  const startTime = performance.now();
 
   function formatTime(sec) {
     const minutes = Math.floor(sec / 60);
@@ -334,24 +333,28 @@ function startRestTimer() {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  timerText.innerText = formatTime(totalSeconds);
+  function animate(now) {
+    const elapsedMs = now - startTime;
+    const elapsedSec = Math.floor(elapsedMs / 1000);
+    const remainingSec = totalSeconds - elapsedSec;
 
-  restTimerInterval = setInterval(() => {
-    elapsed++;
-    let remaining = totalSeconds - elapsed;
-    if (remaining < 0) {
-      clearInterval(restTimerInterval);
-      timerText.innerText = "0:00";
-      progressCircle.style.strokeDashoffset = circumference;
-      return;
+    // Uppdatera texten 1 ggr/sekund
+    if (remainingSec >= 0) {
+      timerText.innerText = formatTime(remainingSec);
     }
 
-    timerText.innerText = formatTime(remaining);
+    // Uppdatera cirkeln smidigt (baserat på millisekunder)
+    const progress = Math.min(elapsedMs / (totalSeconds * 1000), 1);
+    progressCircle.style.strokeDashoffset = progress * circumference;
 
-    // Uppdatera progress-cirkel
-    const offset = (elapsed / totalSeconds) * circumference;
-    progressCircle.style.strokeDashoffset = offset;
-  }, 1000);
+    if (progress < 1) {
+      restTimerAnimation = requestAnimationFrame(animate);
+    } else {
+      timerText.innerText = "0:00";
+    }
+  }
+
+  restTimerAnimation = requestAnimationFrame(animate);
 }
 
 // ==============================
