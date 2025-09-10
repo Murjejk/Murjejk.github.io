@@ -93,19 +93,22 @@
     <h3>Graf</h3>
     <canvas id="weightChart" width="100%" height="60"></canvas>
   </section>
-  <!-- NY: Vilotid -->
-    <section id="vilo">
-      <h2>Vilotid</h2>
-      <div class="card">
-        <label>Minuter: <input type="number" id="restMinutes" min="0" max="10" value="0"></label>
-        <label>Sekunder: <input type="number" id="restSeconds" min="0" max="59" value="30"></label>
-        <button onclick="startRestTimer()">Starta</button>
-        <button onclick="stopRestTimer()">Stoppa</button>
-        <div id="restCircle">
-          <span id="restDisplay">00:00</span>
-        </div>
-      </div>
-    </section>
+  <!-- VILOTID -->
+<section id="vilo" class="card">
+  <h2>Vilotid</h2>
+  
+  <label for="restTime">Välj tid (sek):</label>
+  <input type="number" id="restTime" min="10" max="600" value="60" step="10">
+  <button onclick="startRestTimer()">Starta</button>
+
+  <div class="circle-timer">
+    <svg>
+      <circle class="bg" cx="60" cy="60" r="54"></circle>
+      <circle class="progress" cx="60" cy="60" r="54"></circle>
+    </svg>
+    <div id="timerText">60</div>
+  </div>
+</section>
 </main>
 
 <!-- Ny text ovanför navbar -->
