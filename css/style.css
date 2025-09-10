@@ -287,33 +287,33 @@ canvas {
 
 /* Circle timer */
 .circle-timer {
+  width: 90vw;          /* fyller nästan hela mobilskärmens bredd */
+  max-width: 300px;     /* inte större än 300px */
+  margin: 1rem auto;
   position: relative;
-  width: 90vw;       /* nästan hela skärmens bredd */
-  max-width: 400px;  /* begränsa på större skärmar */
-  aspect-ratio: 1/1; /* kvadrat */
-  margin: 1rem auto; /* centrera horisontellt */
 }
 
 .circle-timer svg {
   width: 100%;
-  height: 100%;
-  transform: rotate(-90deg); /* start från toppen */
+  height: auto;
+  transform: rotate(-90deg);
+}
+
+.circle-timer circle {
+  fill: none;
+  stroke-width: 12;
 }
 
 .circle-timer circle.bg {
-  fill: none;
-  stroke: #555;
-  stroke-width: 12;
+  stroke: rgba(255,255,255,0.2);
 }
 
 .circle-timer circle.progress {
-  fill: none;
   stroke: #3b82f6;
-  stroke-width: 12;
   stroke-linecap: round;
-  stroke-dasharray: 339.292; /* 2 * π * r */
+  stroke-dasharray: 339.292; /* 2*PI*radius (54) */
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1s linear;
+  transition: stroke-dashoffset 0.3s linear;
 }
 
 #timerText {
@@ -321,24 +321,7 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #fff;
   font-size: 2rem;
+  color: #fff;
   font-weight: bold;
-  text-align: center;
-}
-
-/* Responsiv justering */
-@media (max-width: 480px) {
-  .circle-timer {
-    width: 95vw;
-  }
-
-  #timerText {
-    font-size: 1.8rem;
-  }
-
-  .timer-controls input,
-  .timer-controls button {
-    font-size: 0.9rem;
-  }
 }
