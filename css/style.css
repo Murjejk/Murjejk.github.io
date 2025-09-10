@@ -330,47 +330,48 @@ canvas {
 /* ==============================
    pass
 ============================== */
-/* Pass cards */
 .pass-card {
-  background: rgba(50, 50, 50, 0.6);
-  border: 1px solid #555;
-  border-radius: 10px;
-  padding: 0.8rem;
-  margin-bottom: 0.8rem;
-  transition: transform 0.2s, background 0.3s;
+  background: rgba(40, 40, 40, 0.55);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .pass-card:hover {
-  background: rgba(70, 70, 70, 0.7);
-  transform: translateY(-2px);
+  background: rgba(60, 60, 60, 0.65);
 }
 
-.pass-card h3 {
-  margin: 0 0 0.5rem;
+.pass-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
   color: #fff;
-  font-size: 1rem;
 }
 
-.pass-card ul {
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+.pass-card.open .arrow {
+  transform: rotate(180deg);
+}
+
+.pass-exercises {
+  display: none;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.pass-exercises li {
+  padding: 0.3rem 0;
   list-style: none;
-  padding: 0;
-  margin: 0;
+  border-bottom: 1px solid #555;
+  color: #ddd;
 }
 
-.pass-card li {
-  padding: 0.4rem;
-  margin: 0.2rem 0;
-  border-radius: 6px;
-  background: rgba(30, 30, 30, 0.6);
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.85rem;
-}
-
-.pass-card li:hover {
-  background: #3b82f6;
-  color: #fff;
-}
 
 /* ==============================
    Muscel
