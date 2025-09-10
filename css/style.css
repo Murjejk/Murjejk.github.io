@@ -282,7 +282,7 @@ canvas {
 }
 
 .timer-controls button:hover {
-  background: #2563eb;
+  background: #bf462e;
 }
 
 /* Circle timer */
@@ -321,7 +321,7 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 3rem;
+  font-size: 6rem;
   color: #fff;
   font-weight: bold;
 }
