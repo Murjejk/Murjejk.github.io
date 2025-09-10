@@ -94,17 +94,28 @@
     <canvas id="weightChart" width="100%" height="60"></canvas>
   </section>
   <!-- VILOTID -->
-<div class="card">
+<section id="vilo" class="card">
+  <h2>Vilotid</h2>
+
   <form id="restForm">
-    <input type="number" id="restMinutes" min="0" max="10" value="0" placeholder="Minuter">
-    <input type="number" id="restSeconds" min="0" max="59" value="30" placeholder="Sekunder">
+    <label for="restMinutes">Minuter:</label>
+    <input type="number" id="restMinutes" min="0" max="10" value="1" placeholder="Minuter">
+
+    <label for="restSeconds">Sekunder:</label>
+    <input type="number" id="restSeconds" min="0" max="59" value="0" placeholder="Sekunder">
+
     <button type="button" onclick="startRestTimer()">Starta</button>
     <button type="button" onclick="stopRestTimer()">Stoppa</button>
   </form>
-  <div id="restCircle">
-    <span id="restDisplay">00:00</span>
+
+  <div class="circle-timer">
+    <svg>
+      <circle class="bg" cx="60" cy="60" r="54"></circle>
+      <circle class="progress" cx="60" cy="60" r="54"></circle>
+    </svg>
+    <div id="timerText">01:00</div>
   </div>
-</div>
+</section>
 </main>
 
 <!-- Ny text ovanför navbar -->
