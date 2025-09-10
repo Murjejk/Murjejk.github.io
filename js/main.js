@@ -305,59 +305,54 @@ async function loadExerciseHistory(muscle, exercise) {
 // ==============================
 // Vilo-timer
 // ==============================
-let restInterval;
-let totalSeconds;
-let remainingSeconds;
+let restTimerInterval;
 
 function startRestTimer() {
-  // Stoppa tidigare timer om den körs
-  clearInterval(restInterval);
+  const input = document.getElementById("restTime");
+  let totalSeconds = parseInt(input.value);
+  if (isNaN(totalSeconds) || totalSeconds < 10 || totalSeconds > 600) {
+    alert("Ange en tid mellan 10 och 600 sekunder.");
+    return;
+  }
 
-  const minutes = parseInt(document.getElementById("restMinutes").value) || 0;
-  const seconds = parseInt(document.getElementById("restSeconds").value) || 0;
-  totalSeconds = remainingSeconds = minutes * 60 + seconds;
-
-  if (totalSeconds <= 0) return alert("Välj en tid större än 0!");
-
-  updateTimerDisplay();
-  updateCircleProgress();
-
-  restInterval = setInterval(() => {
-    remainingSeconds--;
-    updateTimerDisplay();
-    updateCircleProgress();
-
-    if (remainingSeconds <= 0) {
-      clearInterval(restInterval);
-      alert("Tid slut!");
-    }
-  }, 1000);
-}
-
-function stopRestTimer() {
-  clearInterval(restInterval);
-}
-
-function updateTimerDisplay() {
-  const mins = Math.floor(remainingSeconds / 60);
-  const secs = remainingSeconds % 60;
-  document.getElementById("timerText").innerText = 
-    `${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
-}
-
-function updateCircleProgress() {
-  const circle = document.querySelector(".circle-timer .progress");
-  const radius = circle.r.baseVal.value;
+  const timerText = document.getElementById("timerText");
+  const progressCircle = document.querySelector(".circle-timer circle.progress");
+  const radius = progressCircle.r.baseVal.value;
   const circumference = 2 * Math.PI * radius;
 
-  const percent = remainingSeconds / totalSeconds;
-  const offset = circumference * (1 - percent);
+  progressCircle.style.strokeDasharray = circumference;
+  progressCircle.style.strokeDashoffset = 0;
 
-  circle.style.strokeDasharray = `${circumference} ${circumference}`;
-  circle.style.strokeDashoffset = offset;
+  let elapsed = 0;
+
+  // Stoppa eventuell tidigare timer
+  if (restTimerInterval) clearInterval(restTimerInterval);
+
+  function formatTime(sec) {
+    const minutes = Math.floor(sec / 60);
+    const seconds = sec % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  timerText.innerText = formatTime(totalSeconds);
+
+  restTimerInterval = setInterval(() => {
+    elapsed++;
+    let remaining = totalSeconds - elapsed;
+    if (remaining < 0) {
+      clearInterval(restTimerInterval);
+      timerText.innerText = "0:00";
+      progressCircle.style.strokeDashoffset = circumference;
+      return;
+    }
+
+    timerText.innerText = formatTime(remaining);
+
+    // Uppdatera progress-cirkel
+    const offset = (elapsed / totalSeconds) * circumference;
+    progressCircle.style.strokeDashoffset = offset;
+  }, 1000);
 }
-
-
 
 // ==============================
 // Initial load
