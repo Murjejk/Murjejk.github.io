@@ -306,44 +306,57 @@ async function loadExerciseHistory(muscle, exercise) {
 // Vilo-timer
 // ==============================
 let restInterval;
-let restTotal;
-let restRemaining;
+let totalSeconds;
+let remainingSeconds;
 
 function startRestTimer() {
-  const input = document.getElementById("restTime");
-  restTotal = parseInt(input.value);
-  restRemaining = restTotal;
-
-  const circle = document.querySelector(".circle-timer .progress");
-  const text = document.getElementById("timerText");
-
-  // Full cirkel = 2πr ≈ 339 (för r=54)
-  const circumference = 2 * Math.PI * 54;
-
-  circle.style.strokeDasharray = circumference;
-  circle.style.strokeDashoffset = circumference;
-
+  // Stoppa tidigare timer om den körs
   clearInterval(restInterval);
 
-  text.textContent = restRemaining;
+  const minutes = parseInt(document.getElementById("restMinutes").value) || 0;
+  const seconds = parseInt(document.getElementById("restSeconds").value) || 0;
+  totalSeconds = remainingSeconds = minutes * 60 + seconds;
+
+  if (totalSeconds <= 0) return alert("Välj en tid större än 0!");
+
+  updateTimerDisplay();
+  updateCircleProgress();
 
   restInterval = setInterval(() => {
-    restRemaining--;
+    remainingSeconds--;
+    updateTimerDisplay();
+    updateCircleProgress();
 
-    if (restRemaining < 0) {
+    if (remainingSeconds <= 0) {
       clearInterval(restInterval);
-      text.textContent = "Klar! 💪";
-      return;
+      alert("Tid slut!");
     }
-
-    text.textContent = restRemaining;
-
-    // Uppdatera cirkelns progress
-    const offset = circumference - (restRemaining / restTotal) * circumference;
-    circle.style.strokeDashoffset = offset;
-
   }, 1000);
 }
+
+function stopRestTimer() {
+  clearInterval(restInterval);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(remainingSeconds / 60);
+  const secs = remainingSeconds % 60;
+  document.getElementById("timerText").innerText = 
+    `${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
+}
+
+function updateCircleProgress() {
+  const circle = document.querySelector(".circle-timer .progress");
+  const radius = circle.r.baseVal.value;
+  const circumference = 2 * Math.PI * radius;
+
+  const percent = remainingSeconds / totalSeconds;
+  const offset = circumference * (1 - percent);
+
+  circle.style.strokeDasharray = `${circumference} ${circumference}`;
+  circle.style.strokeDashoffset = offset;
+}
+
 
 
 // ==============================
