@@ -60,7 +60,7 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 ul li {
@@ -76,7 +76,7 @@ ul li:hover {
 .exercises {
   display: none;
   padding-left: 1rem;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .exercises li {
@@ -96,7 +96,7 @@ form {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 form input,
@@ -105,7 +105,7 @@ form button {
   padding: 0.5rem;
   border: 1px solid #555;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   background: rgba(30, 30, 30, 0.85);
   color: #f1f1f1;
 }
@@ -274,7 +274,7 @@ canvas {
   padding: 0.5rem;
   border-radius: 6px;
   border: none;
-  background: #3b82f6;
+  background: #f65a3b;
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
@@ -309,7 +309,7 @@ canvas {
 }
 
 .circle-timer circle.progress {
-  stroke: #3b82f6;
+  stroke: #f65a3b;
   stroke-linecap: round;
   stroke-dasharray: 339.292; /* 2*PI*radius (54) */
   stroke-dashoffset: 0;
@@ -321,7 +321,7 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem;
+  font-size: 3rem;
   color: #fff;
   font-weight: bold;
 }
