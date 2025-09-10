@@ -227,30 +227,38 @@ async function loadMuscleGroups() {
       if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
     });
 
-    const ul = document.createElement("ul");
     for (const [muscle, exercises] of Object.entries(muscles)) {
-      const li = document.createElement("li");
-      li.textContent = muscle;
+      const card = document.createElement("div");
+      card.className = "muscle-card";
 
-      const exUl = document.createElement("ul");
-      exUl.className = "exercises";
+      const header = document.createElement("div");
+      header.className = "muscle-header";
+      header.innerHTML = `<span>${muscle}</span><span>▼</span>`;
+      card.appendChild(header);
+
+      const exList = document.createElement("ul");
+      exList.className = "exercise-list";
+
       exercises.forEach(ex => {
         const exLi = document.createElement("li");
         exLi.textContent = ex;
-        exLi.onclick = (ev) => { ev.stopPropagation(); loadExerciseHistory(muscle, ex); };
-        exUl.appendChild(exLi);
+        exLi.onclick = (ev) => { 
+          ev.stopPropagation(); 
+          loadExerciseHistory(muscle, ex); 
+        };
+        exList.appendChild(exLi);
       });
 
-      li.appendChild(exUl);
-      li.onclick = () => toggleExercises(li);
-      ul.appendChild(li);
+      card.appendChild(exList);
+      header.addEventListener("click", () => card.classList.toggle("open"));
+      container.appendChild(card);
     }
-    container.appendChild(ul);
 
   } catch (err) {
     container.innerHTML += `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
   }
 }
+
 
 // Historik och graf för enskild övning
 async function loadExerciseHistory(muscle, exercise) {
