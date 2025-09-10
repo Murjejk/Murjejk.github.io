@@ -9,134 +9,83 @@
 </head>
 <body>
 
-<header>GYM-LOG</header>
+  <header>GYM-LOG</header>
 
-<main>
+  <main>
+    <!-- PASS -->
+    <section id="pass" class="active">
+      <h2>Välj pass</h2>
+      <div class="card" id="tableContainer"></div>
+    </section>
 
-<!-- PASS -->
-<section id="pass" class="active card">
-  <h2>Välj Pass</h2>
-  <ul>
-    <li onclick="toggleExercises(this)">Bröst, Biceps, Mage
-      <ul class="exercises">
-        <li onclick="prefillExercise('Bänkpress','Bröst')">Bänkpress</li>
-        <li onclick="prefillExercise('Bicepscurl','Biceps')">Bicepscurl</li>
-        <li onclick="prefillExercise('Situps','Mage')">Situps</li>
-      </ul>
-    </li>
-    <li onclick="toggleExercises(this)">Rygg, Triceps, Vader
-      <ul class="exercises">
-        <li onclick="prefillExercise('Latsdrag','Rygg')">Latsdrag</li>
-        <li onclick="prefillExercise('Tricepspress','Triceps')">Tricepspress</li>
-        <li onclick="prefillExercise('Tåhävningar','Vader')">Tåhävningar</li>
-      </ul>
-    </li>
-    <li onclick="toggleExercises(this)">Axlar, Handleder
-      <ul class="exercises">
-        <li onclick="prefillExercise('Axelpress','Axlar')">Axelpress</li>
-        <li onclick="prefillExercise('Handledscurl','Handleder')">Handledscurl</li>
-      </ul>
-    </li>
-  </ul>
-  
-</section>
+    <!-- Övningar -->
+    <section id="ovningar">
+      <h2>Övningar</h2>
+      <div class="card">
+        <form id="logForm">
+          <input type="text" id="exercise" placeholder="Övning" required>
+          <input type="number" id="weight" placeholder="Vikt (kg)">
+          <input type="number" id="reps" placeholder="Reps" required>
+          <input type="text" id="primary" placeholder="Primär muskelgrupp" required>
+          <input type="text" id="secondary" placeholder="Sekundär muskelgrupp">
+          <select id="effort">
+            <option>Rätt</option>
+            <option>Lätt</option>
+            <option>Tungt</option>
+          </select>
+          <button type="submit">Spara</button>
+        </form>
+      </div>
+    </section>
 
-  <!-- MUSKELGRUPP -->
-  <section id="muskel" class="card">
-    <h2>Muskelgrupper</h2>
-    <ul id="muscleList"></ul>
+    <!-- Kroppsvikt -->
+    <section id="kroppsvikt">
+      <h2>Kroppsvikt</h2>
+      <div class="card">
+        <p id="latestWeight">Laddar...</p>
+        <form id="weightForm">
+          <input type="number" id="newWeight" placeholder="Ny vikt (kg)">
+          <button type="submit">Spara</button>
+        </form>
+        <div id="weightHistory"></div>
+        <canvas id="weightChart"></canvas>
+      </div>
+    </section>
 
-    <div id="exerciseHistoryContainer">
-      <h3 id="exerciseTitle"></h3>
-      <div id="exerciseHistory"></div>
-      <canvas id="exerciseChart" width="100%" height="60"></canvas>
-    </div>
-  </section>
+    <!-- Muskelgrupper -->
+    <section id="muskel">
+      <h2>Muskelgrupper</h2>
+    </section>
 
-  <!-- LÄGG TILL ÖVNING -->
-  <section id="ovningar" class="card">
-    <h2>Lägg till träning</h2>
-    <form id="logForm">
-      <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
-      <input type="number" id="weight" name="weight" placeholder="Weight (kg)" required>
-      <input type="number" id="reps" name="reps" placeholder="Reps" required>
-      <input type="text" id="primary" name="primary" placeholder="Primär muskelgrupp" required>
-      <input type="text" id="secondary" name="secondary" placeholder="Sekundär muskelgrupp">
-      <select id="effort" name="effort" required>
-        <option value="" disabled selected>Insats</option>
-        <option value="Lätt">Lätt</option>
-        <option value="Rätt">Rätt</option>
-        <option value="Svår">Svår</option>
-      </select>
-      <button type="submit">Add</button>
-    </form>
+    <!-- NY: Vilotid -->
+    <section id="vilo">
+      <h2>Vilotid</h2>
+      <div class="card">
+        <label>Minuter: <input type="number" id="restMinutes" min="0" max="10" value="0"></label>
+        <label>Sekunder: <input type="number" id="restSeconds" min="0" max="59" value="30"></label>
+        <button onclick="startRestTimer()">Starta</button>
+        <button onclick="stopRestTimer()">Stoppa</button>
+        <div id="restCircle">
+          <span id="restDisplay">00:00</span>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <h3>Träningshistorik</h3>
-    <div id="tableContainer">
-      <p class="empty-message">Laddar poster...</p>
-    </div>
-  </section>
+  <!-- Signatur ovan navbar -->
+  <div class="signature">by Erik Palmér</div>
 
-  <!-- KROPPSVIKT -->
-  <section id="kroppsvikt" class="card">
-    <h2>Kroppsvikt</h2>
-    <p id="latestWeight">Laddar senaste vikt...</p>
+  <!-- NAVBAR -->
+  <nav>
+    <button onclick="showSection('pass', this)" class="active"><img src="assets/icons/dumbbell.png" alt="Pass"></button>
+    <button onclick="showSection('ovningar', this)"><img src="assets/icons/list.png" alt="Övningar"></button>
+    <button onclick="showSection('kroppsvikt', this)"><img src="assets/icons/weight.png" alt="Kroppsvikt"></button>
+    <button onclick="showSection('muskel', this)"><img src="assets/icons/muscle.png" alt="Muskelgrupper"></button>
+    <button onclick="showSection('vilo', this)"><img src="assets/icons/timer.png" alt="Vilotid"></button>
+  </nav>
 
-    <form id="weightForm">
-      <input type="number" id="newWeight" placeholder="Kroppsvikt kg">
-      <button type="submit">Spara vikt</button>
-    </form>
-
-    <h3>Historik</h3>
-    <div id="weightHistory"></div>
-
-    <h3>Graf</h3>
-    <canvas id="weightChart" width="100%" height="60"></canvas>
-  </section>
-<!-- VILOTID -->
-<section id="vilo" class="card">
-  <h2>Vilotid</h2>
-  
-  <label for="restTime">Välj tid (sek):</label>
-  <input type="number" id="restTime" min="10" max="600" value="60" step="10">
-  <button onclick="startRestTimer()">Starta</button>
-
-  <div class="circle-timer">
-    <svg>
-      <circle class="bg" cx="60" cy="60" r="54"></circle>
-      <circle class="progress" cx="60" cy="60" r="54"></circle>
-    </svg>
-    <div id="timerText">60</div>
-  </div>
-</section>
-
-</main>
-
-<!-- Ny text ovanför navbar -->
-<div class="nav-credit">by Erik Palmér</div>
-  
-<!-- NAVIGATION -->
-<nav>
-  <button onclick="showSection('pass', this)" class="active">
-    <img src="assets/icons/pass.png" alt="Pass">
-  </button>
-  <button onclick="showSection('muskel', this)">
-    <img src="assets/icons/muskel.png" alt="Muskel">
-  </button>
-  <button onclick="showSection('ovningar', this)">
-    <img src="assets/icons/add.png" alt="Lägg till">
-  </button>
-  <button onclick="showSection('kroppsvikt', this)">
-    <img src="assets/icons/weight.png" alt="Kroppsvikt">
-  </button>
-  <button onclick="showSection('vilo', this)">
-  <img src="assets/icons/dumbell.png" alt="Vilotid">
-  </button>
-</nav>
-
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/main.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
 </body>
+
 </html>
