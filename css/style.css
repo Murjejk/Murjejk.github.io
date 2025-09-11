@@ -269,7 +269,7 @@ canvas {
   background: rgba(30,30,30,0.85);
   color: #fff;
   font-size: 1rem;
-  width: 140px;           /* 🔹 fast bredd */
+  width: 130px;           /* 🔹 fast bredd */
   text-align: left;     /* 🔹 snyggare inmatning */
 }
 
