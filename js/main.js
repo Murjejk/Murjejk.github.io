@@ -34,9 +34,6 @@ loginBtn.addEventListener("click", () => {
     });
 });
 
-// Google Sheet
-const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
-
 // ==============================
 // Navigering mellan sektioner
 // ==============================
