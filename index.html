@@ -13,15 +13,29 @@
 
 </head>
 <body>
-<div id="loginOverlay">
-  <div class="login-box">
+  <!-- lösenord old
+ <div id="loginOverlay">
+ <div class="login-box">
     <h2>Gym-Log</h2>
     <p>Skriv in lösenord för att fortsätta:</p>
     <input type="password" id="passwordInput" placeholder="Lösenord">
     <button onclick="checkPassword()">Logga in</button>
     <p id="loginError" class="error"></p>
   </div>
-</div>
+</div> 
+  -->
+<section id="login">
+  <h2>Logga in</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Lösenord">
+  <button id="loginBtn">Logga in</button>
+  <p id="loginError" style="color:red"></p>
+</section>
+
+<section id="content" style="display:none;">
+  <!-- Din nuvarande gym-sida här -->
+</section>
+
 
 <header>GYM-LOG</header>
 
