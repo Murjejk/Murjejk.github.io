@@ -538,7 +538,7 @@ function loadPassMenu() {
 // ==============================
 // Initial load
 // ==============================
-loadPassMenu();
-loadData();
-loadLatestWeight();
-loadMuscleGroups();
+//loadPassMenu();
+//loadData();
+//loadLatestWeight();
+//loadMuscleGroups();
