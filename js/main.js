@@ -512,6 +512,18 @@ function checkPassword() {
   }
 }
 
+// Redan inloggad
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("content").style.display = "block";
+  } else {
+    document.getElementById("login").style.display = "block";
+    document.getElementById("content").style.display = "none";
+  }
+});
+
+
 // ==============================
 // Initial load
 // ==============================
