@@ -1,3 +1,17 @@
+// Din Firebase-konfiguration (från Firebase Console -> Projektinställningar)
+const firebaseConfig = {
+  apiKey: "AIzaSyCvrXL_n-YNgtxwXegG0BzkHu9_CJUPiDU",
+  authDomain: "training-d1d9d.firebaseapp.com",
+  projectId: "training-d1d9d",
+  storageBucket: "training-d1d9d.appspot.com",
+  messagingSenderId: "813923749374",
+  appId: "1:813923749374:web:7e301c4970d77893f7c4af"
+};
+
+// Initiera Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+// Google Sheet
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
 // ==============================
