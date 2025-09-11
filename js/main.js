@@ -500,17 +500,6 @@ function loadPassMenu() {
     container.appendChild(card);
   });
 }
-function checkPassword() {
-  const password = "Stark"; // ändra till ditt eget lösenord
-  const input = document.getElementById("passwordInput").value;
-  const error = document.getElementById("loginError");
-
-  if (input === password) {
-    document.getElementById("loginOverlay").style.display = "none"; // göm login
-  } else {
-    error.textContent = "Fel lösenord, försök igen!";
-  }
-}
 
 // Redan inloggad
 auth.onAuthStateChanged(user => {
