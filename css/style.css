@@ -259,6 +259,7 @@ canvas {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  align-items: center;   /* 🔹 centrera allt i kolumnen */
 }
 
 .timer-controls input {
@@ -268,6 +269,8 @@ canvas {
   background: rgba(30,30,30,0.85);
   color: #fff;
   font-size: 1rem;
+  width: 150px;           /* 🔹 fast bredd */
+  text-align: center;     /* 🔹 snyggare inmatning */
 }
 
 .timer-controls button {
@@ -279,6 +282,7 @@ canvas {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  width: 150px;           /* 🔹 samma bredd som input */
 }
 
 .timer-controls button:hover {
