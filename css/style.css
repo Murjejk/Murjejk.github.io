@@ -330,48 +330,61 @@ canvas {
 /* ==============================
    pass
 ============================== */
+/* === Passkort === */
 .pass-card {
-  background: rgba(40, 40, 40, 0.55);
-  border-radius: 8px;
-  padding: 1rem;
+  background: rgba(40, 40, 40, 0.8); /* matcha din övriga design */
+  border-radius: 10px;
   margin-bottom: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  overflow: hidden;
+  border: 1px solid #555;
+  transition: all 0.3s ease;
 }
 
-.pass-card:hover {
-  background: rgba(60, 60, 60, 0.65);
-}
-
-.pass-title {
+/* Header med passnamn */
+.pass-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
+  cursor: pointer;
   color: #fff;
+  background: rgba(60, 60, 60, 0.9);
 }
 
-.arrow {
+/* Pilen */
+.pass-header .arrow {
   transition: transform 0.3s ease;
+  font-size: 1.2rem;
+  color: #ccc;
 }
 
-.pass-card.open .arrow {
-  transform: rotate(180deg);
+/* När kortet är öppet */
+.pass-card.open .pass-header {
+  background: rgba(80, 80, 80, 1);
 }
 
+/* Övningslistan */
 .pass-exercises {
-  display: none;
-  margin-top: 0.5rem;
-  padding-left: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: rgba(30, 30, 30, 0.9);
 }
 
 .pass-exercises li {
-  padding: 0.3rem 0;
-  list-style: none;
-  border-bottom: 1px solid #555;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid #444;
+  cursor: pointer;
   color: #ddd;
+  transition: background 0.2s ease;
 }
 
+.pass-exercises li:hover {
+  background: rgba(100, 100, 100, 0.4);
+  color: #fff;
+}
 
 /* ==============================
    Muscel
