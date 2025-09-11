@@ -1,6 +1,7 @@
 // TOPPEN AV main.js: Importera Firebase Modular SDK-funktioner
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+// Kombinerat import-statement för firebase-auth.js, inklusive signOut
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 // Om du planerar att använda Google Analytics med Firebase
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
 
@@ -120,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginError = document.getElementById("loginError");
   const loginSection = document.getElementById("login");
   const contentSection = document.getElementById("content");
+  const logoutBtn = document.getElementById("logoutBtn"); // Lägg till din nya knapp-referens här
 
   // ==========================
   // LOGIN
@@ -147,6 +149,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================
+  // LOGOUT (NY KOD)
+  // ==========================
+  if (logoutBtn) { // Kontrollera att knappen finns
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        // Logga ut lyckades. onAuthStateChanged kommer att hantera UI-ändringen.
+        console.log("Användare utloggad.");
+      }).catch((error) => {
+        // Ett fel uppstod vid utloggning.
+        console.error("Fel vid utloggning:", error);
+        alert("Ett fel uppstod vid utloggning: " + error.message);
+      });
+    });
+  }
 
   // ==========================
   // Håll användare inloggad / Hantera autentiseringstillstånd
@@ -563,3 +580,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 }); // Slut på DOMContentLoaded
+
