@@ -15,23 +15,57 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// login
+// ==============================
+// Login
+// ==============================
 const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
 
+// Klick på login-knappen
 loginBtn.addEventListener("click", () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
+  loginError.textContent = ""; // rensa tidigare fel
+
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      // Inloggad
-      document.getElementById("login").style.display = "none";
-      document.getElementById("content").style.display = "block";
+      // Inloggad – visa content och göm login-overlay
+      document.getElementById("loginOverlay").style.display = "none";
+      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("content").classList.add("active");
+
+      // Ladda all data
+      loadPassMenu();
+      loadData();
+      loadLatestWeight();
+      loadMuscleGroups();
     })
     .catch((error) => {
+      // Visa felmeddelande
       loginError.textContent = error.message;
     });
+});
+
+// ==============================
+// Håll användaren inloggad vid refresh
+// ==============================
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("loginOverlay").style.display = "none";
+    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+    document.getElementById("content").classList.add("active");
+
+    // Ladda data automatiskt
+    loadPassMenu();
+    loadData();
+    loadLatestWeight();
+    loadMuscleGroups();
+  } else {
+    // Visa login-overlay om ej inloggad
+    document.getElementById("loginOverlay").style.display = "flex";
+    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+  }
 });
 
 // ==============================
