@@ -11,6 +11,26 @@ const firebaseConfig = {
 // Initiera Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+
+// login
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+
+loginBtn.addEventListener("click", () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Inloggad
+      document.getElementById("login").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    })
+    .catch((error) => {
+      loginError.textContent = error.message;
+    });
+});
+
 // Google Sheet
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
