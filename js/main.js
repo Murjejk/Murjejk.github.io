@@ -1,57 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
+
+  // Firebase-konfiguration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCvrXL_n-YNgtxwXegG0BzkHu9_CJUPiDU",
+    authDomain: "training-d1d9d.firebaseapp.com",
+    projectId: "training-d1d9d",
+    storageBucket: "training-d1d9d.appspot.com",
+    messagingSenderId: "813923749374",
+    appId: "1:813923749374:web:7e301c4970d77893f7c4af"
+  };
+
+  // Initiera Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Element
   const loginBtn = document.getElementById("loginBtn");
+  const loginError = document.getElementById("loginError");
+  const loginSection = document.getElementById("login");
+  const contentSection = document.getElementById("content");
+
+  // ==========================
+  // LOGIN
+  // ==========================
   loginBtn.addEventListener("click", () => {
-    console.log("Login clicked");
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    loginError.textContent = "";
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        loginSection.style.display = "none";
+        contentSection.style.display = "block";
+
+        // Ladda data
+        loadPassMenu();
+        loadData();
+        loadLatestWeight();
+        loadMuscleGroups();
+      })
+      .catch(error => {
+        loginError.textContent = error.message;
+      });
   });
-  
-// Google Sheet
-const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
-// Din Firebase-konfiguration (från Firebase Console -> Projektinställningar)
-const firebaseConfig = {
-  apiKey: "AIzaSyCvrXL_n-YNgtxwXegG0BzkHu9_CJUPiDU",
-  authDomain: "training-d1d9d.firebaseapp.com",
-  projectId: "training-d1d9d",
-  storageBucket: "training-d1d9d.appspot.com",
-  messagingSenderId: "813923749374",
-  appId: "1:813923749374:web:7e301c4970d77893f7c4af"
-};
+  // ==========================
+  // Håll användare inloggad
+  // ==========================
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      loginSection.style.display = "none";
+      contentSection.style.display = "block";
 
-// Initiera Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// ==============================
-// Login
-// ==============================
-const loginBtn = document.getElementById("loginBtn");
-const loginError = document.getElementById("loginError");
-
-// Klick på login-knappen
-loginBtn.addEventListener("click", () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  loginError.textContent = ""; // rensa tidigare fel
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // Inloggad – visa content och göm login-overlay
-      document.getElementById("loginOverlay").style.display = "none";
-      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById("content").classList.add("active");
-
-      // Ladda all data
       loadPassMenu();
       loadData();
       loadLatestWeight();
       loadMuscleGroups();
-    })
-    .catch((error) => {
-      // Visa felmeddelande
-      loginError.textContent = error.message;
-    });
-});
+    } else {
+      loginSection.style.display = "block";
+      contentSection.style.display = "none";
+    }
+  });
 
 // ==============================
 // Håll användaren inloggad vid refresh
