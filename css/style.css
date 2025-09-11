@@ -310,8 +310,8 @@ canvas {
 }
 
 .circle-timer circle.progress {
-  stroke: #3b82f6;
-  stroke-linecap: round;
+  stroke: rgba(5, 255, 126,0.6);
+  stroke-linecap: square;
   stroke-dasharray: 339.292; /* 2*PI*radius (54) */
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 0.3s linear;
@@ -322,7 +322,7 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem;
+  font-size: 5rem;
   color: #fff;
   font-weight: bold;
 }
