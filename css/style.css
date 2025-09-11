@@ -259,7 +259,7 @@ canvas {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  align-items: center;   /* 🔹 centrera allt i kolumnen */
+  align-items: left;   /* 🔹 centrera allt i kolumnen */
 }
 
 .timer-controls input {
@@ -270,7 +270,7 @@ canvas {
   color: #fff;
   font-size: 1rem;
   width: 150px;           /* 🔹 fast bredd */
-  text-align: center;     /* 🔹 snyggare inmatning */
+  text-align: left;     /* 🔹 snyggare inmatning */
 }
 
 .timer-controls button {
