@@ -376,26 +376,36 @@ function startRestTimer() {
 function loadPassMenu() {
   const passData = [
     {
-      name: "Bröst, Biceps, Mage",
+      name: "Bröst, Triceps, Mage",
       exercises: [
         { name: "Bänkpress", muscle: "Bröst" },
-        { name: "Bicepscurl", muscle: "Biceps" },
-        { name: "Situps", muscle: "Mage" }
+        { name: "Flyers", muscle: "Bröst" },
+        { name: "Triceps pushdown", muscle: "Triceps" },
+        { name: "Dips assist", muscle: "Triceps" },
+        { name: "Situps", muscle: "Mage" },
+        { name: "Plankan", muscle: "Mage" }
       ]
     },
     {
       name: "Rygg, Triceps, Vader",
       exercises: [
         { name: "Latsdrag", muscle: "Rygg" },
-        { name: "Tricepspress", muscle: "Triceps" },
-        { name: "Tåhävningar", muscle: "Vader" }
+        { name: "Skivstångsrodd", muscle: "Rygg" },
+        { name: "Triceps overhead", muscle: "Triceps" },
+        { name: "Triceps med rep", muscle: "Triceps" },
+        { name: "Tåhävningar", muscle: "Vader" },
+        { name: "Sittande vadpress", muscle: "Vader" }
       ]
     },
     {
-      name: "Axlar, Handleder",
+      name: "Axlar, Handleder, Ben",
       exercises: [
         { name: "Axelpress", muscle: "Axlar" },
-        { name: "Handledscurl", muscle: "Handleder" }
+        { name: "Sidolyft", muscle: "Axlar" },
+        { name: "Handledscurl (framåt)", muscle: "Handleder" },
+        { name: "Handledscurl (bakåt)", muscle: "Handleder" },
+        { name: "Knäböj", muscle: "Ben" },
+        { name: "Utfallssteg", muscle: "Ben" }
       ]
     }
   ];
@@ -414,7 +424,10 @@ function loadPassMenu() {
 
     const exList = document.createElement("ul");
     exList.className = "pass-exercises";
-    exList.style.display = "none"; // göm övningarna först
+    exList.style.height = "0";
+    exList.style.opacity = "0";
+    exList.style.overflow = "hidden";
+    exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
     pass.exercises.forEach(ex => {
       const li = document.createElement("li");
@@ -426,9 +439,28 @@ function loadPassMenu() {
     card.appendChild(exList);
 
     header.addEventListener("click", () => {
+      // Stäng alla andra pass
+      document.querySelectorAll(".pass-card").forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.classList.remove("open");
+          const otherList = otherCard.querySelector(".pass-exercises");
+          otherList.style.height = "0";
+          otherList.style.opacity = "0";
+          otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
+        }
+      });
+
+      // Öppna/stäng det klickade passet
       const isOpen = card.classList.toggle("open");
-      exList.style.display = isOpen ? "block" : "none";
-      header.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
+      if (isOpen) {
+        exList.style.height = exList.scrollHeight + "px";
+        exList.style.opacity = "1";
+        header.querySelector(".arrow").style.transform = "rotate(180deg)";
+      } else {
+        exList.style.height = "0";
+        exList.style.opacity = "0";
+        header.querySelector(".arrow").style.transform = "rotate(0deg)";
+      }
     });
 
     container.appendChild(card);
