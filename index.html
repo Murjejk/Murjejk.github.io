@@ -19,8 +19,6 @@
 <section id="content" style="display:none;">
   <!-- Din nuvarande gym-sida här -->
 
-
-
 <header>GYM-LOG</header>
 
 <main>
@@ -34,13 +32,15 @@
   <!-- MUSKELGRUPP -->
   <section id="muskel" class="card">
     <h2>Muskelgrupper</h2>
-    <ul id="muscleList"></ul>
+    <!-- Du genererar detta dynamiskt, så det är bäst att ta bort den statiska ul:en -->
+    <!-- <ul id="muscleList"></ul> -->
 
-    <div id="exerciseHistoryContainer">
+    <!-- Du genererar dessa element dynamiskt, så det är bäst att ta bort dem härifrån -->
+    <!-- <div id="exerciseHistoryContainer">
       <h3 id="exerciseTitle"></h3>
       <div id="exerciseHistory"></div>
       <canvas id="exerciseChart" width="100%" height="60"></canvas>
-    </div>
+    </div> -->
   </section>
 
   <!-- LÄGG TILL ÖVNING -->
@@ -127,13 +127,15 @@
 </nav>
 </section>
 <!-- SCRIPTS -->
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-auth-compat.js"></script>
+<!-- Firebase SDK - DESSA ÄR BORTTAGNA! -->
+<!-- <script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-app-compat.js"></script> -->
+<!-- <script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-auth-compat.js"></script> -->
+
+<!-- Chart.js är fortfarande externt och oförändrat -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Din app -->
-<script src="js/main.js"></script>
+<!-- Din app - LADDAS NU SOM EN MODUL! -->
+<script type="module" src="js/main.js"></script>
   
 </body>
 </html>
