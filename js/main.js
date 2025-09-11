@@ -370,62 +370,6 @@ function startRestTimer() {
 
   restTimerAnimation = requestAnimationFrame(animate);
 }
-
-function loadPassMenu() {
-  const passContainer = document.getElementById("passContainer");
-  passContainer.innerHTML = "";
-
-  const passData = [
-    {
-      name: "Bröst, Biceps, Mage",
-      exercises: [
-        { name: "Bänkpress", muscle: "Bröst" },
-        { name: "Bicepscurl", muscle: "Biceps" },
-        { name: "Situps", muscle: "Mage" }
-      ]
-    },
-    {
-      name: "Rygg, Triceps, Vader",
-      exercises: [
-        { name: "Latsdrag", muscle: "Rygg" },
-        { name: "Tricepspress", muscle: "Triceps" },
-        { name: "Tåhävningar", muscle: "Vader" }
-      ]
-    },
-    {
-      name: "Axlar, Handleder",
-      exercises: [
-        { name: "Axelpress", muscle: "Axlar" },
-        { name: "Handledscurl", muscle: "Handleder" }
-      ]
-    }
-  ];
-
-  passData.forEach(pass => {
-    const card = document.createElement("div");
-    card.className = "pass-card";
-
-    const header = document.createElement("div");
-    header.className = "pass-header";
-    header.innerHTML = `<span>${pass.name}</span><span>▼</span>`;
-    card.appendChild(header);
-
-    const exList = document.createElement("ul");
-    exList.className = "pass-exercises";
-
-    pass.exercises.forEach(ex => {
-      const li = document.createElement("li");
-      li.textContent = ex.name;
-      li.onclick = () => prefillExercise(ex.name, ex.muscle);
-      exList.appendChild(li);
-    });
-
-    card.appendChild(exList);
-
-    header.addEventListener("click", () => card.classList.toggle("open"));
-    passContainer.appendChild(card);
-  });
-}
 // ==============================
 // Passmeny
 // ==============================
@@ -460,20 +404,34 @@ function loadPassMenu() {
   container.innerHTML = "";
 
   passData.forEach(pass => {
-    const div = document.createElement("div");
-    div.className = "pass-card";
-    div.innerHTML = `<h3>${pass.name}</h3>`;
+    const card = document.createElement("div");
+    card.className = "pass-card";
 
-    const ul = document.createElement("ul");
+    const header = document.createElement("div");
+    header.className = "pass-header";
+    header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
+    card.appendChild(header);
+
+    const exList = document.createElement("ul");
+    exList.className = "pass-exercises";
+    exList.style.display = "none"; // göm övningarna först
+
     pass.exercises.forEach(ex => {
       const li = document.createElement("li");
       li.textContent = ex.name;
       li.onclick = () => prefillExercise(ex.name, ex.muscle);
-      ul.appendChild(li);
+      exList.appendChild(li);
     });
 
-    div.appendChild(ul);
-    container.appendChild(div);
+    card.appendChild(exList);
+
+    header.addEventListener("click", () => {
+      const isOpen = card.classList.toggle("open");
+      exList.style.display = isOpen ? "block" : "none";
+      header.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
+    });
+
+    container.appendChild(card);
   });
 }
 
