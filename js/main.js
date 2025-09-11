@@ -46,20 +46,20 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-    // ==========================
+      // ==========================
   // Håll användare inloggad / Hantera autentiseringstillstånd
   // ==========================
   auth.onAuthStateChanged(user => {
     if (user) {
       // Användaren är inloggad
-      // Dölj login-relaterade element
-      loginSection.style.display = "none";
-      document.getElementById("loginOverlay").style.display = "none"; 
+      // Dölj login-sektionen
+      loginSection.style.display = "none"; // Använder din befintliga loginSection
 
       // Visa innehålls-relaterade element
-      contentSection.style.display = "block"; 
-      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active")); 
-      document.getElementById("content").classList.add("active"); 
+      contentSection.style.display = "block";
+      // Resten av logiken för att hantera 'active' klasser för main sections och content
+      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("content").classList.add("active");
 
       // Ladda all data
       loadPassMenu();
@@ -68,15 +68,15 @@ document.addEventListener("DOMContentLoaded", () => {
       loadMuscleGroups();
     } else {
       // Användaren är utloggad
-      // Visa login-relaterade element
-      loginSection.style.display = "block";
-      document.getElementById("loginOverlay").style.display = "flex"; 
+      // Visa login-sektionen
+      loginSection.style.display = "block"; // Använder din befintliga loginSection
 
       // Dölj innehålls-relaterade element och rensa aktiva sektioner
-      contentSection.style.display = "none"; 
-      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active")); 
+      contentSection.style.display = "none";
+      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
     }
-});
+  });
+
 
 // ==============================
 // Navigering mellan sektioner
