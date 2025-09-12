@@ -224,7 +224,7 @@ canvas:not(#weightChart) {
 
 #weightChartContainer {
   width: 100%;
-  height: 470px;
+  height: 480px;
   overflow-x: auto;
   overflow-y: hidden;
   border: 1px solid #ccc;
