@@ -219,12 +219,12 @@ canvas:not(#weightChart) {
 
 #weightChart {
   width: 1200px !important;
-  height: 380px !important;
+  height: 400px !important;
 }
 
 #weightChartContainer {
   width: 100%;
-  height: 450px;
+  height: 470px;
   overflow-x: auto;
   overflow-y: hidden;
   border: 1px solid #ccc;
