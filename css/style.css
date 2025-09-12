@@ -219,7 +219,7 @@ canvas:not(#weightChart) {
 
 #weightChart {
   width: 1200px !important;
-  height: 400px !important;
+  height: 410px !important;
 }
 
 #weightChartContainer {
