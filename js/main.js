@@ -335,13 +335,13 @@ async function loadLatestWeight() {
             },
             min: minDate,
             max: maxDate,
-            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
+            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
             grid: { color: "rgba(255,255,255,0.8)" }
           },
           y: {
             min: yMin,      // <-- botten
             max: yMax,      // <-- toppen
-            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
+            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
             grid: { color: "rgba(255,255,255,0.8)" }
           }
         }
