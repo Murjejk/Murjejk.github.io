@@ -297,9 +297,9 @@ async function loadLatestWeight() {
     const yMin = baseValue - 10;
     const yMax = baseValue + 30;
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)'); // färg vid linjen
-          gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');    // transparent längst ner
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.clientHeight);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)'); // färg vid linjen
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');    // transparent längst ner
     
     if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
     window.weightChart = new Chart(ctx, {
