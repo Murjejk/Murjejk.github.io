@@ -326,7 +326,7 @@ async function loadLatestWeight() {
           x: {
             type: "time",
             time: {
-              unit: "weeks",
+              unit: "week",
               tooltipFormat: "yyyy-MM-dd"
             },
             min: minDate,
