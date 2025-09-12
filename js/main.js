@@ -296,10 +296,6 @@ async function loadLatestWeight() {
     const baseValue = values[0];
     const yMin = baseValue - 10;
     const yMax = baseValue + 30;
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.clientHeight);
-    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)'); // färg vid linjen
-    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');    // transparent längst ner
     
     if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
     window.weightChart = new Chart(ctx, {
@@ -309,7 +305,7 @@ async function loadLatestWeight() {
           label: 'Kroppsvikt (kg)',
           data: chartData,
           borderColor: '#3b82f6',
-          backgroundColor: gradient,
+          backgroundColor: 'rgba(59, 130, 246, 0.45)',
           pointBackgroundColor: '#fff',
           pointBorderColor: '#3b82f6',
           pointRadius: 3,
