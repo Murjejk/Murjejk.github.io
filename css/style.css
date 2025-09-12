@@ -609,18 +609,31 @@ canvas:not(#weightChart) {
     transform: translateY(0);
   }
 }
-/* Vikt-historik tabell */
-#weightHistory table {
-  border-collapse: collapse;
-  margin: 1rem 0;                /* vänsterställd istället för centrerad */
-  background: rgba(40, 40, 40, 0.8);
-  border: 1px solid #555;
-  border-radius: 8px;
-  overflow: hidden;
-  font-size: 0.85rem;
-  width: auto;
+/* ==============================
+   Vikt-historik container & tabell
+============================== */
+
+/* Container runt tabellen */
+#weightHistory {
+  display: inline-block;                 /* bara runt innehållet */
+  background: rgba(40, 40, 40, 0.8);     /* mörk semitransparent bakgrund */
+  padding: 0.5rem 0.8rem;               /* inre marginal */
+  border-radius: 8px;                    /* rundade hörn */
+  margin: 1rem 0;                        /* vertikalt mellanrum */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* subtil skugga */
 }
 
+/* Tabellen inuti */
+#weightHistory table {
+  border-collapse: collapse;
+  margin: 0 auto;                         /* centrera tabellen i div:en */
+  font-size: 0.85rem;
+  width: auto;                             /* tabellen anpassar bredd efter innehåll */
+  border-radius: 8px;                      /* rundade hörn */
+  overflow: hidden;                        /* klipper hörn och runda kanter */
+}
+
+/* Tabellceller */
 #weightHistory th,
 #weightHistory td {
   padding: 0.6rem 1rem;
@@ -628,12 +641,14 @@ canvas:not(#weightChart) {
   text-align: center;
 }
 
+/* Rubrikrader */
 #weightHistory th {
   background: rgba(60, 60, 60, 0.9);
   font-weight: bold;
   color: #fff;
 }
 
+/* Varannan rad i tabellen */
 #weightHistory tr:nth-child(even) {
   background: rgba(80, 80, 80, 0.4);
 }
@@ -641,3 +656,4 @@ canvas:not(#weightChart) {
 #weightHistory tr:nth-child(odd) {
   background: rgba(60, 60, 60, 0.4);
 }
+
