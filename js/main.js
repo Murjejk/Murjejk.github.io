@@ -292,6 +292,11 @@ async function loadLatestWeight() {
     const minDate = "2025-09-01";
     const maxDate = "2026-01-01";
 
+    // === Nytt: Dynamisk y-axel baserat på första värdet ===
+    const baseValue = values[0];
+    const yMin = baseValue - 10;
+    const yMax = baseValue + 30;
+
     if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
     window.weightChart = new Chart(ctx, {
       type: 'line',
@@ -330,6 +335,8 @@ async function loadLatestWeight() {
             grid: { color: "rgba(255,255,255,0.8)" }
           },
           y: {
+            min: yMin,      // <-- botten
+            max: yMax,      // <-- toppen
             ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
             grid: { color: "rgba(255,255,255,0.8)" }
           }
@@ -342,6 +349,7 @@ async function loadLatestWeight() {
     historyContainer.innerHTML = "";
   }
 }
+
 
   // MUSKELGRUPPER
   async function loadMuscleGroups() {
