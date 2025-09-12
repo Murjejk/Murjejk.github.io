@@ -303,9 +303,9 @@ async function loadLatestWeight() {
           backgroundColor: 'rgba(59, 130, 246, 0.25)',
           pointBackgroundColor: '#fff',
           pointBorderColor: '#3b82f6',
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          borderWidth: 3,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          borderWidth: 2,
           tension: 0.3,
           fill: true
         }]
@@ -440,9 +440,9 @@ async function loadExerciseHistory(muscle, exercise) {
           backgroundColor: 'rgba(246, 234, 59, 0.25)',
           pointBackgroundColor: '#fff',
           pointBorderColor: '#f6ea3b',
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          borderWidth: 3,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          borderWidth: 2,
           tension: 0.3
         }]
       },
