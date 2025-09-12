@@ -290,7 +290,7 @@ async function loadLatestWeight() {
 
     // === Här sätter vi fasta datumgränser ===
     const minDate = "2025-09-01";
-    const maxDate = "2026-03-01";
+    const maxDate = "2026-01-01";
 
     if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
     window.weightChart = new Chart(ctx, {
@@ -436,26 +436,27 @@ async function loadExerciseHistory(muscle, exercise) {
         datasets: [{
           label: exercise,
           data: values,
-          borderColor: '#facc15',                // gul linje
-          backgroundColor: 'rgba(250, 204, 21, 0.25)',
-          pointBackgroundColor: '#fff',          // vit punkt
-          pointBorderColor: '#facc15',           // gul ram
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.25)',
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#3b82f6',
           pointRadius: 5,
           pointHoverRadius: 7,
           borderWidth: 3,
-          tension: 0.3,
-          fill: true
+          tension: 0.3
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            labels: { color: '#fff', font: { size: 14, weight: "bold" } }
-          }
+          legend: { labels: { color: '#fff' } }
         },
         scales: {
           x: {
+            type: 'time',
+            time: { unit: 'week' },
+            min: '2025-09-01',
+            max: '2026-01-01',
             ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
             grid: { color: "rgba(255,255,255,0.1)" }
           },
@@ -467,7 +468,7 @@ async function loadExerciseHistory(muscle, exercise) {
       }
     });
 
-  } catch (err) {
+  } catch(err) {
     container.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
   }
 }
