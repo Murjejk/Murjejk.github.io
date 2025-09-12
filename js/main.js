@@ -299,10 +299,10 @@ async function loadLatestWeight() {
         datasets: [{
           label: 'Kroppsvikt (kg)',
           data: chartData,
-          borderColor: '#3b82f6',
+          borderColor: '#f6ed3b',
           backgroundColor: 'rgba(59, 130, 246, 0.25)',
           pointBackgroundColor: '#fff',
-          pointBorderColor: '#3b82f6',
+          pointBorderColor: '#f6ed3b',
           pointRadius: 5,
           pointHoverRadius: 7,
           borderWidth: 3,
@@ -326,12 +326,12 @@ async function loadLatestWeight() {
             },
             min: minDate,
             max: maxDate,
-            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
-            grid: { color: "rgba(255,255,255,0.1)" }
+            ticks: { color: '#fff', font: { size: 12, weight: "" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
           },
           y: {
-            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
-            grid: { color: "rgba(255,255,255,0.1)" }
+            ticks: { color: '#fff', font: { size: 12, weight: "" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
           }
         }
       }
