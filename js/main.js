@@ -1,7 +1,6 @@
 // TOPPEN AV main.js: Importera Firebase Modular SDK-funktioner
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-// import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
 
 // Firebase-konfiguration
 const firebaseConfig = {
@@ -17,23 +16,16 @@ const firebaseConfig = {
 // Initiera Firebase-app
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-// const analytics = getAnalytics(app);
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
 
-// ==============================================================================
-// GLOBALA FUNKTIONER FÖR HTML
-// ==============================================================================
-
-document.querySelectorAll("#content section").forEach(sec => sec.classList.remove("active"));
-document.getElementById("welcome").classList.add("active");
-
+// Globala funktioner
 window.showSection = function(id, btn) {
   document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 
   document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
 
   if (id === "kroppsvikt") loadLatestWeight();
 };
@@ -54,7 +46,6 @@ window.prefillExercise = function(exercise, muscle) {
 };
 
 let restTimerAnimation;
-
 window.startRestTimer = function() {
   const input = document.getElementById("restTime");
   let totalSeconds = parseInt(input.value);
@@ -103,6 +94,12 @@ window.startRestTimer = function() {
 // ==============================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Visa välkomstmeddelande direkt när sidan är klar
+  document.querySelectorAll("#content section").forEach(sec => sec.classList.remove("active"));
+  const welcomeSection = document.getElementById("welcome");
+  if (welcomeSection) welcomeSection.classList.add("active");
+
+  // Elementreferenser
   const loginBtn = document.getElementById("loginBtn");
   const loginError = document.getElementById("loginError");
   const loginSection = document.getElementById("login");
