@@ -229,7 +229,7 @@ canvas:not(#weightChart) {
   overflow-y: hidden;        
   border: 1px solid #555;     /* lite mörkare än #ccc så den matchar temat */
   background: rgba(20, 20, 20, 0.9); /* mörk bakgrund */
-  border-radius: 2px;        /* rundade hörn för snyggare stil */
+  border-radius: 10px;        /* rundade hörn för snyggare stil */
   padding: 0.5rem;            /* lite space runt grafen */
 }
 
