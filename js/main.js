@@ -32,6 +32,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJE
 // (Eller så bör HTML:en uppdateras för att använda addEventListener i JS)
 // ==============================================================================
 
+// tänd välkomst text.
+document.querySelectorAll("#content section").forEach(sec => sec.classList.remove("active"));
+document.getElementById("welcome").classList.add("active");
+
 // Navigering mellan sektioner
 window.showSection = function(id, btn) {
   document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
