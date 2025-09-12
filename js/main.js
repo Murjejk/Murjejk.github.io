@@ -253,7 +253,7 @@ onAuthStateChanged(auth, user => {
     }
   }
 
-  // KROPPSVIKT - SENASTE
+// KROPPSVIKT - SENASTE
 async function loadLatestWeight() {
   const weightDisplay = document.getElementById("latestWeight");
   const historyContainer = document.getElementById("weightHistory");
@@ -268,7 +268,7 @@ async function loadLatestWeight() {
       return;
     }
 
-    let weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt").slice(-10);
+    let weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt");
     if (weights.length === 0) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
       historyContainer.innerHTML = "";
@@ -283,25 +283,30 @@ async function loadLatestWeight() {
     tableHTML += `</tbody></table>`;
     historyContainer.innerHTML = tableHTML;
 
+    // === Här fixar vi data för tidsaxeln ===
     const labels = weights.map(r => r[6].substring(0,10));
     const values = weights.map(r => parseFloat(r[1]));
+    const chartData = labels.map((d, i) => ({ x: d, y: values[i] }));
+
+    // === Här sätter vi fasta datumgränser ===
+    const minDate = "2025-09-01";
+    const maxDate = "2026-03-01";
 
     if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
     window.weightChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels,
         datasets: [{
           label: 'Kroppsvikt (kg)',
-          data: values,
-          borderColor: '#3b82f6',                 // stark blå linje
+          data: chartData,
+          borderColor: '#3b82f6',
           backgroundColor: 'rgba(59, 130, 246, 0.25)',
-          pointBackgroundColor: '#fff',           // vita punkter
-          pointBorderColor: '#3b82f6',            // blå ram
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#3b82f6',
           pointRadius: 5,
           pointHoverRadius: 7,
           borderWidth: 3,
-          tension: 0.3,                           // mjuk kurva
+          tension: 0.3,
           fill: true
         }]
       },
@@ -309,11 +314,18 @@ async function loadLatestWeight() {
         responsive: true,
         plugins: {
           legend: {
-            labels: { color: '#fff' }             // vit text i legend
+            labels: { color: '#fff' }
           }
         },
         scales: {
           x: {
+            type: "time",
+            time: {
+              unit: "month",
+              tooltipFormat: "yyyy-MM-dd"
+            },
+            min: minDate,
+            max: maxDate,
             ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
             grid: { color: "rgba(255,255,255,0.1)" }
           },
