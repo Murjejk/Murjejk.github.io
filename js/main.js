@@ -299,10 +299,10 @@ async function loadLatestWeight() {
         datasets: [{
           label: 'Kroppsvikt (kg)',
           data: chartData,
-          borderColor: '#f6ed3b',
+          borderColor: '#3b82f6',
           backgroundColor: 'rgba(59, 130, 246, 0.25)',
           pointBackgroundColor: '#fff',
-          pointBorderColor: '#f6ed3b',
+          pointBorderColor: '#3b82f6',
           pointRadius: 5,
           pointHoverRadius: 7,
           borderWidth: 3,
@@ -326,11 +326,11 @@ async function loadLatestWeight() {
             },
             min: minDate,
             max: maxDate,
-            ticks: { color: '#fff', font: { size: 12, weight: "" } },
+            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
             grid: { color: "rgba(255,255,255,0.8)" }
           },
           y: {
-            ticks: { color: '#fff', font: { size: 12, weight: "" } },
+            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
             grid: { color: "rgba(255,255,255,0.8)" }
           }
         }
@@ -436,10 +436,10 @@ async function loadExerciseHistory(muscle, exercise) {
         datasets: [{
           label: exercise,
           data: values,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.25)',
+          borderColor: '#f6ea3b',
+          backgroundColor: 'rgba(246, 234, 59, 0.25)',
           pointBackgroundColor: '#fff',
-          pointBorderColor: '#3b82f6',
+          pointBorderColor: '#f6ea3b',
           pointRadius: 5,
           pointHoverRadius: 7,
           borderWidth: 3,
@@ -457,12 +457,12 @@ async function loadExerciseHistory(muscle, exercise) {
             time: { unit: 'week' },
             min: '2025-09-01',
             max: '2026-01-01',
-            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
-            grid: { color: "rgba(255,255,255,0.1)" }
+            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
           },
           y: {
-            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
-            grid: { color: "rgba(255,255,255,0.1)" }
+            ticks: { color: '#fff', font: { size: 8, weight: "normal" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
           }
         }
       }
