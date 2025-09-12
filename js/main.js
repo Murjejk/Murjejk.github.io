@@ -254,50 +254,82 @@ onAuthStateChanged(auth, user => {
   }
 
   // KROPPSVIKT - SENASTE
-  async function loadLatestWeight() {
-    const weightDisplay = document.getElementById("latestWeight");
-    const historyContainer = document.getElementById("weightHistory");
-    const ctx = document.getElementById("weightChart").getContext("2d");
+async function loadLatestWeight() {
+  const weightDisplay = document.getElementById("latestWeight");
+  const historyContainer = document.getElementById("weightHistory");
+  const ctx = document.getElementById("weightChart").getContext("2d");
 
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      if (!data || data.length <= 1) {
-        weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
-        historyContainer.innerHTML = "";
-        return;
-      }
-
-      let weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt").slice(-10);
-      if (weights.length === 0) {
-        weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
-        historyContainer.innerHTML = "";
-        return;
-      }
-
-      const latest = weights[weights.length - 1];
-      weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
-
-      let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
-      weights.forEach(r => tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td></tr>`);
-      tableHTML += `</tbody></table>`;
-      historyContainer.innerHTML = tableHTML;
-
-      const labels = weights.map(r => r[6].substring(0,10));
-      const values = weights.map(r => parseFloat(r[1]));
-
-      if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
-      window.weightChart = new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets:[{ label:'Kroppsvikt (kg)', data: values, borderColor:'#3b82f6', backgroundColor:'#2563eb55', fill:true }] },
-        options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ ticks:{color:'#ccc', font:{size:10}}}, y:{ticks:{color:'#ccc', font:{size:10}}} } }
-      });
-
-    } catch (err) {
-      weightDisplay.innerText = `Fel vid hämtning av kroppsvikt: ${err}`;
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
       historyContainer.innerHTML = "";
+      return;
     }
+
+    let weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt").slice(-10);
+    if (weights.length === 0) {
+      weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
+      historyContainer.innerHTML = "";
+      return;
+    }
+
+    const latest = weights[weights.length - 1];
+    weightDisplay.innerText = `Senaste kroppsvikt: ${latest[1]} kg (${latest[6].substring(0,10)})`;
+
+    let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
+    weights.forEach(r => tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td></tr>`);
+    tableHTML += `</tbody></table>`;
+    historyContainer.innerHTML = tableHTML;
+
+    const labels = weights.map(r => r[6].substring(0,10));
+    const values = weights.map(r => parseFloat(r[1]));
+
+    if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
+    window.weightChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Kroppsvikt (kg)',
+          data: values,
+          borderColor: '#3b82f6',                 // stark blå linje
+          backgroundColor: 'rgba(59, 130, 246, 0.25)',
+          pointBackgroundColor: '#fff',           // vita punkter
+          pointBorderColor: '#3b82f6',            // blå ram
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 3,
+          tension: 0.3,                           // mjuk kurva
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#fff' }             // vit text i legend
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          },
+          y: {
+            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    weightDisplay.innerText = `Fel vid hämtning av kroppsvikt: ${err}`;
+    historyContainer.innerHTML = "";
   }
+}
 
   // MUSKELGRUPPER
   async function loadMuscleGroups() {
@@ -344,52 +376,89 @@ onAuthStateChanged(auth, user => {
     }
   }
 
-  // HISTORIK PER ÖVNING
-  async function loadExerciseHistory(muscle, exercise) {
-    const containerId = `exerciseHistory-${exercise.replace(/\s/g,"")}`;
-    let container = document.getElementById(containerId);
-    if (!container) {
-      container = document.createElement("div");
-      container.id = containerId;
-      container.className = "exercise-history";
-      document.getElementById("muskel").appendChild(container);
-    }
-    container.innerHTML = `<h4>${exercise} (${muscle})</h4><p>Laddar...</p>`;
-
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
-      if (rows.length === 0) { container.innerHTML = "<p class='empty-message'>Ingen träning loggad ännu.</p>"; return; }
-
-      let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt</th><th>Reps</th></tr></thead><tbody>`;
-      rows.forEach(r => { tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`; });
-      tableHTML += `</tbody></table>`;
-      container.innerHTML = `<h4>${exercise} (${muscle})</h4>` + tableHTML;
-
-      const canvasId = `chart-${exercise.replace(/\s/g,"")}`;
-      let canvas = document.getElementById(canvasId);
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-        canvas.id = canvasId;
-        container.appendChild(canvas);
-      }
-      const ctx = canvas.getContext("2d");
-
-      const labels = rows.map(r => r[6].substring(0,10));
-      const values = rows.map(r => parseFloat(r[1]));
-
-      if (window.exerciseChart) window.exerciseChart.destroy();
-      window.exerciseChart = new Chart(ctx, {
-        type:'line',
-        data:{labels, datasets:[{label:exercise, data:values, borderColor:'#3b82f6', fill:false}]},
-        options:{responsive:true, plugins:{legend:{display:false}}}
-      });
-
-    } catch(err) {
-      container.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
-    }
+// HISTORIK PER ÖVNING
+async function loadExerciseHistory(muscle, exercise) {
+  const containerId = `exerciseHistory-${exercise.replace(/\s/g,"")}`;
+  let container = document.getElementById(containerId);
+  if (!container) {
+    container = document.createElement("div");
+    container.id = containerId;
+    container.className = "exercise-history";
+    document.getElementById("muskel").appendChild(container);
   }
+  container.innerHTML = `<h4>${exercise} (${muscle})</h4><p>Laddar...</p>`;
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
+    if (rows.length === 0) {
+      container.innerHTML = "<p class='empty-message'>Ingen träning loggad ännu.</p>";
+      return;
+    }
+
+    let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt</th><th>Reps</th></tr></thead><tbody>`;
+    rows.forEach(r => {
+      tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`;
+    });
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = `<h4>${exercise} (${muscle})</h4>` + tableHTML;
+
+    const canvasId = `chart-${exercise.replace(/\s/g,"")}`;
+    let canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      canvas.id = canvasId;
+      container.appendChild(canvas);
+    }
+    const ctx = canvas.getContext("2d");
+
+    const labels = rows.map(r => r[6].substring(0,10));
+    const values = rows.map(r => parseFloat(r[1]));
+
+    if (window.exerciseChart) window.exerciseChart.destroy();
+    window.exerciseChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: exercise,
+          data: values,
+          borderColor: '#facc15',                // gul linje
+          backgroundColor: 'rgba(250, 204, 21, 0.25)',
+          pointBackgroundColor: '#fff',          // vit punkt
+          pointBorderColor: '#facc15',           // gul ram
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 3,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#fff', font: { size: 14, weight: "bold" } }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          },
+          y: {
+            ticks: { color: '#fff', font: { size: 12, weight: "bold" } },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    container.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
+  }
+}
 
   // PASSMENY
   function loadPassMenu() {
