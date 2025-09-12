@@ -139,22 +139,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // AUTH STATE
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      loginSection.style.display = "none";
-      contentSection.style.display = "block";
-      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById("content").classList.add("active");
-      loadPassMenu();
-      loadData();
-      loadLatestWeight();
-      loadMuscleGroups();
-    } else {
-      loginSection.style.display = "block";
-      contentSection.style.display = "none";
-      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-    }
-  });
+onAuthStateChanged(auth, user => {
+  if (user) {
+    // Visa innehållet och göm login
+    loginSection.style.display = "none";
+    contentSection.style.display = "block";
+
+    // Rensa aktiva sektioner
+    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+
+    // Visa välkomstmeddelandet
+    const welcomeSection = document.getElementById("welcome");
+    if (welcomeSection) welcomeSection.classList.add("active");
+
+    // Ladda in data och menyer
+    loadPassMenu();
+    loadData();
+    loadLatestWeight();
+    loadMuscleGroups();
+  } else {
+    // Ingen användare → visa login, dölj innehållet
+    loginSection.style.display = "block";
+    contentSection.style.display = "none";
+
+    // Rensa aktiva sektioner
+    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+  }
+});
 
   // LÄGG TILL TRÄNINGSLOGG
   document.getElementById("logForm").addEventListener("submit", async e => {
