@@ -609,3 +609,41 @@ canvas:not(#weightChart) {
     transform: translateY(0);
   }
 }
+/* Vikt-historik tabell */
+#weightHistory table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.8rem;
+  background: rgba(40, 40, 40, 0.7);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+#weightHistory thead {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+#weightHistory th {
+  padding: 0.6rem;
+  text-align: left;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 1px solid #555;
+}
+
+#weightHistory td {
+  padding: 0.6rem;
+  text-align: left;
+  color: #ddd;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#weightHistory tr:nth-child(even) {
+  background: rgba(50, 50, 50, 0.5);
+}
+
+#weightHistory tr:hover {
+  background: rgba(80, 80, 80, 0.6);
+}
