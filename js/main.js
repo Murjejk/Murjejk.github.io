@@ -316,7 +316,7 @@ async function loadLatestWeight() {
         }]
       },
       options: {
-        responsive: true,
+        responsive: false,
         plugins: {
           legend: {
             labels: { color: '#fff' }
