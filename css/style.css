@@ -220,6 +220,8 @@ canvas:not(#weightChart) {
 #weightChart {
   width: 1200px !important;
   height: 100% !important;
+  border-radius: 10px;        /* rundade hörn för snyggare stil */
+  padding: 0.5rem;   
 }
 
 #weightChartContainer {
