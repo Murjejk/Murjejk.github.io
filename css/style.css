@@ -352,155 +352,159 @@ canvas:not(#weightChart) {
 /* ==============================
    pass
 ============================== */
-/* === PASS === */
 .pass-card {
-  background: rgba(40, 40, 40, 0.5);
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  background: rgba(40, 40, 40, 0.85);
+  border-radius: 8px;
+  margin: 1rem 0;
   overflow: hidden;
-  border: 1px solid #555;
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .pass-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: bold;
+  padding: 0.75rem 1rem;
   cursor: pointer;
+  font-weight: bold;
   color: #fff;
-  background: rgba(60, 60, 60, 0.5);
+  background: rgba(60, 60, 60, 0.9);
 }
 
 .pass-header .arrow {
   transition: transform 0.3s ease;
-  font-size: 1.2rem;
-  color: #ccc;
-}
-
-.pass-card.open .pass-header .arrow {
-  transform: rotate(180deg);
 }
 
 .pass-exercises {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: none;
+  background: rgba(50,50,50,0.8);
+  overflow: hidden;
+  transition: height 0.3s ease, opacity 0.3s ease;
 }
 
-.pass-card.open .pass-exercises {
-  display: block;
-}
-
-.muscle-card {
-  border-top: 1px solid #444;
-}
-
-.muscle-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.8rem 1rem;
+.pass-exercises li {
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  color: #ddd;
-  background: rgba(30, 30, 30, 0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  transition: background 0.2s;
 }
 
-.muscle-header:hover {
-  background: rgba(100, 100, 100, 0.3);
+.pass-exercises li:hover {
+  background: rgba(255,255,255,0.1);
 }
 
-.muscle-header .arrow {
+/* Muskelkort */
+.muscle-card {
+  background: rgba(40,40,40,0.85);
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.muscle-card .muscle-title {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.muscle-card .arrow {
+  float: right;
+  margin-right: 1rem;
   transition: transform 0.3s ease;
 }
 
-.muscle-card.open .muscle-header .arrow {
+.muscle-card.open .arrow {
   transform: rotate(180deg);
 }
 
-.exercise-list {
-  display: none;
+.exercises {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: rgba(50,50,50,0.8);
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.exercises li {
   padding: 0.5rem 1rem;
-  background: rgba(20, 20, 20, 0.6);
-}
-
-.muscle-card.open .exercise-list {
-  display: block;
-}
-
-.exercise-list li {
-  padding: 0.4rem 0;
   cursor: pointer;
-  color: #ccc;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
 }
 
-.exercise-list li:hover {
-  color: #3b82f6;
+.exercises li:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Rubrik för sektion */
+#muskel h2 {
+  margin-bottom: 1rem;
+  color: #fff;
 }
 
 /* ==============================
    Muscel
 ============================== */
+/* Muskelkort */
 .muscle-card {
-  background: rgba(60, 60, 60, 0.6);
-  border: 1px solid #555;
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  background: rgba(40,40,40,0.85);
+  border-radius: 8px;
+  margin: 0.5rem 0;
   overflow: hidden;
+  list-style: none;
 }
 
-.muscle-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8rem;
-  font-size: 1.1rem;
-  color: #fff;
-  cursor: pointer;
-  background: rgba(80, 80, 80, 0.8);
-  transition: background 0.2s;
-}
-
-.muscle-header:hover {
-  background: rgba(100, 100, 100, 0.9);
-}
-
-.muscle-header span {
-  font-weight: bold;
-}
-
-.exercise-list {
-  display: none;
-  padding: 0.8rem;
-  background: rgba(40, 40, 40, 0.7);
-}
-
-.exercise-list li {
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #444;
-  font-size: 0.95rem;
-  color: #ccc;
-  cursor: pointer;
-}
-
-.exercise-list li:hover {
-  color: #3b82f6;
-}
-
-.muscle-card.open .exercise-list {
-  display: block;
-}
-.arrow {
-  float: right;
+.muscle-card .muscle-title {
   display: inline-block;
-  transition: transform 0.3s ease; /* mjuk rotation */
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  color: #fff;
 }
 
-/* När kortet är öppet */
+.muscle-card .arrow {
+  float: right;
+  margin-right: 1rem;
+  transition: transform 0.3s ease;
+}
+
 .muscle-card.open .arrow {
   transform: rotate(180deg);
+}
+
+.exercises {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: rgba(50,50,50,0.8);
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.exercises li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.exercises li:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Rubrik för sektion */
+#muskel h2 {
+  margin-bottom: 1rem;
+  color: #fff;
 }
 
 /* === Login overlay === */
