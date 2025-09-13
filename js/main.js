@@ -482,127 +482,67 @@ async function loadExerciseHistory(muscle, exercise) {
 }
 
   // PASSMENY
-function loadPassMenu() {
-  const passData = [
-    {
-      name: "Pass 1: Bröst, Triceps, Mage",
-      muscles: [
-        { name: "Bröst", exercises:["Bänkpress","Flyers"] },
-        { name: "Triceps", exercises:["Triceps pushdown","Dips assist"] },
-        { name: "Mage", exercises:["Situps","Plankan"] }
-      ]
-    },
-     {
-      name: "Pass 2: Rygg, Biceps, Triceps, Vader",
-      muscles: [
-        { name: "Ländrygg", exercises:["Ryggresningar"] },
-        { name: "Rygg Lats", exercises:["Latsdrag","Skivstångsrodd"] },
-        { name: "Rygg Mitt", exercises:["Sittande rodd"] },
-        { name: "Biceps", exercises:["Bicepscurl"] },
-        { name: "Triceps", exercises:["Triceps overhead","Triceps med rep"] },
-        { name: "Vader", exercises:["Tåhävningar","Sittande vadpress"] }
-      ]
-    },
-    {
-      name: "Pass 3: Axlar, Underarmar, Ben",
-      muscles: [
-        { name: "Axlar", exercises:["Axelpress","Sidolyft"] },
-        { name: "Underarmar", exercises:["Handledscurl (framåt)","Handledscurl (bakåt)"] },
-        { name: "Ben", exercises:["Knäböj","Utfallssteg"] }
-      ]
-    }
-  ];
+  function loadPassMenu() {
+    const passData = [
+      { name: "Bröst, Triceps, Mage", exercises:[{ name:"Bänkpress", muscle:"Bröst"},{ name:"Flyers", muscle:"Bröst"},{ name:"Triceps pushdown", muscle:"Triceps"},{ name:"Dips assist", muscle:"Triceps"},{ name:"Situps", muscle:"Mage"},{ name:"Plankan", muscle:"Mage"}] },
+      { name: "Rygg, Triceps, Vader", exercises:[{ name:"Latsdrag", muscle:"Rygg"},{ name:"Skivstångsrodd", muscle:"Rygg"},{ name:"Triceps overhead", muscle:"Triceps"},{ name:"Triceps med rep", muscle:"Triceps"},{ name:"Tåhävningar", muscle:"Vader"},{ name:"Sittande vadpress", muscle:"Vader"}] },
+      { name: "Axlar, Handleder, Ben", exercises:[{ name:"Axelpress", muscle:"Axlar"},{ name:"Sidolyft", muscle:"Axlar"},{ name:"Handledscurl (framåt)", muscle:"Handleder"},{ name:"Handledscurl (bakåt)", muscle:"Handleder"},{ name:"Knäböj", muscle:"Ben"},{ name:"Utfallssteg", muscle:"Ben"}] }
+    ];
 
-  const container = document.getElementById("passList");
-  if (!container) return;
-  container.innerHTML = "";
+    const container = document.getElementById("passList");
+    if (!container) return;
+    container.innerHTML = "";
 
-  passData.forEach(pass => {
-    const card = document.createElement("div");
-    card.className = "pass-card";
+    passData.forEach(pass => {
+      const card = document.createElement("div");
+      card.className = "pass-card";
 
-    // Pass header
-    const header = document.createElement("div");
-    header.className = "pass-header";
-    header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
-    card.appendChild(header);
+      const header = document.createElement("div");
+      header.className = "pass-header";
+      header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
+      card.appendChild(header);
 
-    // Muscle list
-    const muscleList = document.createElement("ul");
-    muscleList.className = "pass-exercises";
-    muscleList.style.height = "0";
-    muscleList.style.opacity = "0";
+      const exList = document.createElement("ul");
+      exList.className = "pass-exercises";
+      exList.style.height = "0";
+      exList.style.opacity = "0";
+      exList.style.overflow = "hidden";
+      exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
-    pass.muscles.forEach(muscle => {
-      const muscleLi = document.createElement("li");
-      muscleLi.className = "muscle-card";
-      muscleLi.innerHTML = `<span class="muscle-title">${muscle.name}</span><span class="arrow">&#9662;</span>`;
-
-      const exerciseUl = document.createElement("ul");
-      exerciseUl.className = "exercises";
-      exerciseUl.style.height = "0";
-      exerciseUl.style.opacity = "0";
-
-      muscle.exercises.forEach(ex => {
-        const exLi = document.createElement("li");
-        exLi.textContent = ex;
-        exLi.onclick = (ev) => { 
-          ev.stopPropagation(); 
-          prefillExercise(ex, muscle.name); 
-        };
-        exerciseUl.appendChild(exLi);
+      pass.exercises.forEach(ex => {
+        const li = document.createElement("li");
+        li.textContent = ex.name;
+        li.onclick = () => prefillExercise(ex.name, ex.muscle);
+        exList.appendChild(li);
       });
 
-      muscleLi.appendChild(exerciseUl);
+      card.appendChild(exList);
 
-      // Klick på muskelkort – stäng andra muskelkort i samma pass
-      muscleLi.onclick = (ev) => {
-        ev.stopPropagation();
-        const isOpen = muscleLi.classList.toggle("open");
-
-        muscleList.querySelectorAll(".muscle-card").forEach(other => {
-          if (other !== muscleLi) {
-            other.classList.remove("open");
-            const exList = other.querySelector(".exercises");
-            exList.style.height = "0";
-            exList.style.opacity = "0";
-            other.querySelector(".arrow").style.transform = "rotate(0deg)";
+      header.addEventListener("click", () => {
+        document.querySelectorAll(".pass-card").forEach(otherCard => {
+          if (otherCard !== card) {
+            otherCard.classList.remove("open");
+            const otherList = otherCard.querySelector(".pass-exercises");
+            otherList.style.height = "0";
+            otherList.style.opacity = "0";
+            otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
           }
         });
 
-        exerciseUl.style.height = isOpen ? exerciseUl.scrollHeight + "px" : "0";
-        exerciseUl.style.opacity = isOpen ? "1" : "0";
-        muscleLi.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
-      };
-
-      muscleList.appendChild(muscleLi);
-    });
-
-    card.appendChild(muscleList);
-
-    // Klick på pass-header
-    header.addEventListener("click", () => {
-      const isOpen = card.classList.toggle("open");
-      header.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
-      muscleList.style.height = isOpen ? muscleList.scrollHeight + "px" : "0";
-      muscleList.style.opacity = isOpen ? "1" : "0";
-
-      // Stäng andra pass
-      document.querySelectorAll(".pass-card").forEach(otherCard => {
-        if (otherCard !== card) {
-          otherCard.classList.remove("open");
-          const otherList = otherCard.querySelector(".pass-exercises");
-          otherList.style.height = "0";
-          otherList.style.opacity = "0";
-          otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
+        const isOpen = card.classList.toggle("open");
+        if (isOpen) {
+          exList.style.height = exList.scrollHeight + "px";
+          exList.style.opacity = "1";
+          header.querySelector(".arrow").style.transform = "rotate(180deg)";
+        } else {
+          exList.style.height = "0";
+          exList.style.opacity = "0";
+          header.querySelector(".arrow").style.transform = "rotate(0deg)";
         }
       });
+
+      container.appendChild(card);
     });
+  }
 
-    container.appendChild(card);
-  });
-}
-
-
-  
 }); // Slut på DOMContentLoaded
