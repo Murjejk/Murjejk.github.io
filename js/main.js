@@ -588,32 +588,4 @@ async function loadPassMenu() {
   });
 }
 
-      card.appendChild(exList);
-
-      header.addEventListener("click", () => {
-        document.querySelectorAll(".pass-card").forEach(otherCard => {
-          if (otherCard !== card) {
-            otherCard.classList.remove("open");
-            const otherList = otherCard.querySelector(".pass-exercises");
-            otherList.style.height = "0";
-            otherList.style.opacity = "0";
-            otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
-          }
-        });
-
-        const isOpen = card.classList.toggle("open");
-        if (isOpen) {
-          exList.style.height = exList.scrollHeight + "px";
-          exList.style.opacity = "1";
-          header.querySelector(".arrow").style.transform = "rotate(180deg)";
-        } else {
-          exList.style.height = "0";
-          exList.style.opacity = "0";
-          header.querySelector(".arrow").style.transform = "rotate(0deg)";
-        }
-      });
-
-      container.appendChild(card);
-    });
-
 }); // Slut på DOMContentLoaded
