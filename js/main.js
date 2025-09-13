@@ -35,14 +35,37 @@ window.toggleExercises = function(el) {
   exercises.style.display = exercises.style.display === "block" ? "none" : "block";
 };
 
-window.prefillExercise = function(exercise, muscle) {
-  document.getElementById("exercise").value = exercise;
-  document.getElementById("primary").value = muscle;
-  document.getElementById("reps").value = 10;
-  document.getElementById("weight").value = "";
-  document.getElementById("effort").value = "Rätt";
+// ================================
+// Fyll i övning med senaste värden
+// ================================
+window.prefillExercise = async function(exercise, muscle) {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
 
-  showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+    // Filtrera poster för samma övning och muskel
+    const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
+
+    // Ta senaste posten
+    const latest = rows.length ? rows[rows.length - 1] : null;
+
+    document.getElementById("exercise").value = exercise;
+    document.getElementById("primary").value = muscle;
+    document.getElementById("reps").value = latest ? latest[2] : 10;
+    document.getElementById("weight").value = latest ? latest[1] : "";
+    document.getElementById("effort").value = latest ? latest[5] : "Rätt";
+
+    showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+  } catch (err) {
+    console.error("Fel vid hämtning av senaste data:", err);
+    // fallback till standardvärden
+    document.getElementById("exercise").value = exercise;
+    document.getElementById("primary").value = muscle;
+    document.getElementById("reps").value = 10;
+    document.getElementById("weight").value = "";
+    document.getElementById("effort").value = "Rätt";
+    showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+  }
 };
 
 let restTimerAnimation;
@@ -481,40 +504,89 @@ async function loadExerciseHistory(muscle, exercise) {
   }
 }
 
-  // PASSMENY
-  function loadPassMenu() {
-    const passData = [
-      { name: "Bröst, Triceps, Mage", exercises:[{ name:"Bänkpress", muscle:"Bröst"},{ name:"Flyers", muscle:"Bröst"},{ name:"Triceps pushdown", muscle:"Triceps"},{ name:"Dips assist", muscle:"Triceps"},{ name:"Situps", muscle:"Mage"},{ name:"Plankan", muscle:"Mage"}] },
-      { name: "Rygg, Triceps, Vader", exercises:[{ name:"Latsdrag", muscle:"Rygg"},{ name:"Skivstångsrodd", muscle:"Rygg"},{ name:"Triceps overhead", muscle:"Triceps"},{ name:"Triceps med rep", muscle:"Triceps"},{ name:"Tåhävningar", muscle:"Vader"},{ name:"Sittande vadpress", muscle:"Vader"}] },
-      { name: "Axlar, Handleder, Ben", exercises:[{ name:"Axelpress", muscle:"Axlar"},{ name:"Sidolyft", muscle:"Axlar"},{ name:"Handledscurl (framåt)", muscle:"Handleder"},{ name:"Handledscurl (bakåt)", muscle:"Handleder"},{ name:"Knäböj", muscle:"Ben"},{ name:"Utfallssteg", muscle:"Ben"}] }
-    ];
+// ================================
+// Ladda passmeny med visuell feedback
+// ================================
+async function loadPassMenu() {
+  const passData = [
+    { name: "Bröst, Triceps, Mage", exercises:[{ name:"Bänkpress", muscle:"Bröst"},{ name:"Flyers", muscle:"Bröst"},{ name:"Triceps pushdown", muscle:"Triceps"},{ name:"Dips assist", muscle:"Triceps"},{ name:"Situps", muscle:"Mage"},{ name:"Plankan", muscle:"Mage"}] },
+    { name: "Rygg, Triceps, Vader", exercises:[{ name:"Latsdrag", muscle:"Rygg"},{ name:"Skivstångsrodd", muscle:"Rygg"},{ name:"Triceps overhead", muscle:"Triceps"},{ name:"Triceps med rep", muscle:"Triceps"},{ name:"Tåhävningar", muscle:"Vader"},{ name:"Sittande vadpress", muscle:"Vader"}] },
+    { name: "Axlar, Handleder, Ben", exercises:[{ name:"Axelpress", muscle:"Axlar"},{ name:"Sidolyft", muscle:"Axlar"},{ name:"Handledscurl (framåt)", muscle:"Handleder"},{ name:"Handledscurl (bakåt)", muscle:"Handleder"},{ name:"Knäböj", muscle:"Ben"},{ name:"Utfallssteg", muscle:"Ben"}] }
+  ];
 
-    const container = document.getElementById("passList");
-    if (!container) return;
-    container.innerHTML = "";
+  const container = document.getElementById("passList");
+  if (!container) return;
+  container.innerHTML = "";
 
-    passData.forEach(pass => {
-      const card = document.createElement("div");
-      card.className = "pass-card";
+  // Hämta data från Sheet en gång
+  let sheetData = [];
+  try {
+    const res = await fetch(API_URL);
+    sheetData = await res.json();
+  } catch (err) {
+    console.error("Fel vid hämtning av Sheet-data för pass:", err);
+  }
 
-      const header = document.createElement("div");
-      header.className = "pass-header";
-      header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
-      card.appendChild(header);
+  const today = new Date().toISOString().split("T")[0];
 
-      const exList = document.createElement("ul");
-      exList.className = "pass-exercises";
-      exList.style.height = "0";
-      exList.style.opacity = "0";
-      exList.style.overflow = "hidden";
-      exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
+  passData.forEach(pass => {
+    const card = document.createElement("div");
+    card.className = "pass-card";
 
-      pass.exercises.forEach(ex => {
-        const li = document.createElement("li");
-        li.textContent = ex.name;
-        li.onclick = () => prefillExercise(ex.name, ex.muscle);
-        exList.appendChild(li);
+    const header = document.createElement("div");
+    header.className = "pass-header";
+    header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
+    card.appendChild(header);
+
+    const exList = document.createElement("ul");
+    exList.className = "pass-exercises";
+    exList.style.height = "0";
+    exList.style.opacity = "0";
+    exList.style.overflow = "hidden";
+    exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
+
+    pass.exercises.forEach(ex => {
+      const li = document.createElement("li");
+      li.textContent = ex.name;
+
+      // ✔ om övningen loggats idag
+      const loggedToday = sheetData.slice(1).some(r => r[0] === ex.name && r[6].startsWith(today));
+      if (loggedToday) li.textContent += " ✔";
+
+      // Klick fyller formulär med senaste värden
+      li.onclick = () => prefillExercise(ex.name, ex.muscle);
+
+      exList.appendChild(li);
+    });
+
+    card.appendChild(exList);
+
+    header.addEventListener("click", () => {
+      document.querySelectorAll(".pass-card").forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.classList.remove("open");
+          const otherList = otherCard.querySelector(".pass-exercises");
+          otherList.style.height = "0";
+          otherList.style.opacity = "0";
+          otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
+        }
       });
+
+      const isOpen = card.classList.toggle("open");
+      if (isOpen) {
+        exList.style.height = exList.scrollHeight + "px";
+        exList.style.opacity = "1";
+        header.querySelector(".arrow").style.transform = "rotate(180deg)";
+      } else {
+        exList.style.height = "0";
+        exList.style.opacity = "0";
+        header.querySelector(".arrow").style.transform = "rotate(0deg)";
+      }
+    });
+
+    container.appendChild(card);
+  });
+}
 
       card.appendChild(exList);
 
