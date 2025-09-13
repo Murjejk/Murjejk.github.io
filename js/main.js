@@ -615,6 +615,5 @@ async function loadPassMenu() {
 
       container.appendChild(card);
     });
-  }
 
 }); // Slut på DOMContentLoaded
