@@ -352,9 +352,9 @@ canvas:not(#weightChart) {
 /* ==============================
    pass
 ============================== */
-/* === Passkort === */
+/* === PASS === */
 .pass-card {
-  background: rgba(40, 40, 40, 0.5); /* matcha din övriga design */
+  background: rgba(40, 40, 40, 0.5);
   border-radius: 10px;
   margin-bottom: 1rem;
   overflow: hidden;
@@ -362,7 +362,6 @@ canvas:not(#weightChart) {
   transition: all 0.3s ease;
 }
 
-/* Header med passnamn */
 .pass-header {
   display: flex;
   justify-content: space-between;
@@ -375,37 +374,70 @@ canvas:not(#weightChart) {
   background: rgba(60, 60, 60, 0.5);
 }
 
-/* Pilen */
 .pass-header .arrow {
   transition: transform 0.3s ease;
   font-size: 1.2rem;
   color: #ccc;
 }
 
-/* När kortet är öppet */
-.pass-card.open .pass-header {
-  background: rgba(80, 80, 80, 0.5);
+.pass-card.open .pass-header .arrow {
+  transform: rotate(180deg);
 }
 
-/* Övningslistan */
 .pass-exercises {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: rgba(30, 30, 30, 0.4);
+  display: none;
 }
 
-.pass-exercises li {
-  padding: 0.8rem 1rem;
+.pass-card.open .pass-exercises {
+  display: block;
+}
+
+.muscle-card {
   border-top: 1px solid #444;
+}
+
+.muscle-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
   cursor: pointer;
   color: #ddd;
-  transition: background 0.2s ease;
+  background: rgba(30, 30, 30, 0.6);
 }
 
-.pass-exercises li:hover {
-  background: rgba(100, 100, 100, 0.4);
-  color: #fff;
+.muscle-header:hover {
+  background: rgba(100, 100, 100, 0.3);
+}
+
+.muscle-header .arrow {
+  transition: transform 0.3s ease;
+}
+
+.muscle-card.open .muscle-header .arrow {
+  transform: rotate(180deg);
+}
+
+.exercise-list {
+  display: none;
+  padding: 0.5rem 1rem;
+  background: rgba(20, 20, 20, 0.6);
+}
+
+.muscle-card.open .exercise-list {
+  display: block;
+}
+
+.exercise-list li {
+  padding: 0.4rem 0;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.exercise-list li:hover {
+  color: #3b82f6;
 }
 
 /* ==============================
