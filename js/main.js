@@ -492,7 +492,7 @@ function loadPassMenu() {
         { name: "Mage", exercises:["Situps","Plankan"] }
       ]
     },
-    {
+     {
       name: "Pass 2: Rygg, Biceps, Triceps, Vader",
       muscles: [
         { name: "Ländrygg", exercises:["Ryggresningar"] },
@@ -527,13 +527,11 @@ function loadPassMenu() {
     header.innerHTML = `<span>${pass.name}</span><span class="arrow">▼</span>`;
     card.appendChild(header);
 
-    // Muscles list
+    // Muscle list
     const muscleList = document.createElement("ul");
-    muscleList.className = "pass-exercises"; // använder samma CSS
+    muscleList.className = "pass-exercises";
     muscleList.style.height = "0";
     muscleList.style.opacity = "0";
-    muscleList.style.overflow = "hidden";
-    muscleList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
     pass.muscles.forEach(muscle => {
       const muscleLi = document.createElement("li");
@@ -542,6 +540,9 @@ function loadPassMenu() {
 
       const exerciseUl = document.createElement("ul");
       exerciseUl.className = "exercises";
+      exerciseUl.style.height = "0";
+      exerciseUl.style.opacity = "0";
+
       muscle.exercises.forEach(ex => {
         const exLi = document.createElement("li");
         exLi.textContent = ex;
@@ -553,9 +554,22 @@ function loadPassMenu() {
       });
 
       muscleLi.appendChild(exerciseUl);
-      muscleLi.onclick = () => {
-        muscleLi.classList.toggle("open");
-        const isOpen = muscleLi.classList.contains("open");
+
+      // Klick på muskelkort – stäng andra muskelkort i samma pass
+      muscleLi.onclick = (ev) => {
+        ev.stopPropagation();
+        const isOpen = muscleLi.classList.toggle("open");
+
+        muscleList.querySelectorAll(".muscle-card").forEach(other => {
+          if (other !== muscleLi) {
+            other.classList.remove("open");
+            const exList = other.querySelector(".exercises");
+            exList.style.height = "0";
+            exList.style.opacity = "0";
+            other.querySelector(".arrow").style.transform = "rotate(0deg)";
+          }
+        });
+
         exerciseUl.style.height = isOpen ? exerciseUl.scrollHeight + "px" : "0";
         exerciseUl.style.opacity = isOpen ? "1" : "0";
         muscleLi.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
@@ -566,7 +580,7 @@ function loadPassMenu() {
 
     card.appendChild(muscleList);
 
-    // Klick på pass header
+    // Klick på pass-header
     header.addEventListener("click", () => {
       const isOpen = card.classList.toggle("open");
       header.querySelector(".arrow").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
@@ -588,6 +602,7 @@ function loadPassMenu() {
     container.appendChild(card);
   });
 }
+
 
   
 }); // Slut på DOMContentLoaded
