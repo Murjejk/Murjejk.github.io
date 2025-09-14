@@ -546,15 +546,20 @@ async function loadPassMenu() {
     exList.style.overflow = "hidden";
     exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
-    // Loop genom muskelgrupper i passet
     pass.muscles.forEach(muscle => {
       // Hämta alla övningar med denna muskel
       const exercises = sheetData.slice(1).filter(r => r[3] === muscle);
 
+      const seen = new Set(); // Dublett-filter
+
       exercises.forEach(ex => {
+        if (seen.has(ex[0])) return; // hoppa om redan lagt till
+        seen.add(ex[0]);
+
         const li = document.createElement("li");
 
-        const latest = exercises.slice(-1)[0]; // senaste logg för vikt/reps
+        // Senaste logg
+        const latest = exercises.filter(e => e[0] === ex[0]).slice(-1)[0];
 
         li.innerHTML = `${ex[0]}${latest ? ` (${latest[1]} kg)` : ''}`;
 
@@ -562,7 +567,7 @@ async function loadPassMenu() {
         const loggedToday = sheetData.slice(1).some(r => r[0] === ex[0] && r[6].startsWith(today));
         if (loggedToday) li.innerHTML += " ✔";
 
-        // Klick fyller formulär med senaste värden
+        // Klick fyller formulär
         li.onclick = () => prefillExercise(ex[0], muscle);
 
         // Snabbloggning-knapp
@@ -616,10 +621,7 @@ async function loadPassMenu() {
   });
 }
 
-
-// =================================
 // Hjälpfunktion för snabb-loggning
-// =================================
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
   const today = new Date().toISOString().split("T")[0];
   const formData = new FormData();
@@ -642,6 +644,5 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
     alert("Fel vid snabb-loggning: " + err);
   }
 }
-
   
 }); // Slut på DOMContentLoaded
