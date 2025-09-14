@@ -548,11 +548,17 @@ async function loadPassMenu() {
 
     pass.exercises.forEach(ex => {
       const li = document.createElement("li");
-      li.textContent = ex.name;
+
+      // Hämta senaste logg
+      const rows = sheetData.slice(1).filter(r => r[0] === ex.name && r[3] === ex.muscle);
+      const latest = rows.length ? rows[rows.length - 1] : null;
+
+      // Text: övningsnamn + senast loggade vikt
+      li.innerHTML = `${ex.name}${latest ? ` (${latest[1]} kg)` : ''}`;
 
       // ✔ om övningen loggats idag
       const loggedToday = sheetData.slice(1).some(r => r[0] === ex.name && r[6].startsWith(today));
-      if (loggedToday) li.textContent += " ✔";
+      if (loggedToday) li.innerHTML += " ✔";
 
       // Klick fyller formulär med senaste värden
       li.onclick = () => prefillExercise(ex.name, ex.muscle);
@@ -560,19 +566,9 @@ async function loadPassMenu() {
       // === SNABBLOGGNING-knapp ===
       const quickBtn = document.createElement("button");
       quickBtn.textContent = "+";
-      quickBtn.style.marginLeft = "8px";
-      quickBtn.style.padding = "2px 6px";
-      quickBtn.style.border = "none";
-      quickBtn.style.borderRadius = "4px";
-      quickBtn.style.cursor = "pointer";
-      quickBtn.style.background = "#3b82f6";
-      quickBtn.style.color = "#fff";
+      quickBtn.className = "quick-log-btn"; // CSS-klass
       quickBtn.onclick = async (ev) => {
-        ev.stopPropagation(); // Förhindra li.onclick
-
-        // Hämta senaste logg
-        const rows = sheetData.slice(1).filter(r => r[0] === ex.name && r[3] === ex.muscle);
-        const latest = rows.length ? rows[rows.length - 1] : null;
+        ev.stopPropagation();
 
         await logExercise(
           ex.name,
@@ -582,8 +578,8 @@ async function loadPassMenu() {
           latest ? latest[5] : "Rätt"
         );
 
-        // Markera som loggad idag
-        li.textContent = ex.name + " ✔";
+        // Uppdatera text & append knapp igen
+        li.innerHTML = `${ex.name} (${latest ? latest[1] : 10} kg) ✔`;
         li.appendChild(quickBtn);
       };
 
@@ -645,5 +641,6 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
     alert("Fel vid snabb-loggning: " + err);
   }
 }
+
   
 }); // Slut på DOMContentLoaded
