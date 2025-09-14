@@ -525,9 +525,9 @@ async function loadPassMenu() {
   const today = new Date().toISOString().split("T")[0];
 
   const passData = [
-    { name: "Pass 1", muscles: ["Bröst", "Triceps", "Mage"] },
-    { name: "Pass 2", muscles: ["Rygg", "Triceps", "Vader"] },
-    { name: "Pass 3", muscles: ["Axlar", "Handleder", "Ben"] }
+    { name: "Pass 1, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
+    { name: "Pass 2, Rygg Biceps, Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Triceps", "Vader"] },
+    { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Underarmar", "Ben"] }
   ];
 
   passData.forEach(pass => {
