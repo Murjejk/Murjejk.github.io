@@ -701,5 +701,55 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
     alert("Fel vid snabb-loggning: " + err);
   }
 }
+
+//======================
+async function loadTrainingHistory() {
+  const container = document.getElementById("trainingHistoryTable");
+  container.innerHTML = "<p>Laddar...</p>";
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      container.innerHTML = "<p class='empty-message'>Ingen träningshistorik finns.</p>";
+      return;
+    }
+
+    // Sortera nyaste först
+    const rows = data.slice(1).sort((a,b) => new Date(b[6]) - new Date(a[6]));
+
+    let tableHTML = `<table>
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Övning</th>
+          <th>Vikt (kg)</th>
+          <th>Reps</th>
+          <th>Primär muskelgrupp</th>
+          <th>Sekundär muskelgrupp</th>
+          <th>Insats</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    rows.forEach(row => {
+      tableHTML += `<tr>
+        <td>${row[6].substring(0,10)}</td>
+        <td>${row[0]}</td>
+        <td>${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+        <td>${row[4]}</td>
+        <td>${row[5]}</td>
+      </tr>`;
+    });
+
+    tableHTML += "</tbody></table>";
+    container.innerHTML = tableHTML;
+
+  } catch (err) {
+    container.innerHTML = `<p class="empty-message">Fel vid hämtning av träningshistorik: ${err}</p>`;
+  }
+}
   
 }); // Slut på DOMContentLoaded
