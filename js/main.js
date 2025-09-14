@@ -529,8 +529,7 @@ async function loadPassMenu() {
     { name: "Pass 2, Rygg Biceps, Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Triceps", "Vader"] },
     { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Underarmar", "Ben"] }
   ];
-
-  passData.forEach(pass => {
+passData.forEach(pass => {
     const card = document.createElement("div");
     card.className = "pass-card";
 
@@ -550,40 +549,42 @@ async function loadPassMenu() {
       // Hämta alla övningar med denna muskel
       const exercises = sheetData.slice(1).filter(r => r[3] === muscle);
 
-      const seen = new Set(); // Dublett-filter
+      // Gruppera per övning → ta senaste logg
+      const exerciseMap = {};
+      exercises.forEach(r => {
+        const name = r[0];
+        const date = new Date(r[6]);
+        if (!exerciseMap[name] || new Date(exerciseMap[name][6]) < date) {
+          exerciseMap[name] = r; // behåll senaste raden
+        }
+      });
 
-      exercises.forEach(ex => {
-        if (seen.has(ex[0])) return; // hoppa om redan lagt till
-        seen.add(ex[0]);
+      // Gör array av senaste loggar och sortera efter datum (nyaste först)
+      const uniqueExercises = Object.values(exerciseMap).sort((a, b) => {
+        return new Date(b[6]) - new Date(a[6]);
+      });
 
+      uniqueExercises.forEach(ex => {
         const li = document.createElement("li");
 
-        // Senaste logg
-        const latest = exercises.filter(e => e[0] === ex[0]).slice(-1)[0];
-
-        li.innerHTML = `${ex[0]}${latest ? ` (${latest[1]} kg)` : ''}`;
+        // ex[0] = namn, ex[1] = vikt, ex[2] = reps, ex[5] = effort, ex[6] = datum
+        li.innerHTML = `${ex[0]}${ex[1] ? ` (${ex[1]} kg)` : ''}`;
 
         // ✔ om övningen loggats idag
-        const loggedToday = sheetData.slice(1).some(r => r[0] === ex[0] && r[6].startsWith(today));
+        const loggedToday = ex[6].startsWith(today);
         if (loggedToday) li.innerHTML += " ✔";
 
         // Klick fyller formulär
         li.onclick = () => prefillExercise(ex[0], muscle);
 
-        // Snabbloggning-knapp
+        // Snabb-loggning-knapp
         const quickBtn = document.createElement("button");
         quickBtn.textContent = "+";
         quickBtn.className = "quick-log-btn";
         quickBtn.onclick = async (ev) => {
           ev.stopPropagation();
-          await logExercise(
-            ex[0],
-            muscle,
-            latest ? latest[1] : 10,
-            latest ? latest[2] : 10,
-            latest ? latest[5] : "Rätt"
-          );
-          li.innerHTML = `${ex[0]} (${latest ? latest[1] : 10} kg) ✔`;
+          await logExercise(ex[0], muscle, ex[1] || 10, ex[2] || 10, ex[5] || "Rätt");
+          li.innerHTML = `${ex[0]} (${ex[1] || 10} kg) ✔`;
           li.appendChild(quickBtn);
         };
 
@@ -620,6 +621,7 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
+
 
 // Hjälpfunktion för snabb-loggning
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
