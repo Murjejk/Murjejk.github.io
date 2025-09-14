@@ -522,14 +522,16 @@ async function loadPassMenu() {
     console.error("Fel vid hämtning av Sheet-data för pass:", err);
   }
 
-  const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
+  // Uppdaterad passData
   const passData = [
     { name: "Pass 1, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
     { name: "Pass 2, Rygg Biceps, Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Triceps", "Vader"] },
     { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Underarmar", "Ben"] }
   ];
-passData.forEach(pass => {
+
+  passData.forEach(pass => {
     const card = document.createElement("div");
     card.className = "pass-card";
 
@@ -546,38 +548,32 @@ passData.forEach(pass => {
     exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
     pass.muscles.forEach(muscle => {
-      // Hämta alla övningar med denna muskel
-      const exercises = sheetData.slice(1).filter(r => r[3] === muscle);
+      const exercises = sheetData.slice(1).filter(r => r[3]?.trim().toLowerCase() === muscle.toLowerCase());
 
-      // Gruppera per övning → ta senaste logg
       const exerciseMap = {};
       exercises.forEach(r => {
         const name = r[0];
         const date = new Date(r[6]);
         if (!exerciseMap[name] || new Date(exerciseMap[name][6]) < date) {
-          exerciseMap[name] = r; // behåll senaste raden
+          exerciseMap[name] = r;
         }
       });
 
-      // Gör array av senaste loggar och sortera efter datum (nyaste först)
       const uniqueExercises = Object.values(exerciseMap).sort((a, b) => {
-        return new Date(b[6]) - new Date(a[6]);
+        const diff = new Date(b[6]).getTime() - new Date(a[6]).getTime();
+        if (diff !== 0) return diff;
+        return a[0].localeCompare(b[0]);
       });
 
       uniqueExercises.forEach(ex => {
         const li = document.createElement("li");
-
-        // ex[0] = namn, ex[1] = vikt, ex[2] = reps, ex[5] = effort, ex[6] = datum
         li.innerHTML = `${ex[0]}${ex[1] ? ` (${ex[1]} kg)` : ''}`;
 
-        // ✔ om övningen loggats idag
-        const loggedToday = ex[6].startsWith(today);
-        if (loggedToday) li.innerHTML += " ✔";
+        const logDate = new Date(ex[6]).toISOString().split("T")[0];
+        if (logDate === today) li.innerHTML += " ✔";
 
-        // Klick fyller formulär
         li.onclick = () => prefillExercise(ex[0], muscle);
 
-        // Snabb-loggning-knapp
         const quickBtn = document.createElement("button");
         quickBtn.textContent = "+";
         quickBtn.className = "quick-log-btn";
@@ -621,6 +617,7 @@ passData.forEach(pass => {
     container.appendChild(card);
   });
 }
+//===========================
 
 // Hjälpfunktion för snabb-loggning
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
