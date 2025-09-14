@@ -595,7 +595,7 @@ async function loadPassMenu() {
     let exercises = [];
     pass.muscles.forEach(muscle => {
       const muscleExercises = allData.slice(1)
-        .filter(r => r[3].trim() === muscle)
+        .filter(r => r[3].trim().toLowerCase() === muscle.trim().toLowerCase())
         .map(r => ({
           name: r[0].trim(),
           muscle: muscle,
@@ -634,7 +634,13 @@ async function loadPassMenu() {
       const spanName = document.createElement("span");
       spanName.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
       spanName.style.cursor = "pointer";
-      spanName.onclick = () => prefillExercise(ex.name, ex.muscle);
+
+      // 🔹 Stoppa bubbla och fyll formulär
+      spanName.onclick = (ev) => {
+        ev.stopPropagation();  // Viktigt!
+        prefillExercise(ex.name, ex.muscle || "Okänd");
+      };
+
       li.appendChild(spanName);
 
       const plusBtn = document.createElement("button");
@@ -642,7 +648,7 @@ async function loadPassMenu() {
       plusBtn.className = "quick-log-btn";
       plusBtn.onclick = (e) => {
         e.stopPropagation();
-        logExercise(ex.name, ex.muscle);
+        logExercise(ex.name, ex.muscle || "Okänd");
       };
       li.appendChild(plusBtn);
 
@@ -651,6 +657,7 @@ async function loadPassMenu() {
 
     card.appendChild(exList);
 
+    // Expand / collapse av passkort
     header.addEventListener("click", () => {
       document.querySelectorAll(".pass-card").forEach(otherCard => {
         if (otherCard !== card) {
@@ -677,6 +684,7 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
+
   
 //===========================
 
