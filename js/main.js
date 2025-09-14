@@ -38,19 +38,24 @@ window.toggleExercises = function(el) {
 // ================================
 // Fyll i övning med senaste värden
 // ================================
+// Fyll i övning med senaste värden
 window.prefillExercise = async function(exercise, muscle) {
+  console.log("prefillExercise triggas:", { exercise, muscle });
+
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    // Filtrera poster för samma övning och muskel
-    const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
+    // Filtrera poster för samma övning och muskel (case-insensitivt)
+    const rows = data.slice(1).filter(r => 
+      r[0].trim() === exercise &&
+      r[3].trim().toLowerCase() === muscle.trim().toLowerCase()
+    );
 
-    // Sortera nyaste först
-    rows.sort((a, b) => new Date(b[6]) - new Date(a[6]));
+    console.log("Hittade rader från Sheet:", rows);
 
-    // Ta senaste posten (första efter sortering)
-    const latest = rows.length ? rows[0] : null;
+    // Ta senaste posten
+    const latest = rows.length ? rows[rows.length - 1] : null;
 
     document.getElementById("exercise").value = exercise;
     document.getElementById("primary").value = muscle;
@@ -58,18 +63,38 @@ window.prefillExercise = async function(exercise, muscle) {
     document.getElementById("weight").value = latest ? latest[1] : "";
     document.getElementById("effort").value = latest ? latest[5] : "Rätt";
 
-    showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+    console.log("Formulär ifyllt:", {
+      exercise: document.getElementById("exercise").value,
+      primary: document.getElementById("primary").value,
+      reps: document.getElementById("reps").value,
+      weight: document.getElementById("weight").value,
+      effort: document.getElementById("effort").value
+    });
+
+    // Navigera till "Lägg till övning"-sektionen
+    const navBtn = document.querySelector("nav button[onclick*='ovningar']");
+    if (navBtn) {
+      showSection("ovningar", navBtn);
+      console.log("Navigerade till 'ovningar'-sektionen.");
+    } else {
+      console.warn("Kunde inte hitta navigationsknappen för 'ovningar'.");
+    }
+
   } catch (err) {
     console.error("Fel vid hämtning av senaste data:", err);
+
     // fallback till standardvärden
     document.getElementById("exercise").value = exercise;
     document.getElementById("primary").value = muscle;
     document.getElementById("reps").value = 10;
     document.getElementById("weight").value = "";
     document.getElementById("effort").value = "Rätt";
-    showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
+
+    const navBtn = document.querySelector("nav button[onclick*='ovningar']");
+    if (navBtn) showSection("ovningar", navBtn);
   }
 };
+
 
 let restTimerAnimation;
 window.startRestTimer = function() {
