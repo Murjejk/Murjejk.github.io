@@ -17,7 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwAbdw8V5QgEKYGt95VNKJEy0v-bWOl772Aos1HN_Tx3gpdq75WXWsQm6YR4IXB8YGe/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzFZ3ymxhjkWPX3yj4il_O3wWrXkEwUlGXfFx3jBj4YtRtIIiDJX-WrVYn8CrX0AFOS/exec";
 
 // Globala funktioner
 window.showSection = function(id, btn) {
