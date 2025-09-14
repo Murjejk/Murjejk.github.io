@@ -631,36 +631,38 @@ async function loadPassMenu() {
       return new Date(b.latestDate) - new Date(a.latestDate);
     });
 
-    // Rendera övningar
+    // Rendera övningar med hela raden klickbar
     uniqueExercises.forEach(ex => {
       const li = document.createElement("li");
+      li.style.cursor = "pointer"; // hela raden känns klickbar
 
+      // Text
       const spanName = document.createElement("span");
       spanName.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
-      spanName.style.cursor = "pointer";
-
-      spanName.onclick = (ev) => {
-        ev.stopPropagation();  // Viktigt
-        console.log("Klick på övning:", ex.name, ex.muscle);
-        prefillExercise(ex.name, ex.muscle || "Okänd");
-      };
-
       li.appendChild(spanName);
 
+      // "+" knapp för snabb-loggning
       const plusBtn = document.createElement("button");
       plusBtn.textContent = "+";
       plusBtn.className = "quick-log-btn";
       plusBtn.onclick = (e) => {
-        e.stopPropagation();
+        e.stopPropagation(); // hindra li-click
         logExercise(ex.name, ex.muscle || "Okänd");
       };
       li.appendChild(plusBtn);
+
+      // Klick på hela raden fyller formuläret
+      li.onclick = (ev) => {
+        ev.stopPropagation();
+        prefillExercise(ex.name, ex.muscle || "Okänd");
+      };
 
       exList.appendChild(li);
     });
 
     card.appendChild(exList);
 
+    // Expand / collapse av passkort
     header.addEventListener("click", () => {
       document.querySelectorAll(".pass-card").forEach(otherCard => {
         if (otherCard !== card) {
