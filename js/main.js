@@ -68,6 +68,7 @@ window.prefillExercise = async function(exercise, muscle) {
   }
 };
 
+
 let restTimerAnimation;
 window.startRestTimer = function() {
   const input = document.getElementById("restTime");
@@ -587,5 +588,5 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
-
+  
 }); // Slut på DOMContentLoaded
