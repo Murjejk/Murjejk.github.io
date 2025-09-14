@@ -567,20 +567,27 @@ async function loadPassMenu() {
 
       uniqueExercises.forEach(ex => {
         const li = document.createElement("li");
-        li.innerHTML = `${ex[0]}${ex[1] ? ` (${ex[1]} kg)` : ''}`;
 
-        const logDate = new Date(ex[6]).toISOString().split("T")[0];
-        if (logDate === today) li.innerHTML += " ✔";
+        // Formatera datum som YYYY-MM-DD
+        const lastDate = new Date(ex[6]).toISOString().split("T")[0];
 
+        // Visa namn, vikt och datum
+        li.innerHTML = `${ex[0]}${ex[1] ? ` (${ex[1]} kg)` : ''} (${lastDate})`;
+
+        // ✔ om loggad idag
+        if (lastDate === today) li.innerHTML += " ✔";
+
+        // Klick fyller formulär
         li.onclick = () => prefillExercise(ex[0], muscle);
 
+        // Snabb-logg-knapp
         const quickBtn = document.createElement("button");
         quickBtn.textContent = "+";
         quickBtn.className = "quick-log-btn";
         quickBtn.onclick = async (ev) => {
           ev.stopPropagation();
           await logExercise(ex[0], muscle, ex[1] || 10, ex[2] || 10, ex[5] || "Rätt");
-          li.innerHTML = `${ex[0]} (${ex[1] || 10} kg) ✔`;
+          li.innerHTML = `${ex[0]} (${ex[1] || 10} kg) (${today}) ✔`;
           li.appendChild(quickBtn);
         };
 
@@ -591,6 +598,7 @@ async function loadPassMenu() {
 
     card.appendChild(exList);
 
+    // Expand/collapse funktion
     header.addEventListener("click", () => {
       document.querySelectorAll(".pass-card").forEach(otherCard => {
         if (otherCard !== card) {
@@ -617,6 +625,7 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
+
 //===========================
 
 // Hjälpfunktion för snabb-loggning
