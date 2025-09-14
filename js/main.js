@@ -530,25 +530,28 @@ async function loadPassMenu() {
   if (!container) return;
   container.innerHTML = "";
 
-  // Hämta Sheet-data
-  let sheetData = [];
-  try {
-    const res = await fetch(API_URL);
-    sheetData = await res.json();
-  } catch (err) {
-    console.error("Fel vid hämtning av Sheet-data för pass:", err);
-  }
-
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-
-  // Uppdaterad passData
-  const passData = [
+  // Hårdkodade pass med muskelgrupper
+  const passes = [
     { name: "Pass 1, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
-    { name: "Pass 2, Rygg Biceps, Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Triceps", "Vader"] },
-    { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Underarmar", "Ben"] }
+    { name: "Pass 2, Rygg Biceps Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Biceps", "Vader"] },
+    { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Ben", "Underarmar"] }
   ];
 
-  passData.forEach(pass => {
+  let allData = [];
+  try {
+    const res = await fetch(API_URL);
+    allData = await res.json();
+    if (!allData || allData.length <= 1) {
+      container.innerHTML = `<p class="empty-message">Ingen träningsdata hittades.</p>`;
+      return;
+    }
+  } catch (err) {
+    console.error("Fel vid hämtning av träningsdata för passmenyn:", err);
+    container.innerHTML = `<p class="empty-message">Fel vid hämtning av träningsdata.</p>`;
+    return;
+  }
+
+  passes.forEach(pass => {
     const card = document.createElement("div");
     card.className = "pass-card";
 
@@ -564,58 +567,54 @@ async function loadPassMenu() {
     exList.style.overflow = "hidden";
     exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
+    // Hämta övningar från Sheet som matchar muskelgrupper
+    let exercises = [];
     pass.muscles.forEach(muscle => {
-      const exercises = sheetData.slice(1).filter(r => r[3]?.trim().toLowerCase() === muscle.toLowerCase());
+      const muscleExercises = allData.slice(1)
+        .filter(r => r[3].trim() === muscle)
+        .map(r => ({
+          name: r[0].trim(),
+          muscle: muscle,
+          latestDate: r[6] ? r[6].substring(0,10) : null,
+          latestWeight: r[1] || null
+        }));
+      exercises = exercises.concat(muscleExercises);
+    });
 
-      const exerciseMap = {};
-      exercises.forEach(r => {
-        const name = r[0];
-        const date = new Date(r[6]);
-        if (!exerciseMap[name] || new Date(exerciseMap[name][6]) < date) {
-          exerciseMap[name] = r;
+    // Ta bort dubletter, behåll senaste loggen
+    const uniqueExercisesMap = {};
+    exercises.forEach(ex => {
+      if (!uniqueExercisesMap[ex.name]) {
+        uniqueExercisesMap[ex.name] = ex;
+      } else {
+        // Om flera loggar finns, behåll den med senaste datum
+        if (ex.latestDate && (!uniqueExercisesMap[ex.name].latestDate || new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
+          uniqueExercisesMap[ex.name] = ex;
         }
-      });
+      }
+    });
 
-      const uniqueExercises = Object.values(exerciseMap).sort((a, b) => {
-        const diff = new Date(b[6]).getTime() - new Date(a[6]).getTime();
-        if (diff !== 0) return diff;
-        return a[0].localeCompare(b[0]);
-      });
+    let uniqueExercises = Object.values(uniqueExercisesMap);
 
-      uniqueExercises.forEach(ex => {
-        const li = document.createElement("li");
+    // Sortera: senaste datum först, övningar utan datum längst ner
+    uniqueExercises.sort((a,b) => {
+      if (!a.latestDate && !b.latestDate) return 0;
+      if (!a.latestDate) return 1;
+      if (!b.latestDate) return -1;
+      return new Date(b.latestDate) - new Date(a.latestDate);
+    });
 
-        // Formatera datum som YYYY-MM-DD
-        const lastDate = new Date(ex[6]).toISOString().split("T")[0];
-
-        // Visa namn, vikt och datum
-        li.innerHTML = `${ex[0]}${ex[1] ? ` (${ex[1]} kg)` : ''} (${lastDate})`;
-
-        // ✔ om loggad idag
-        if (lastDate === today) li.innerHTML += " ✔";
-
-        // Klick fyller formulär
-        li.onclick = () => prefillExercise(ex[0], muscle);
-
-        // Snabb-logg-knapp
-        const quickBtn = document.createElement("button");
-        quickBtn.textContent = "+";
-        quickBtn.className = "quick-log-btn";
-        quickBtn.onclick = async (ev) => {
-          ev.stopPropagation();
-          await logExercise(ex[0], muscle, ex[1] || 10, ex[2] || 10, ex[5] || "Rätt");
-          li.innerHTML = `${ex[0]} (${ex[1] || 10} kg) (${today}) ✔`;
-          li.appendChild(quickBtn);
-        };
-
-        li.appendChild(quickBtn);
-        exList.appendChild(li);
-      });
+    // Rendera övningar
+    uniqueExercises.forEach(ex => {
+      const li = document.createElement("li");
+      li.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
+      li.onclick = () => prefillExercise(ex.name, ex.muscle);
+      exList.appendChild(li);
     });
 
     card.appendChild(exList);
 
-    // Expand/collapse funktion
+    // Expandera/kollapsa passkort
     header.addEventListener("click", () => {
       document.querySelectorAll(".pass-card").forEach(otherCard => {
         if (otherCard !== card) {
