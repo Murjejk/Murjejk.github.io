@@ -251,31 +251,41 @@ onAuthStateChanged(auth, user => {
   });
 
   // HÄMTA DATA
-  async function loadData() {
-    const container = document.getElementById("tableContainer");
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      if (!data || data.length <= 1) {
-        container.innerHTML = `<p class="empty-message">Inga träningsposter ännu.</p>`;
-        return;
-      }
-      let tableHTML = `<table><thead><tr>
-        <th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th>Primär muskelgrupp</th><th>Sekundär muskelgrupp</th><th>Insats</th><th>Date</th>
-      </tr></thead><tbody>`;
-
-      data.slice(1).forEach(row => {
-        tableHTML += `<tr>
-          <td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td><td>${row[6]}</td>
-        </tr>`;
-      });
-
-      tableHTML += `</tbody></table>`;
-      container.innerHTML = tableHTML;
-    } catch (err) {
-      container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
+async function loadData() {
+  const container = document.getElementById("tableContainer");
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      container.innerHTML = `<p class="empty-message">Inga träningsposter ännu.</p>`;
+      return;
     }
+
+    // Sortera på datum (även om datum innehåller tid)
+    const rows = data.slice(1).sort((a, b) => new Date(a[6]) - new Date(b[6]));
+
+    let tableHTML = `<table><thead><tr>
+      <th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th>Primär muskelgrupp</th><th>Sekundär muskelgrupp</th><th>Insats</th><th>Date</th>
+    </tr></thead><tbody>`;
+
+    rows.forEach(row => {
+      tableHTML += `<tr>
+        <td>${row[0]}</td>
+        <td>${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+        <td>${row[4]}</td>
+        <td>${row[5]}</td>
+        <td>${row[6].substring(0,10)}</td>
+      </tr>`;
+    });
+
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = tableHTML;
+  } catch (err) {
+    container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
   }
+}
 
 // KROPPSVIKT - SENASTE
 async function loadLatestWeight() {
@@ -435,7 +445,10 @@ async function loadExerciseHistory(muscle, exercise) {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
+    const rows = data.slice(1)
+                     .filter(r => r[0] === exercise && r[3] === muscle)
+                     .sort((a, b) => new Date(a[6]) - new Date(b[6])); // sortera
+
     if (rows.length === 0) {
       container.innerHTML = "<p class='empty-message'>Ingen träning loggad ännu.</p>";
       return;
@@ -443,7 +456,11 @@ async function loadExerciseHistory(muscle, exercise) {
 
     let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt</th><th>Reps</th></tr></thead><tbody>`;
     rows.forEach(r => {
-      tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`;
+      tableHTML += `<tr>
+        <td>${r[6].substring(0,10)}</td>
+        <td>${r[1]}</td>
+        <td>${r[2]}</td>
+      </tr>`;
     });
     tableHTML += `</tbody></table>`;
     container.innerHTML = `<h4>${exercise} (${muscle})</h4>` + tableHTML;
