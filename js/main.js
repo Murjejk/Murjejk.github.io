@@ -196,7 +196,7 @@ onAuthStateChanged(auth, user => {
   // LÄGG TILL TRÄNINGSLOGG
   document.getElementById("logForm").addEventListener("submit", async e => {
     e.preventDefault();
-    const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const formData = new FormData();
     formData.append("exercise", document.getElementById("exercise").value);
     formData.append("weight", document.getElementById("weight").value);
@@ -225,7 +225,7 @@ onAuthStateChanged(auth, user => {
     const newWeight = document.getElementById("newWeight").value;
     if (!newWeight) return alert("Ange en vikt!");
 
-    const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const params = new URLSearchParams();
     params.append("exercise", "Kroppsvikt");
     params.append("weight", newWeight);
@@ -452,7 +452,7 @@ async function loadData() {
         <td>${row[3]}</td>
         <td>${row[4]}</td>
         <td>${row[5]}</td>
-        <td>${row[6].substring(0,10)}</td>
+        <td>${row[6]}</td>
       </tr>`;
     });
 
@@ -681,8 +681,7 @@ async function loadPassMenu() {
 // Hjälpfunktion för snabb-loggning
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
   // Format: YYYY/MM/DD (text)
-  const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
-
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   const formData = new FormData();
   formData.append("exercise", name);
   formData.append("weight", weight);
