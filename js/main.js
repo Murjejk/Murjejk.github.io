@@ -194,7 +194,7 @@ onAuthStateChanged(auth, user => {
   // LÄGG TILL TRÄNINGSLOGG
   document.getElementById("logForm").addEventListener("submit", async e => {
     e.preventDefault();
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
     const formData = new FormData();
     formData.append("exercise", document.getElementById("exercise").value);
     formData.append("weight", document.getElementById("weight").value);
@@ -223,7 +223,7 @@ onAuthStateChanged(auth, user => {
     const newWeight = document.getElementById("newWeight").value;
     if (!newWeight) return alert("Ange en vikt!");
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
     const params = new URLSearchParams();
     params.append("exercise", "Kroppsvikt");
     params.append("weight", newWeight);
@@ -522,7 +522,7 @@ async function loadPassMenu() {
     console.error("Fel vid hämtning av Sheet-data för pass:", err);
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
 
   const passData = [
     { name: "Pass 1, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
@@ -622,10 +622,11 @@ passData.forEach(pass => {
   });
 }
 
-
 // Hjälpfunktion för snabb-loggning
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
-  const today = new Date().toISOString().split("T")[0];
+  // Format: YYYY/MM/DD (text)
+  const today = new Date().toISOString().split("T")[0].replace(/-/g, "/");
+
   const formData = new FormData();
   formData.append("exercise", name);
   formData.append("weight", weight);
