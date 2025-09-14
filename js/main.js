@@ -46,8 +46,11 @@ window.prefillExercise = async function(exercise, muscle) {
     // Filtrera poster för samma övning och muskel
     const rows = data.slice(1).filter(r => r[0] === exercise && r[3] === muscle);
 
-    // Ta senaste posten
-    const latest = rows.length ? rows[rows.length - 1] : null;
+    // Sortera nyaste först
+    rows.sort((a, b) => new Date(b[6]) - new Date(a[6]));
+
+    // Ta senaste posten (första efter sortering)
+    const latest = rows.length ? rows[0] : null;
 
     document.getElementById("exercise").value = exercise;
     document.getElementById("primary").value = muscle;
@@ -67,7 +70,6 @@ window.prefillExercise = async function(exercise, muscle) {
     showSection("ovningar", document.querySelector("nav button[onclick*='ovningar']"));
   }
 };
-
 
 let restTimerAnimation;
 window.startRestTimer = function() {
