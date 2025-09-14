@@ -181,6 +181,8 @@ onAuthStateChanged(auth, user => {
     loadData();
     loadLatestWeight();
     loadMuscleGroups();
+    loadTrainingHistory();
+    
   } else {
     // Ingen användare → visa login, dölj innehållet
     loginSection.style.display = "block";
