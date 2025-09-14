@@ -519,7 +519,7 @@ async function loadPassMenu() {
   if (!container) return;
   container.innerHTML = "";
 
-  // Hämta data från Sheet en gång
+  // Hämta Sheet-data en gång
   let sheetData = [];
   try {
     const res = await fetch(API_URL);
@@ -557,6 +557,37 @@ async function loadPassMenu() {
       // Klick fyller formulär med senaste värden
       li.onclick = () => prefillExercise(ex.name, ex.muscle);
 
+      // === SNABBLOGGNING-knapp ===
+      const quickBtn = document.createElement("button");
+      quickBtn.textContent = "+";
+      quickBtn.style.marginLeft = "8px";
+      quickBtn.style.padding = "2px 6px";
+      quickBtn.style.border = "none";
+      quickBtn.style.borderRadius = "4px";
+      quickBtn.style.cursor = "pointer";
+      quickBtn.style.background = "#3b82f6";
+      quickBtn.style.color = "#fff";
+      quickBtn.onclick = async (ev) => {
+        ev.stopPropagation(); // Förhindra li.onclick
+
+        // Hämta senaste logg
+        const rows = sheetData.slice(1).filter(r => r[0] === ex.name && r[3] === ex.muscle);
+        const latest = rows.length ? rows[rows.length - 1] : null;
+
+        await logExercise(
+          ex.name,
+          ex.muscle,
+          latest ? latest[1] : 10,
+          latest ? latest[2] : 10,
+          latest ? latest[5] : "Rätt"
+        );
+
+        // Markera som loggad idag
+        li.textContent = ex.name + " ✔";
+        li.appendChild(quickBtn);
+      };
+
+      li.appendChild(quickBtn);
       exList.appendChild(li);
     });
 
@@ -587,6 +618,32 @@ async function loadPassMenu() {
 
     container.appendChild(card);
   });
+}
+
+// =================================
+// Hjälpfunktion för snabb-loggning
+// =================================
+async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
+  const today = new Date().toISOString().split("T")[0];
+  const formData = new FormData();
+  formData.append("exercise", name);
+  formData.append("weight", weight);
+  formData.append("reps", reps);
+  formData.append("primary", muscle);
+  formData.append("secondary", "");
+  formData.append("effort", effort);
+  formData.append("date", today);
+
+  try {
+    const response = await fetch(API_URL, { method: "POST", body: formData });
+    const result = await response.json();
+    if (result.status === "success") {
+      loadData();         // Uppdatera träningshistorik
+      loadMuscleGroups(); // Uppdatera muskelgrupper
+    } else alert("Kunde inte spara snabb-loggningen.");
+  } catch (err) {
+    alert("Fel vid snabb-loggning: " + err);
+  }
 }
   
 }); // Slut på DOMContentLoaded
