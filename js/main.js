@@ -38,7 +38,6 @@ window.toggleExercises = function(el) {
 // ================================
 // Fyll i övning med senaste värden
 // ================================
-// Fyll i övning med senaste värden
 window.prefillExercise = async function(exercise, muscle) {
   console.log("prefillExercise triggas:", { exercise, muscle });
 
@@ -46,15 +45,10 @@ window.prefillExercise = async function(exercise, muscle) {
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    // Filtrera poster för samma övning och muskel (case-insensitivt)
     const rows = data.slice(1).filter(r => 
       r[0].trim() === exercise &&
       r[3].trim().toLowerCase() === muscle.trim().toLowerCase()
     );
-
-    console.log("Hittade rader från Sheet:", rows);
-
-    // Ta senaste posten
     const latest = rows.length ? rows[rows.length - 1] : null;
 
     document.getElementById("exercise").value = exercise;
@@ -70,29 +64,20 @@ window.prefillExercise = async function(exercise, muscle) {
       weight: document.getElementById("weight").value,
       effort: document.getElementById("effort").value
     });
-
-    // Navigera till "Lägg till övning"-sektionen
-    const navBtn = document.querySelector("nav button[onclick*='ovningar']");
-    if (navBtn) {
-      showSection("ovningar", navBtn);
-      console.log("Navigerade till 'ovningar'-sektionen.");
-    } else {
-      console.warn("Kunde inte hitta navigationsknappen för 'ovningar'.");
-    }
-
-  } catch (err) {
+  } catch(err) {
     console.error("Fel vid hämtning av senaste data:", err);
 
-    // fallback till standardvärden
     document.getElementById("exercise").value = exercise;
     document.getElementById("primary").value = muscle;
     document.getElementById("reps").value = 10;
     document.getElementById("weight").value = "";
     document.getElementById("effort").value = "Rätt";
-
-    const navBtn = document.querySelector("nav button[onclick*='ovningar']");
-    if (navBtn) showSection("ovningar", navBtn);
   }
+
+  // Navigera till "ovningar" sektionen
+  const navBtn = document.getElementById("btnOvningar");
+  if (navBtn) showSection("ovningar", navBtn);
+  else console.warn("Kunde inte hitta navigationsknappen för 'ovningar'.");
 };
 
 
@@ -616,7 +601,7 @@ async function loadPassMenu() {
     exList.style.overflow = "hidden";
     exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
-    // Hämta övningar från Sheet som matchar muskelgrupper
+    // Hämta övningar från Sheet
     let exercises = [];
     pass.muscles.forEach(muscle => {
       const muscleExercises = allData.slice(1)
@@ -630,29 +615,23 @@ async function loadPassMenu() {
       exercises = exercises.concat(muscleExercises);
     });
 
-    // Ta bort dubletter, behåll senaste loggen
+    // Ta bort dubletter
     const uniqueExercisesMap = {};
     exercises.forEach(ex => {
-      if (!uniqueExercisesMap[ex.name]) {
+      if (!uniqueExercisesMap[ex.name]) uniqueExercisesMap[ex.name] = ex;
+      else if (ex.latestDate && (!uniqueExercisesMap[ex.name].latestDate || new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
         uniqueExercisesMap[ex.name] = ex;
-      } else {
-        if (ex.latestDate && (!uniqueExercisesMap[ex.name].latestDate || new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
-          uniqueExercisesMap[ex.name] = ex;
-        }
       }
     });
 
-    let uniqueExercises = Object.values(uniqueExercisesMap);
-
-    // Sortera: nyaste först, övningar utan datum längst ner
-    uniqueExercises.sort((a,b) => {
+    const uniqueExercises = Object.values(uniqueExercisesMap).sort((a,b) => {
       if (!a.latestDate && !b.latestDate) return 0;
       if (!a.latestDate) return 1;
       if (!b.latestDate) return -1;
       return new Date(b.latestDate) - new Date(a.latestDate);
     });
 
-    // Rendera övningar med snabb-loggning "+"
+    // Rendera övningar
     uniqueExercises.forEach(ex => {
       const li = document.createElement("li");
 
@@ -660,9 +639,9 @@ async function loadPassMenu() {
       spanName.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
       spanName.style.cursor = "pointer";
 
-      // 🔹 Stoppa bubbla och fyll formulär
       spanName.onclick = (ev) => {
-        ev.stopPropagation();  // Viktigt!
+        ev.stopPropagation();  // Viktigt
+        console.log("Klick på övning:", ex.name, ex.muscle);
         prefillExercise(ex.name, ex.muscle || "Okänd");
       };
 
@@ -682,7 +661,6 @@ async function loadPassMenu() {
 
     card.appendChild(exList);
 
-    // Expand / collapse av passkort
     header.addEventListener("click", () => {
       document.querySelectorAll(".pass-card").forEach(otherCard => {
         if (otherCard !== card) {
@@ -709,7 +687,6 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
-
   
 //===========================
 
