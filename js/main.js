@@ -181,7 +181,7 @@ onAuthStateChanged(auth, user => {
     loadData();
     loadLatestWeight();
     loadMuscleGroups();
-    loadTrainingHistory();
+    loadRawTrainingHistory();
     
   } else {
     // Ingen användare → visa login, dölj innehållet
@@ -705,53 +705,47 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
 }
 
 //======================
-async function loadTrainingHistory() {
+async function loadRawTrainingHistory() {
   const container = document.getElementById("trainingHistoryTable");
-  container.innerHTML = "<p>Laddar...</p>";
+  if (!container) return;
+
+  container.innerHTML = "<p>Laddar rådata...</p>";
 
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    if (!data || data.length <= 1) {
-      container.innerHTML = "<p class='empty-message'>Ingen träningshistorik finns.</p>";
+
+    if (!data || data.length === 0) {
+      container.innerHTML = "<p class='empty-message'>Ingen data hittades.</p>";
       return;
     }
 
-    // Sortera nyaste först
-    const rows = data.slice(1).sort((a,b) => new Date(b[6]) - new Date(a[6]));
-
+    // Visa alla rader exakt som de returneras, inklusive rubriker
     let tableHTML = `<table>
-      <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Övning</th>
-          <th>Vikt (kg)</th>
-          <th>Reps</th>
-          <th>Primär muskelgrupp</th>
-          <th>Sekundär muskelgrupp</th>
-          <th>Insats</th>
-        </tr>
-      </thead>
-      <tbody>`;
+      <thead><tr>`;
 
-    rows.forEach(row => {
-      tableHTML += `<tr>
-        <td>${row[6].substring(0,10)}</td>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-        <td>${row[4]}</td>
-        <td>${row[5]}</td>
-      </tr>`;
+    // Rubrikrad
+    data[0].forEach(header => {
+      tableHTML += `<th>${header}</th>`;
+    });
+    tableHTML += `</tr></thead><tbody>`;
+
+    // Alla övriga rader
+    data.slice(1).forEach(row => {
+      tableHTML += `<tr>`;
+      row.forEach(cell => {
+        tableHTML += `<td>${cell}</td>`;
+      });
+      tableHTML += `</tr>`;
     });
 
-    tableHTML += "</tbody></table>";
+    tableHTML += `</tbody></table>`;
     container.innerHTML = tableHTML;
 
   } catch (err) {
-    container.innerHTML = `<p class="empty-message">Fel vid hämtning av träningshistorik: ${err}</p>`;
+    container.innerHTML = `<p class='empty-message'>Fel vid hämtning av data: ${err}</p>`;
   }
 }
+
   
 }); // Slut på DOMContentLoaded
