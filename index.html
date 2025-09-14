@@ -63,35 +63,34 @@
   </section>
 
   <!-- LÄGG TILL ÖVNING -->
-  <section id="ovningar" class="card">
-    <h2>Lägg till träning</h2>
-    <form id="logForm">
-      <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
-      <input type="number" id="weight" name="weight" placeholder="Weight (kg)" required>
-      <input type="number" id="reps" name="reps" placeholder="Reps" required>
-      <input type="text" id="primary" name="primary" placeholder="Primär muskelgrupp" required>
-      <input type="text" id="secondary" name="secondary" placeholder="Sekundär muskelgrupp">
-      <select id="effort" name="effort" required>
-        <option value="" disabled selected>Insats</option>
-        <option value="Lätt">Lätt</option>
-        <option value="Rätt">Rätt</option>
-        <option value="Svår">Svår</option>
-      </select>
-      <button type="submit">Add</button>
-    </form>
+<section id="ovningar" class="card">
+  <h2>Lägg till träning</h2>
+  <form id="logForm">
+    <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
+    <input type="number" id="weight" name="weight" placeholder="Weight (kg)" required>
+    <input type="number" id="reps" name="reps" placeholder="Reps" required>
+    <input type="text" id="primary" name="primary" placeholder="Primär muskelgrupp" required>
+    <input type="text" id="secondary" name="secondary" placeholder="Sekundär muskelgrupp">
+    <select id="effort" name="effort" required>
+      <option value="" disabled selected>Insats</option>
+      <option value="Lätt">Lätt</option>
+      <option value="Rätt">Rätt</option>
+      <option value="Svår">Svår</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
 
-    <h3>Träningshistorik</h3>
-    <div id="tableContainer">
-      <p class="empty-message">Laddar poster...</p>
-    </div>
-    <div id="trainingHistoryContainer" class="card">
-  <h3>Träningshistorik felsökning</h3>
-  <div id="trainingHistoryTable">
-    <p>Laddar...</p>
+  <h3>Träningslogg</h3>
+  <div id="tableContainer">
+    <p class="empty-message">Laddar poster...</p>
   </div>
-</div>
 
-  </section>
+  <h3>Träningshistorik</h3>
+  <div id="trainingHistoryContainer" class="card">
+    <div id="trainingHistoryTable"></div>
+  </div>
+</section>
+
   
   <!-- KROPPSVIKT -->
 <section id="kroppsvikt" class="card">
