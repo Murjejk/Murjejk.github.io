@@ -587,7 +587,6 @@ async function loadPassMenu() {
       if (!uniqueExercisesMap[ex.name]) {
         uniqueExercisesMap[ex.name] = ex;
       } else {
-        // Om flera loggar finns, behåll den med senaste datum
         if (ex.latestDate && (!uniqueExercisesMap[ex.name].latestDate || new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
           uniqueExercisesMap[ex.name] = ex;
         }
@@ -604,11 +603,26 @@ async function loadPassMenu() {
       return new Date(b.latestDate) - new Date(a.latestDate);
     });
 
-    // Rendera övningar
+    // Rendera övningar med namn och "+"-knapp
     uniqueExercises.forEach(ex => {
       const li = document.createElement("li");
-      li.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
-      li.onclick = () => prefillExercise(ex.name, ex.muscle);
+
+      const spanName = document.createElement("span");
+      spanName.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
+      spanName.style.cursor = "pointer";
+      spanName.onclick = () => prefillExercise(ex.name, ex.muscle);
+      li.appendChild(spanName);
+
+      // Skapa "+"-knappen med CSS-klassen .quick-log-btn
+      const plusBtn = document.createElement("button");
+      plusBtn.textContent = "+";
+      plusBtn.className = "quick-log-btn";
+      plusBtn.onclick = (e) => {
+        e.stopPropagation(); // Förhindra att spanName.onclick triggas
+        logExercise(ex.name, ex.muscle); // snabb-loggning med standardvärden
+      };
+      li.appendChild(plusBtn);
+
       exList.appendChild(li);
     });
 
@@ -641,6 +655,7 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
+
 
 //===========================
 
