@@ -165,7 +165,6 @@ onAuthStateChanged(auth, user => {
     loadData();
     loadLatestWeight();
     loadMuscleGroups();
-    loadRawTrainingHistory();
     
   } else {
     // Ingen användare → visa login, dölj innehållet
@@ -668,8 +667,9 @@ async function loadPassMenu() {
 }
   
 //===========================
-
 // Hjälpfunktion för snabb-loggning
+//===========================
+  
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
   // Format: YYYY/MM/DD (text)
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
@@ -691,49 +691,6 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
     } else alert("Kunde inte spara snabb-loggningen.");
   } catch (err) {
     alert("Fel vid snabb-loggning: " + err);
-  }
-}
-
-//======================
-async function loadRawTrainingHistory() {
-  const container = document.getElementById("trainingHistoryTable");
-  if (!container) return;
-
-  container.innerHTML = "<p>Laddar rådata...</p>";
-
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-
-    if (!data || data.length === 0) {
-      container.innerHTML = "<p class='empty-message'>Ingen data hittades.</p>";
-      return;
-    }
-
-    // Visa alla rader exakt som de returneras, inklusive rubriker
-    let tableHTML = `<table>
-      <thead><tr>`;
-
-    // Rubrikrad
-    data[0].forEach(header => {
-      tableHTML += `<th>${header}</th>`;
-    });
-    tableHTML += `</tr></thead><tbody>`;
-
-    // Alla övriga rader
-    data.slice(1).forEach(row => {
-      tableHTML += `<tr>`;
-      row.forEach(cell => {
-        tableHTML += `<td>${cell}</td>`;
-      });
-      tableHTML += `</tr>`;
-    });
-
-    tableHTML += `</tbody></table>`;
-    container.innerHTML = tableHTML;
-
-  } catch (err) {
-    container.innerHTML = `<p class='empty-message'>Fel vid hämtning av data: ${err}</p>`;
   }
 }
 
