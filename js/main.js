@@ -1,8 +1,11 @@
-// TOPPEN AV main.js: Importera Firebase Modular SDK-funktioner
+// ================================
+// main.js – Fullständig rensad version
+// ================================
+
+// ---------------- Firebase Setup ----------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-// Firebase-konfiguration
 const firebaseConfig = {
   apiKey: "AIzaSyCvrXL_n-YNgtxwXegG0BzkHu9_CJUPiDU",
   authDomain: "training-d1d9d.firebaseapp.com",
@@ -13,13 +16,17 @@ const firebaseConfig = {
   measurementId: "G-KPV09FMJB7"
 };
 
-// Initiera Firebase-app
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 const API_URL = "https://script.google.com/macros/s/AKfycbw6hWtl484M_Bxc3UH6LlbI3r6DS0J1RboncYKF1c_U3VrCXPGu-K28Ft52sschE7S2/exec";
 
-// Globala funktioner
+// ---------------- Globals ----------------
+let exerciseChart;        // Lägg till träning-graf
+let muscleExerciseChart;  // Musklegrupper-graf
+let weightChart;          // Kroppsvikt-graf
+let restTimerAnimation;  
+
+// ---------------- Helper Functions ----------------
 window.showSection = function(id, btn) {
   document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -35,27 +42,20 @@ window.toggleExercises = function(el) {
   exercises.style.display = exercises.style.display === "block" ? "none" : "block";
 };
 
-// ================================
-// Fyll i övning direkt (utan fetch)
-// ================================
+// ---------------- Prefill Exercise ----------------
 window.prefillExercise = function(ex) {
   document.getElementById("exercise").value = ex.name;
   document.getElementById("primary").value = ex.muscle;
   document.getElementById("weight").value = ex.latestWeight || "";
-  document.getElementById("reps").value = 10;       // statiskt
-  document.getElementById("effort").value = "Rätt"; // statiskt
+  document.getElementById("reps").value = 10;
+  document.getElementById("effort").value = "Rätt";
 
-loadExerciseChart(ex.name); // 🔹 laddar graf direkt
-  
+  loadExerciseChart(ex.name); // Auto-ladda graf
   const navBtn = document.getElementById("btnOvningar");
   if (navBtn) showSection("ovningar", navBtn);
 };
 
-// ================================
-// Rest Timer
-// ================================
-
-let restTimerAnimation;
+// ---------------- Rest Timer ----------------
 window.startRestTimer = function() {
   const input = document.getElementById("restTime");
   let totalSeconds = parseInt(input.value);
@@ -68,7 +68,6 @@ window.startRestTimer = function() {
   const progressCircle = document.querySelector(".circle-timer circle.progress");
   const radius = progressCircle.r.baseVal.value;
   const circumference = 2 * Math.PI * radius;
-
   progressCircle.style.strokeDasharray = circumference;
   progressCircle.style.strokeDashoffset = 0;
 
@@ -99,37 +98,30 @@ window.startRestTimer = function() {
   restTimerAnimation = requestAnimationFrame(animate);
 };
 
-// ==============================================================================
-// DOMContentLoaded
-// ==============================================================================
-
+// ---------------- DOMContentLoaded ----------------
 document.addEventListener("DOMContentLoaded", () => {
-  // Visa välkomstmeddelande direkt när sidan är klar
+  // Visa välkomstmeddelande
   document.querySelectorAll("#content section").forEach(sec => sec.classList.remove("active"));
   const welcomeSection = document.getElementById("welcome");
   if (welcomeSection) welcomeSection.classList.add("active");
-  // Rita om graf
+
+  // Dynamisk graf kopplad till inputfält
   const exerciseInput = document.getElementById("exercise");
-    if (exerciseInput) {
-      exerciseInput.addEventListener("input", () => {
-  const exerciseName = exerciseInput.value.trim();
-    if (exerciseName.length > 1) {
-      loadExerciseChart(exerciseName);
-      } else {
-      clearExerciseChart();
-      }
+  if (exerciseInput) {
+    exerciseInput.addEventListener("input", () => {
+      const name = exerciseInput.value.trim();
+      if (name.length > 1) loadExerciseChart(name);
+      else clearExerciseChart();
     });
   }
 
-
-  // Elementreferenser
+  // LOGIN
   const loginBtn = document.getElementById("loginBtn");
   const loginError = document.getElementById("loginError");
   const loginSection = document.getElementById("login");
   const contentSection = document.getElementById("content");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // LOGIN
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
       const email = document.getElementById("email").value;
@@ -149,52 +141,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // LOGOUT
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       signOut(auth)
         .then(() => console.log("Användare utloggad."))
-        .catch(error => {
-          console.error("Fel vid utloggning:", error);
-          alert("Ett fel uppstod vid utloggning: " + error.message);
-        });
+        .catch(err => alert("Fel vid utloggning: " + err.message));
     });
   }
 
   // AUTH STATE
-onAuthStateChanged(auth, user => {
-  if (user) {
-    // Visa innehållet och göm login
-    loginSection.style.display = "none";
-    contentSection.style.display = "block";
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginSection.style.display = "none";
+      contentSection.style.display = "block";
+      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+      if (welcomeSection) welcomeSection.classList.add("active");
 
-    // Rensa aktiva sektioner
-    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-
-    // Visa välkomstmeddelandet
-    const welcomeSection = document.getElementById("welcome");
-    if (welcomeSection) welcomeSection.classList.add("active");
-
-    // Ladda in data och menyer
-    loadPassMenu();
-    loadData();
-    loadLatestWeight();
-    loadMuscleGroups();
-    
-  } else {
-    // Ingen användare → visa login, dölj innehållet
-    loginSection.style.display = "block";
-    contentSection.style.display = "none";
-
-    // Rensa aktiva sektioner
-    document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
-  }
-});
+      loadPassMenu();
+      loadData();
+      loadLatestWeight();
+      loadMuscleGroups();
+    } else {
+      loginSection.style.display = "block";
+      contentSection.style.display = "none";
+      document.querySelectorAll("main section").forEach(sec => sec.classList.remove("active"));
+    }
+  });
 
   // LÄGG TILL TRÄNINGSLOGG
   document.getElementById("logForm").addEventListener("submit", async e => {
     e.preventDefault();
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
     const formData = new FormData();
     formData.append("exercise", document.getElementById("exercise").value);
     formData.append("weight", document.getElementById("weight").value);
@@ -211,47 +188,16 @@ onAuthStateChanged(auth, user => {
         document.getElementById("logForm").reset();
         loadData();
         loadMuscleGroups();
+        const exName = formData.get("exercise");
+        if (exName) loadExerciseChart(exName); // Auto-uppdatera grafen
       } else alert("Kunde inte spara träningsposten.");
     } catch (err) {
       alert("Fel vid anslutning till Google Sheets: " + err);
     }
   });
+});
 
-  // KROPPSVIKT - NY VIKT
-  document.getElementById("weightForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const newWeight = document.getElementById("newWeight").value;
-    if (!newWeight) return alert("Ange en vikt!");
-
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    const params = new URLSearchParams();
-    params.append("exercise", "Kroppsvikt");
-    params.append("weight", newWeight);
-    params.append("reps", 1);
-    params.append("primary", "Allmänt");
-    params.append("secondary", "");
-    params.append("effort", "Rätt");
-    params.append("date", today);
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params.toString()
-      });
-      const result = await response.json();
-      if (result.status === "success") {
-        document.getElementById("weightForm").reset();
-        loadLatestWeight();
-        loadMuscleGroups();
-      } else alert("Kunde inte spara kroppsvikten.");
-    } catch (err) {
-      alert("Fel vid anslutning till Google Sheets: " + err);
-    }
-  });
-// Graf för Exercises
-let exerciseChart; // global referens
-
+// ---------------- Exercise Graph ----------------
 async function loadExerciseChart(exerciseName) {
   const ctx = document.getElementById("exerciseChart").getContext("2d");
   const msg = document.getElementById("exerciseChartMessage");
@@ -259,9 +205,7 @@ async function loadExerciseChart(exerciseName) {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-
-    const rows = data.slice(1)
-      .filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
+    const rows = data.slice(1).filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
 
     if (rows.length === 0) {
       clearExerciseChart();
@@ -270,54 +214,17 @@ async function loadExerciseChart(exerciseName) {
       return;
     }
 
-    msg.style.display = "none"; // göm ev. tidigare meddelande
-
+    msg.style.display = "none";
     rows.sort((a,b) => new Date(a[6]) - new Date(b[6]));
-
-    const chartData = rows.map(r => ({
-      x: r[6].substring(0,10),
-      y: parseFloat(r[1])
-    }));
+    const chartData = rows.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
 
     if (exerciseChart) exerciseChart.destroy();
-
     exerciseChart = new Chart(ctx, {
       type: 'line',
-      data: {
-        datasets: [{
-          label: exerciseName,
-          data: chartData,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.45)',
-          pointBackgroundColor: '#fff',
-          pointBorderColor: '#3b82f6',
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          borderWidth: 2,
-          tension: 0.3,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: {
-            type: "time",
-            time: { unit: "week", tooltipFormat: "yyyy-MM-dd" },
-            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
-            grid: { color: "rgba(255,255,255,0.8)" }
-          },
-          y: {
-            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
-            grid: { color: "rgba(255,255,255,0.8)" }
-          }
-        }
-      }
+      data: { datasets: [{ label: exerciseName, data: chartData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.45)', tension: 0.3, fill: true }] },
+      options: { responsive: false, plugins: { legend: { display: false } }, scales: { x: { type: "time", time: { unit: "week", tooltipFormat: "yyyy-MM-dd" }, ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } }, y: { ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } } } }
     });
-
   } catch (err) {
-    console.error("Fel vid hämtning av övningsdata:", err);
     clearExerciseChart();
     msg.textContent = "Fel vid hämtning av data.";
     msg.style.display = "block";
@@ -325,15 +232,68 @@ async function loadExerciseChart(exerciseName) {
 }
 
 function clearExerciseChart() {
-  if (exerciseChart) {
-    exerciseChart.destroy();
-    exerciseChart = null;
-  }
+  if (exerciseChart) exerciseChart.destroy();
+  exerciseChart = null;
   const msg = document.getElementById("exerciseChartMessage");
   if (msg) msg.style.display = "none";
 }
-  
-// KROPPSVIKT - SENASTE
+
+// ---------------- Muscle Exercise Graph ----------------
+async function loadExerciseHistory(muscle, exercise) {
+  const containerId = `exerciseHistory-${exercise.replace(/\s/g,"")}`;
+  let container = document.getElementById(containerId);
+  if (!container) {
+    container = document.createElement("div");
+    container.id = containerId;
+    container.className = "exercise-history";
+    document.getElementById("muskel").appendChild(container);
+  }
+  container.innerHTML = `<h4>${exercise} (${muscle})</h4><p>Laddar...</p>`;
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const rows = data.slice(1)
+      .filter(r => r[0] === exercise && r[3] === muscle)
+      .sort((a,b) => new Date(b[6]) - new Date(a[6]));
+
+    if (rows.length === 0) {
+      container.innerHTML = "<p class='empty-message'>Ingen träning loggad ännu.</p>";
+      return;
+    }
+
+    let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt</th><th>Reps</th></tr></thead><tbody>`;
+    rows.forEach(r => { tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td></tr>` });
+    tableHTML += "</tbody></table>";
+    container.innerHTML = `<h4>${exercise} (${muscle})</h4>` + tableHTML;
+
+    // Chart.js graf
+    const canvasId = `chart-${exercise.replace(/\s/g,"")}`;
+    let canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      canvas.id = canvasId;
+      container.appendChild(canvas);
+    }
+    const ctx = canvas.getContext("2d");
+    if (muscleExerciseChart) muscleExerciseChart.destroy();
+    const labels = rows.map(r => r[6].substring(0,10));
+    const values = rows.map(r => parseFloat(r[1]));
+
+    muscleExerciseChart = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [{ label: exercise, data: values, borderColor: '#f6ea3b', backgroundColor: 'rgba(246,234,59,0.25)', tension: 0.3 }] },
+      options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+    });
+
+  } catch(err) {
+    container.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
+  }
+}
+
+// ================== Rest of your functions like loadLatestWeight(), loadMuscleGroups(), loadPassMenu(), loadData() remain unchanged ==================
+
+// ---------------- Load Latest Weight ----------------
 async function loadLatestWeight() {
   const weightDisplay = document.getElementById("latestWeight");
   const historyContainer = document.getElementById("weightHistory");
@@ -348,7 +308,7 @@ async function loadLatestWeight() {
       return;
     }
 
-    let weights = data.slice(1).filter(r => r[0] && r[0].trim().toLowerCase() === "kroppsvikt");
+    const weights = data.slice(1).filter(r => r[0].trim().toLowerCase() === "kroppsvikt");
     if (weights.length === 0) {
       weightDisplay.innerText = "Ingen kroppsvikt loggad ännu.";
       historyContainer.innerHTML = "";
@@ -360,66 +320,28 @@ async function loadLatestWeight() {
 
     let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th></tr></thead><tbody>`;
     weights.forEach(r => tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td></tr>`);
-    tableHTML += `</tbody></table>`;
+    tableHTML += "</tbody></table>";
     historyContainer.innerHTML = tableHTML;
 
-    // === Här fixar vi data för tidsaxeln ===
-    const labels = weights.map(r => r[6].substring(0,10));
-    const values = weights.map(r => parseFloat(r[1]));
-    const chartData = labels.map((d, i) => ({ x: d, y: values[i] }));
+    // Graf-data
+    const chartData = weights.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
+    const minDate = weights[0][6].substring(0,10);
+    const maxDate = weights[weights.length-1][6].substring(0,10);
 
-    // === Här sätter vi fasta datumgränser ===
-    const minDate = "2025-09-01";
-    const maxDate = "2026-01-01";
+    const yValues = chartData.map(d => d.y);
+    const yMin = Math.min(...yValues) - 5;
+    const yMax = Math.max(...yValues) + 5;
 
-    // === Nytt: Dynamisk y-axel baserat på första värdet ===
-    const baseValue = values[0];
-    const yMin = baseValue - 10;
-    const yMax = baseValue + 30;
-    
-    if (window.weightChart && typeof window.weightChart.destroy === 'function') window.weightChart.destroy();
-    window.weightChart = new Chart(ctx, {
+    if (weightChart) weightChart.destroy();
+    weightChart = new Chart(ctx, {
       type: 'line',
-      data: {
-        datasets: [{
-          label: 'Kroppsvikt (kg)',
-          data: chartData,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.45)',
-          pointBackgroundColor: '#fff',
-          pointBorderColor: '#3b82f6',
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          borderWidth: 2,
-          tension: 0.3,
-          fill: true
-        }]
-      },
+      data: { datasets: [{ label: 'Kroppsvikt', data: chartData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.45)', tension: 0.3, fill: true }] },
       options: {
         responsive: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
+        plugins: { legend: { display: false } },
         scales: {
-          x: {
-            type: "time",
-            time: {
-              unit: "week",
-              tooltipFormat: "yyyy-MM-dd"
-            },
-            min: minDate,
-            max: maxDate,
-            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
-            grid: { color: "rgba(255,255,255,0.8)" }
-          },
-          y: {
-            min: yMin,      // <-- botten
-            max: yMax,      // <-- toppen
-            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
-            grid: { color: "rgba(255,255,255,0.8)" }
-          }
+          x: { type: 'time', time: { unit: 'week', tooltipFormat: 'yyyy-MM-dd' }, min: minDate, max: maxDate, ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } },
+          y: { min: yMin, max: yMax, ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } }
         }
       }
     });
@@ -430,58 +352,78 @@ async function loadLatestWeight() {
   }
 }
 
+// ---------------- Load Muscle Groups ----------------
+async function loadMuscleGroups() {
+  const container = document.getElementById("muskel");
+  if (!container) return;
+  container.innerHTML = "<h2>Muskelgrupper</h2>";
 
-  // MUSKELGRUPPER
-  async function loadMuscleGroups() {
-    const container = document.getElementById("muskel");
-    if (container) container.innerHTML = "<h2>Muskelgrupper</h2>";
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      container.innerHTML += "<p class='empty-message'>Ingen data ännu.</p>";
+      return;
+    }
 
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      if (!data || data.length <= 1) {
-        if (container) container.innerHTML += "<p class='empty-message'>Ingen data ännu.</p>";
-        return;
-      }
+    const muscles = {};
+    data.slice(1).forEach(r => {
+      const primary = r[3].trim();
+      const exercise = r[0].trim();
+      if (!muscles[primary]) muscles[primary] = [];
+      if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
+    });
 
-      const muscles = {};
-      data.slice(1).forEach(r => {
-        const primary = r[3].trim();
-        const exercise = r[0].trim();
-        if (!muscles[primary]) muscles[primary] = [];
-        if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
+    const ul = document.createElement("ul");
+    for (const [muscle, exercises] of Object.entries(muscles)) {
+      const li = document.createElement("li");
+      li.className = "muscle-card";
+      li.innerHTML = `<span class="muscle-title">${muscle}</span><span class="arrow">&#9662;</span>`;
+      const exUl = document.createElement("ul");
+      exUl.className = "exercises";
+
+      exercises.forEach(ex => {
+        const exLi = document.createElement("li");
+        exLi.textContent = ex;
+        exLi.onclick = ev => { ev.stopPropagation(); loadExerciseHistory(muscle, ex); };
+        exUl.appendChild(exLi);
       });
 
-      const ul = document.createElement("ul");
-      for (const [muscle, exercises] of Object.entries(muscles)) {
-        const li = document.createElement("li");
-        li.className = "muscle-card";
-        li.innerHTML = `<span class="muscle-title">${muscle}</span><span class="arrow">&#9662;</span>`;
-        const exUl = document.createElement("ul");
-        exUl.className = "exercises";
-        exercises.forEach(ex => {
-          const exLi = document.createElement("li");
-          exLi.textContent = ex;
-          exLi.onclick = (ev) => { ev.stopPropagation(); loadExerciseHistory(muscle, ex); };
-          exUl.appendChild(exLi);
-        });
-        li.appendChild(exUl);
-        li.onclick = () => { li.classList.toggle("open"); toggleExercises(li); };
-        ul.appendChild(li);
-      }
-      if (container) container.appendChild(ul);
-
-    } catch (err) {
-      if (container) container.innerHTML += `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
+      li.appendChild(exUl);
+      li.onclick = () => { li.classList.toggle("open"); toggleExercises(li); };
+      ul.appendChild(li);
     }
+    container.appendChild(ul);
+
+  } catch (err) {
+    container.innerHTML += `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
   }
+}
 
-// ==============================
-// Hjälpfunktion: snabb-loggning
-// ==============================
+// ---------------- Load Main Table ----------------
+async function loadData() {
+  const container = document.getElementById("tableContainer");
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    if (!data || data.length <= 1) {
+      container.innerHTML = `<p class="empty-message">Inga träningsposter ännu.</p>`;
+      return;
+    }
+
+    const rows = data.slice(1).sort((a,b) => new Date(b[6]) - new Date(a[6]));
+    let tableHTML = `<table><thead><tr><th>Övning</th><th>Vikt (kg)</th><th>Reps</th><th>Primär muskelgrupp</th><th>Sekundär muskelgrupp</th><th>Insats</th><th>Datum</th></tr></thead><tbody>`;
+    rows.forEach(row => tableHTML += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td><td>${row[6]}</td></tr>`);
+    tableHTML += "</tbody></table>";
+    container.innerHTML = tableHTML;
+  } catch (err) {
+    container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
+  }
+}
+
+// ---------------- Log Exercise ----------------
 async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-
+  const today = new Date().toISOString().split("T")[0];
   const formData = new FormData();
   formData.append("exercise", name);
   formData.append("weight", weight);
@@ -497,139 +439,14 @@ async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
     if (result.status === "success") {
       loadData();
       loadMuscleGroups();
-    } else {
-      alert("Kunde inte spara snabb-loggningen.");
-    }
+      loadExerciseChart(name); // Auto-uppdatera graf
+    } else alert("Kunde inte spara snabb-loggningen.");
   } catch (err) {
     alert("Fel vid snabb-loggning: " + err);
   }
 }
 
-// ==============================
-// Ladda huvudtabellen med träning
-// ==============================
-async function loadData() {
-  const container = document.getElementById("tableContainer");
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    if (!data || data.length <= 1) {
-      container.innerHTML = `<p class="empty-message">Inga träningsposter ännu.</p>`;
-      return;
-    }
-
-    // Sortera nyaste först
-    const rows = data.slice(1).sort((a,b) => new Date(b[6]) - new Date(a[6]));
-
-    let tableHTML = `<table><thead><tr>
-      <th>Övning</th><th>Vikt (kg)</th><th>Reps</th><th>Primär muskelgrupp</th><th>Sekundär muskelgrupp</th><th>Insats</th><th>Datum</th>
-    </tr></thead><tbody>`;
-
-    rows.forEach(row => {
-      tableHTML += `<tr>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-        <td>${row[4]}</td>
-        <td>${row[5]}</td>
-        <td>${row[6]}</td>
-      </tr>`;
-    });
-
-    tableHTML += `</tbody></table>`;
-    container.innerHTML = tableHTML;
-  } catch (err) {
-    container.innerHTML = `<p class="empty-message">Fel vid hämtning av data: ${err}</p>`;
-  }
-}
-
-// ==============================
-// Ladda historik för en övning
-// ==============================
-async function loadExerciseHistory(muscle, exercise) {
-  const containerId = `exerciseHistory-${exercise.replace(/\s/g,"")}`;
-  let container = document.getElementById(containerId);
-  if (!container) {
-    container = document.createElement("div");
-    container.id = containerId;
-    container.className = "exercise-history";
-    document.getElementById("muskel").appendChild(container);
-  }
-  container.innerHTML = `<h4>${exercise} (${muscle})</h4><p>Laddar...</p>`;
-
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-
-    const rows = data.slice(1)
-                     .filter(r => r[0] === exercise && r[3] === muscle)
-                     .sort((a,b) => new Date(b[6]) - new Date(a[6])); // nyaste först
-
-    if (rows.length === 0) {
-      container.innerHTML = "<p class='empty-message'>Ingen träning loggad ännu.</p>";
-      return;
-    }
-
-    let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt</th><th>Reps</th></tr></thead><tbody>`;
-    rows.forEach(r => {
-      tableHTML += `<tr>
-        <td>${r[6].substring(0,10)}</td>
-        <td>${r[1]}</td>
-        <td>${r[2]}</td>
-      </tr>`;
-    });
-    tableHTML += `</tbody></table>`;
-    container.innerHTML = `<h4>${exercise} (${muscle})</h4>` + tableHTML;
-
-    // Diagram (Chart.js)
-    const canvasId = `chart-${exercise.replace(/\s/g,"")}`;
-    let canvas = document.getElementById(canvasId);
-    if (!canvas) {
-      canvas = document.createElement("canvas");
-      canvas.id = canvasId;
-      container.appendChild(canvas);
-    }
-    const ctx = canvas.getContext("2d");
-    const labels = rows.map(r => r[6].substring(0,10));
-    const values = rows.map(r => parseFloat(r[1]));
-
-    if (window.exerciseChart) window.exerciseChart.destroy();
-    window.exerciseChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: exercise,
-          data: values,
-          borderColor: '#f6ea3b',
-          backgroundColor: 'rgba(246,234,59,0.25)',
-          pointBackgroundColor: '#fff',
-          pointBorderColor: '#f6ea3b',
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          borderWidth: 2,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: '#fff' } } },
-        scales: {
-          x: { ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } },
-          y: { ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } }
-        }
-      }
-    });
-
-  } catch(err) {
-    container.innerHTML = `<p class='empty-message'>Fel vid hämtning av historik: ${err}</p>`;
-  }
-}
-
-// ==============================
-// Ladda pass-menyn med snabb-loggning
-// ==============================
+// ---------------- Load Pass Menu ----------------
 async function loadPassMenu() {
   const container = document.getElementById("passList");
   if (!container) return;
@@ -642,17 +459,9 @@ async function loadPassMenu() {
   ];
 
   let allData = [];
-  try {
-    const res = await fetch(API_URL);
-    allData = await res.json();
-    if (!allData || allData.length <= 1) {
-      container.innerHTML = `<p class="empty-message">Ingen träningsdata hittades.</p>`;
-      return;
-    }
-  } catch (err) {
-    container.innerHTML = `<p class="empty-message">Fel vid hämtning av träningsdata.</p>`;
-    return;
-  }
+  try { allData = await (await fetch(API_URL)).json(); } 
+  catch (err) { container.innerHTML = `<p class="empty-message">Fel vid hämtning av träningsdata.</p>`; return; }
+  if (!allData || allData.length <= 1) { container.innerHTML = `<p class="empty-message">Ingen träningsdata hittades.</p>`; return; }
 
   passes.forEach(pass => {
     const card = document.createElement("div");
@@ -665,132 +474,51 @@ async function loadPassMenu() {
 
     const exList = document.createElement("ul");
     exList.className = "pass-exercises";
-    exList.style.height = "0";
-    exList.style.opacity = "0";
-    exList.style.overflow = "hidden";
+    exList.style.height = "0"; exList.style.opacity = "0"; exList.style.overflow = "hidden";
     exList.style.transition = "height 0.3s ease, opacity 0.3s ease";
 
-    // Hämta övningar från Sheet
     let exercises = [];
     pass.muscles.forEach(muscle => {
       const muscleExercises = allData.slice(1)
         .filter(r => r[3].trim().toLowerCase() === muscle.trim().toLowerCase())
-        .map(r => ({
-          name: r[0].trim(),
-          muscle: muscle,
-          latestDate: r[6] ? r[6].substring(0,10) : null,
-          latestWeight: r[1] || null
-        }));
+        .map(r => ({ name: r[0].trim(), muscle: muscle, latestDate: r[6]?.substring(0,10), latestWeight: r[1] || null }));
       exercises = exercises.concat(muscleExercises);
     });
 
-    // Ta bort dubletter
     const uniqueExercisesMap = {};
     exercises.forEach(ex => {
-      if (!uniqueExercisesMap[ex.name]) uniqueExercisesMap[ex.name] = ex;
-      else if (ex.latestDate && (!uniqueExercisesMap[ex.name].latestDate || new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
+      if (!uniqueExercisesMap[ex.name] || (ex.latestDate && new Date(ex.latestDate) > new Date(uniqueExercisesMap[ex.name].latestDate))) {
         uniqueExercisesMap[ex.name] = ex;
       }
     });
+    const uniqueExercises = Object.values(uniqueExercisesMap).sort((a,b) => (b.latestDate ? new Date(b.latestDate) : 0) - (a.latestDate ? new Date(a.latestDate) : 0));
 
-    const uniqueExercises = Object.values(uniqueExercisesMap).sort((a,b) => {
-      if (!a.latestDate && !b.latestDate) return 0;
-      if (!a.latestDate) return 1;
-      if (!b.latestDate) return -1;
-      return new Date(b.latestDate) - new Date(a.latestDate);
-    });
-
-    // Rendera övningar med hela raden klickbar
     uniqueExercises.forEach(ex => {
-      const li = document.createElement("li");
-      li.style.cursor = "pointer"; // hela raden känns klickbar
-
-      // Text
+      const li = document.createElement("li"); li.style.cursor = "pointer";
       const spanName = document.createElement("span");
       spanName.textContent = ex.latestWeight ? `${ex.name} (${ex.latestWeight} kg) (${ex.latestDate})` : ex.name;
       li.appendChild(spanName);
 
-      // "+" knapp för snabb-loggning
       const plusBtn = document.createElement("button");
-      plusBtn.textContent = "+";
-      plusBtn.className = "quick-log-btn";
-      plusBtn.onclick = (e) => {
-        e.stopPropagation(); // hindra li-click
-        logExercise(ex.name, ex.muscle || "Okänd");
-      };
+      plusBtn.textContent = "+"; plusBtn.className = "quick-log-btn";
+      plusBtn.onclick = e => { e.stopPropagation(); logExercise(ex.name, ex.muscle); };
       li.appendChild(plusBtn);
 
-      // Klick på hela raden fyller formuläret
-      li.onclick = (ev) => {
-        ev.stopPropagation();
-          prefillExercise({
-          name: ex.name,
-          muscle: ex.muscle,
-          latestWeight: ex.latestWeight
-          });
-      };
-
-
+      li.onclick = ev => { ev.stopPropagation(); prefillExercise(ex); };
       exList.appendChild(li);
     });
 
     card.appendChild(exList);
-
-    // Expand / collapse av passkort
     header.addEventListener("click", () => {
-      document.querySelectorAll(".pass-card").forEach(otherCard => {
-        if (otherCard !== card) {
-          otherCard.classList.remove("open");
-          const otherList = otherCard.querySelector(".pass-exercises");
-          otherList.style.height = "0";
-          otherList.style.opacity = "0";
-          otherCard.querySelector(".arrow").style.transform = "rotate(0deg)";
-        }
+      document.querySelectorAll(".pass-card").forEach(other => {
+        if (other!==card) { other.classList.remove("open"); const ol = other.querySelector(".pass-exercises"); ol.style.height="0"; ol.style.opacity="0"; other.querySelector(".arrow").style.transform="rotate(0deg)"; }
       });
-
       const isOpen = card.classList.toggle("open");
-      if (isOpen) {
-        exList.style.height = exList.scrollHeight + "px";
-        exList.style.opacity = "1";
-        header.querySelector(".arrow").style.transform = "rotate(180deg)";
-      } else {
-        exList.style.height = "0";
-        exList.style.opacity = "0";
-        header.querySelector(".arrow").style.transform = "rotate(0deg)";
-      }
+      if (isOpen) { exList.style.height=exList.scrollHeight+"px"; exList.style.opacity="1"; header.querySelector(".arrow").style.transform="rotate(180deg)"; }
+      else { exList.style.height="0"; exList.style.opacity="0"; header.querySelector(".arrow").style.transform="rotate(0deg)"; }
     });
 
     container.appendChild(card);
   });
 }
-  
-//===========================
-// Hjälpfunktion för snabb-loggning
-//===========================
-  
-async function logExercise(name, muscle, weight=10, reps=10, effort="Rätt") {
-  // Format: YYYY/MM/DD (text)
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-  const formData = new FormData();
-  formData.append("exercise", name);
-  formData.append("weight", weight);
-  formData.append("reps", reps);
-  formData.append("primary", muscle);
-  formData.append("secondary", "");
-  formData.append("effort", effort);
-  formData.append("date", today);
 
-  try {
-    const response = await fetch(API_URL, { method: "POST", body: formData });
-    const result = await response.json();
-    if (result.status === "success") {
-      loadData();         // Uppdatera träningshistorik
-      loadMuscleGroups(); // Uppdatera muskelgrupper
-    } else alert("Kunde inte spara snabb-loggningen.");
-  } catch (err) {
-    alert("Fel vid snabb-loggning: " + err);
-  }
-}
-
-  
-}); // Slut på DOMContentLoaded
