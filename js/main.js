@@ -282,29 +282,52 @@ function loadLatestWeight() {
 }
 
 // ---------------- Load Muscle Groups ----------------
-function loadMuscleGroups() {
+async function loadMuscleGroups() {
   const container = document.getElementById("muskel");
   if (!container) return;
-  container.innerHTML = "";
+  container.innerHTML = "<h2>Muskelgrupper</h2>";
+
+  const data = window.allTrainingData;
+  if (!data || data.length === 0) {
+    container.innerHTML += "<p class='empty-message'>Ingen data ännu.</p>";
+    return;
+  }
+
   const muscles = {};
-  window.allTrainingData.forEach(r => {
-    const muscle = r[3] || "Okänd";
-    if (!muscles[muscle]) muscles[muscle] = [];
-    muscles[muscle].push(r);
+  data.forEach(r => {
+    const primary = r[3].trim();
+    const exercise = r[0].trim();
+    if (!muscles[primary]) muscles[primary] = [];
+    if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
   });
-  Object.entries(muscles).forEach(([muscle, exs]) => {
-    const div = document.createElement("div");
-    div.innerHTML = `<h4 onclick="toggleExercises(this.parentElement)">${muscle}</h4>`;
-    const ul = document.createElement("ul");
-    ul.classList.add("exercises");
-    exs.forEach(r => {
-      const li = document.createElement("li");
-      li.innerHTML = `<button onclick='prefillExercise({name:"${r[0]}",muscle:"${muscle}",latestWeight:"${r[1]}"})'>${r[0]}</button>`;
-      ul.appendChild(li);
+
+  const ul = document.createElement("ul");
+  for (const [muscle, exercises] of Object.entries(muscles)) {
+    const li = document.createElement("li");
+    li.className = "muscle-card";
+    li.innerHTML = `<span class="muscle-title">${muscle}</span><span class="arrow">&#9662;</span>`;
+
+    const exUl = document.createElement("ul");
+    exUl.className = "exercises";
+
+    exercises.forEach(ex => {
+      const exLi = document.createElement("li");
+      exLi.textContent = ex;
+      exLi.onclick = ev => { 
+        ev.stopPropagation(); 
+        loadExerciseHistory(muscle, ex); 
+      };
+      exUl.appendChild(exLi);
     });
-    div.appendChild(ul);
-    container.appendChild(div);
-  });
+
+    li.appendChild(exUl);
+    li.onclick = () => { 
+      li.classList.toggle("open"); 
+      toggleExercises(li); 
+    };
+    ul.appendChild(li);
+  }
+  container.appendChild(ul);
 }
 
 // ---------------- Load Main Table ----------------
