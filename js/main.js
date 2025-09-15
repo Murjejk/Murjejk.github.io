@@ -45,6 +45,8 @@ window.prefillExercise = function(ex) {
   document.getElementById("reps").value = 10;       // statiskt
   document.getElementById("effort").value = "Rätt"; // statiskt
 
+loadExerciseChart(ex.name); // 🔹 laddar graf direkt
+  
   const navBtn = document.getElementById("btnOvningar");
   if (navBtn) showSection("ovningar", navBtn);
 };
@@ -106,6 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("#content section").forEach(sec => sec.classList.remove("active"));
   const welcomeSection = document.getElementById("welcome");
   if (welcomeSection) welcomeSection.classList.add("active");
+  // Rita om graf
+  const exerciseInput = document.getElementById("exercise");
+    if (exerciseInput) {
+      exerciseInput.addEventListener("input", () => {
+  const exerciseName = exerciseInput.value.trim();
+    if (exerciseName.length > 1) {
+      loadExerciseChart(exerciseName);
+      } else {
+      clearExerciseChart();
+      }
+    });
+  }
+
 
   // Elementreferenser
   const loginBtn = document.getElementById("loginBtn");
@@ -234,7 +249,90 @@ onAuthStateChanged(auth, user => {
       alert("Fel vid anslutning till Google Sheets: " + err);
     }
   });
+// Graf för Exercises
+let exerciseChart; // global referens
 
+async function loadExerciseChart(exerciseName) {
+  const ctx = document.getElementById("exerciseChart").getContext("2d");
+  const msg = document.getElementById("exerciseChartMessage");
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    const rows = data.slice(1)
+      .filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
+
+    if (rows.length === 0) {
+      clearExerciseChart();
+      msg.style.display = "block";
+      msg.textContent = "Ingen data hittades.";
+      return;
+    }
+
+    msg.style.display = "none"; // göm ev. tidigare meddelande
+
+    rows.sort((a,b) => new Date(a[6]) - new Date(b[6]));
+
+    const chartData = rows.map(r => ({
+      x: r[6].substring(0,10),
+      y: parseFloat(r[1])
+    }));
+
+    if (exerciseChart) exerciseChart.destroy();
+
+    exerciseChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: exerciseName,
+          data: chartData,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.45)',
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#3b82f6',
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            type: "time",
+            time: { unit: "week", tooltipFormat: "yyyy-MM-dd" },
+            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
+          },
+          y: {
+            ticks: { color: '#fff', font: { size: 10, weight: "normal" } },
+            grid: { color: "rgba(255,255,255,0.8)" }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error("Fel vid hämtning av övningsdata:", err);
+    clearExerciseChart();
+    msg.textContent = "Fel vid hämtning av data.";
+    msg.style.display = "block";
+  }
+}
+
+function clearExerciseChart() {
+  if (exerciseChart) {
+    exerciseChart.destroy();
+    exerciseChart = null;
+  }
+  const msg = document.getElementById("exerciseChartMessage");
+  if (msg) msg.style.display = "none";
+}
+  
 // KROPPSVIKT - SENASTE
 async function loadLatestWeight() {
   const weightDisplay = document.getElementById("latestWeight");
