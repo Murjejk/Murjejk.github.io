@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---------------- Exercise Graph ----------------
 async function loadExerciseChart(exerciseName) {
   const ctx = document.getElementById("exerciseChartExercise").getContext("2d");
-  const msg = document.getElementById("exerciseChartMessage");
+  const msg = document.getElementById("exerciseChartMessageExercise");
 
   try {
     // Hämta lokalt cache:ad data om det finns
