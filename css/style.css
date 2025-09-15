@@ -690,25 +690,26 @@ canvas:not(#weightChart) {
     padding-right: 35px;
   }
 
+/* Container för övningsgraf */
 #exerciseChartContainer {
-  background: rgba(30, 30, 30, 0.8); /* matcha ditt dark theme */
+  background: rgba(30, 30, 30, 0.85); /* mörk kortbakgrund */
   border-radius: 12px;
-  padding: 15px;
-  margin: 15px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  padding: 20px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  max-width: 650px;
   text-align: center;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
+/* Själva grafytan */
 #exerciseChart {
   width: 100% !important;
-  height: 300px !important; /* fast höjd för konsekvent utseende */
+  height: 320px !important; /* fixad höjd för konsekvent layout */
 }
 
+/* Meddelande under grafen */
 .chart-message {
-  margin-top: 10px;
+  margin-top: 12px;
   color: #aaa;
   font-style: italic;
   font-size: 0.9rem;
