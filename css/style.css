@@ -705,6 +705,7 @@ canvas:not(#weightChart) {
 #exerciseChart {
   width: 100% !important;
   height: 320px !important; /* fixad höjd för konsekvent layout */
+  border: 1px solid #ccc;
 }
 
 /* Meddelande under grafen */
