@@ -210,32 +210,105 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ---------------- Exercise Graph ----------------
-function loadExerciseChart(exerciseName) {
+async function loadExerciseChart(exerciseName) {
   const ctx = document.getElementById("exerciseChart").getContext("2d");
   const msg = document.getElementById("exerciseChartMessage");
-  const rows = window.allTrainingData.filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
-  if (rows.length === 0) {
+
+  try {
+    // Hämta lokalt cache:ad data om det finns
+    const data = window.cachedData || [];
+    if (!data.length) {
+      clearExerciseChart();
+      msg.style.display = "block";
+      msg.textContent = "Ingen data tillgänglig.";
+      return;
+    }
+
+    // Filtrera övningens värden
+    const rows = data.slice(1)
+      .filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
+
+    if (rows.length === 0) {
+      clearExerciseChart();
+      msg.style.display = "block";
+      msg.textContent = "Ingen data hittades.";
+      return;
+    }
+
+    msg.style.display = "none";
+    rows.sort((a,b) => new Date(a[6]) - new Date(b[6]));
+
+    const chartData = rows.map(r => ({
+      x: r[6].substring(0,10),
+      y: parseFloat(r[1])
+    }));
+
+    // Rensa gammal graf
+    if (exerciseChart) exerciseChart.destroy();
+
+    // Gradientfyllning
+    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+    gradient.addColorStop(0, 'rgba(74, 222, 128, 0.6)');
+    gradient.addColorStop(1, 'rgba(74, 222, 128, 0)');
+
+    // Ny graf
+    exerciseChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: exerciseName,
+          data: chartData,
+          borderColor: '#4ade80',          // ljusgrön linje
+          backgroundColor: gradient,       // gradientfyllning
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#4ade80',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          borderWidth: 2,
+          tension: 0.4,                    // mjuka kurvor
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 800,
+          easing: "easeOutQuart"
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(0,0,0,0.8)",
+            titleColor: "#fff",
+            bodyColor: "#fff",
+            padding: 10,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            type: "time",
+            time: { unit: "week", tooltipFormat: "yyyy-MM-dd" },
+            ticks: { color: '#fff', font: { size: 12 } },
+            grid: { color: "rgba(255,255,255,0.15)" }
+          },
+          y: {
+            ticks: { color: '#fff', font: { size: 12 } },
+            grid: { color: "rgba(255,255,255,0.15)" }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error("Fel vid hämtning av övningsdata:", err);
     clearExerciseChart();
+    msg.textContent = "Fel vid hämtning av data.";
     msg.style.display = "block";
-    msg.textContent = "Ingen data hittades.";
-    return;
   }
-  msg.style.display = "none";
-  rows.sort((a,b) => new Date(a[6]) - new Date(b[6]));
-  const chartData = rows.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
-  if (exerciseChart) exerciseChart.destroy();
-  exerciseChart = new Chart(ctx, {
-    type: 'line',
-    data: { datasets: [{ label: exerciseName, data: chartData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.45)', tension: 0.3, fill: true }] },
-    options: { responsive: false, plugins: { legend: { display: false } }, scales: { x: { type: "time", time: { unit: "week", tooltipFormat: "yyyy-MM-dd" }, ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } }, y: { ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.8)" } } } }
-  });
 }
-function clearExerciseChart() {
-  if (exerciseChart) exerciseChart.destroy();
-  exerciseChart = null;
-  const msg = document.getElementById("exerciseChartMessage");
-  if (msg) msg.style.display = "none";
-}
+
 
 // ---------------- Resten: loadExerciseHistory, loadLatestWeight, loadMuscleGroups, loadData, logExercise, loadPassMenu ----------------
 // (de ändras bara så att de använder window.allTrainingData istället för att göra nya fetch-anrop!)
