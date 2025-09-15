@@ -690,21 +690,26 @@ canvas:not(#weightChart) {
     padding-right: 35px;
   }
 
-#exerciseChart {
-  width: 1200px !important;
-  height: 100% !important;
-  border-radius: 10px;
-  padding: 0.5rem;
+#exerciseChartContainer {
+  background: rgba(30, 30, 30, 0.8); /* matcha ditt dark theme */
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#exerciseChartContainer {
-  width: 100%;
-  height: 400px;
-  overflow-x: auto; 
-  overflow-y: hidden;
-  border: 1px solid #555;
-  background: rgba(20, 20, 20, 0.9);
-  border-radius: 10px;
-  padding: 0.5rem;
-  margin-bottom: 1rem; /* lite luft innan tabellen */
+#exerciseChart {
+  width: 100% !important;
+  height: 300px !important; /* fast höjd för konsekvent utseende */
+}
+
+.chart-message {
+  margin-top: 10px;
+  color: #aaa;
+  font-style: italic;
+  font-size: 0.9rem;
 }
