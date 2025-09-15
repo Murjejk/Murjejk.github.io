@@ -36,50 +36,22 @@ window.toggleExercises = function(el) {
 };
 
 // ================================
-// Fyll i övning med senaste värden
+// Fyll i övning direkt (utan fetch)
 // ================================
-window.prefillExercise = async function(exercise, muscle) {
-  console.log("prefillExercise triggas:", { exercise, muscle });
+window.prefillExercise = function(ex) {
+  document.getElementById("exercise").value = ex.name;
+  document.getElementById("primary").value = ex.muscle;
+  document.getElementById("weight").value = ex.latestWeight || "";
+  document.getElementById("reps").value = 10;       // statiskt
+  document.getElementById("effort").value = "Rätt"; // statiskt
 
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-
-    const rows = data.slice(1).filter(r => 
-      r[0].trim() === exercise &&
-      r[3].trim().toLowerCase() === muscle.trim().toLowerCase()
-    );
-    const latest = rows.length ? rows[rows.length - 1] : null;
-
-    document.getElementById("exercise").value = exercise;
-    document.getElementById("primary").value = muscle;
-    document.getElementById("reps").value = latest ? latest[2] : 10;
-    document.getElementById("weight").value = latest ? latest[1] : "";
-    document.getElementById("effort").value = latest ? latest[5] : "Rätt";
-
-    console.log("Formulär ifyllt:", {
-      exercise: document.getElementById("exercise").value,
-      primary: document.getElementById("primary").value,
-      reps: document.getElementById("reps").value,
-      weight: document.getElementById("weight").value,
-      effort: document.getElementById("effort").value
-    });
-  } catch(err) {
-    console.error("Fel vid hämtning av senaste data:", err);
-
-    document.getElementById("exercise").value = exercise;
-    document.getElementById("primary").value = muscle;
-    document.getElementById("reps").value = 10;
-    document.getElementById("weight").value = "";
-    document.getElementById("effort").value = "Rätt";
-  }
-
-  // Navigera till "ovningar" sektionen
   const navBtn = document.getElementById("btnOvningar");
   if (navBtn) showSection("ovningar", navBtn);
-  else console.warn("Kunde inte hitta navigationsknappen för 'ovningar'.");
 };
 
+// ================================
+// Rest Timer
+// ================================
 
 let restTimerAnimation;
 window.startRestTimer = function() {
@@ -654,8 +626,13 @@ async function loadPassMenu() {
       // Klick på hela raden fyller formuläret
       li.onclick = (ev) => {
         ev.stopPropagation();
-        prefillExercise(ex.name, ex.muscle || "Okänd");
+          prefillExercise({
+          name: ex.name,
+          muscle: ex.muscle,
+          latestWeight: ex.latestWeight
+          });
       };
+
 
       exList.appendChild(li);
     });
