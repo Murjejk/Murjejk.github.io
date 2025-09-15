@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ---------------- Exercise Graph ----------------
 async function loadExerciseChart(exerciseName) {
-  const ctx = document.getElementById("exerciseChart").getContext("2d");
+  const ctx = document.getElementById("exerciseChartExercise").getContext("2d");
   const msg = document.getElementById("exerciseChartMessage");
 
   try {
