@@ -250,8 +250,8 @@ const yMin = Math.min(...yValues);
 const yMax = Math.max(...yValues);
 
 // Marginaler: 5% under, 20% över
-const marginBottom = (yMax - yMin) * 0.05;
-const marginTop = (yMax - yMin) * 0.2;
+const marginBottom = (yMax - yMin) * 0.2;
+const marginTop = (yMax - yMin) * 0.4;
 
 const yAxisMin = yMin - marginBottom;
 const yAxisMax = yMax + marginTop;
