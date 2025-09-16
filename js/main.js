@@ -253,16 +253,21 @@ async function loadExerciseChart(exerciseName) {
   const chartData = rows.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
 
   // Beräkna y-axel marginaler
-const yValues = chartData.map(d => d.y);
-const yMin = Math.min(...yValues);
-const yMax = Math.max(...yValues);
+  const yValues = chartData.map(d => d.y);
+  let yMin = Math.min(...yValues);
+  let yMax = Math.max(...yValues);
 
-// Marginaler: 5% under, 20% över
-const marginBottom = (yMax - yMin) * 0.2;
-const marginTop = (yMax - yMin) * 0.4;
-
-const yAxisMin = yMin - marginBottom;
-const yAxisMax = yMax + marginTop;
+  // Om alla värden är samma, ge lite intervall
+  if (yMin === yMax) {
+    yMin = yMin - 1;
+    yMax = yMax + 1;
+  } else {
+    // Marginaler: 5% under, 20% över
+    const marginBottom = (yMax - yMin) * 0.2;
+    const marginTop = (yMax - yMin) * 0.4;
+    yMin = yMin - marginBottom;
+    yMax = yMax + marginTop;
+  }
   
   // Gradient
   const gradient = ctx.createLinearGradient(0, 0, 0, 320);
