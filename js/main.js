@@ -306,8 +306,8 @@ async function loadExerciseChart(exerciseName) {
       scales: {
        x: { type:"time", time:{ unit:"week", tooltipFormat:"yyyy-MM-dd" }, ticks:{ color:'#fff', font:{ size:12 } }, grid:{ color:"rgba(255,255,255,0.15)" } },
         y: {
-        min: yAxisMin,
-        max: yAxisMax,
+        min: yMin,
+        max: yMax,
         ticks: { color:'#fff', font:{ size:12 } },
         grid: { color:"rgba(255,255,255,0.15)" }
       }
