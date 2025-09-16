@@ -455,9 +455,9 @@ async function loadPassMenu() {
   container.innerHTML = "";
 
   const passes = [
-    { name: "Pass 1, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
-    { name: "Pass 2, Rygg Biceps Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Biceps", "Vader"] },
-    { name: "Pass 3, Axlar Ben Underarmar", muscles: ["Axlar", "Ben", "Underarmar"] }
+    { name: "Pass, Bröst Triceps Mage", muscles: ["Bröst", "Triceps", "Mage"] },
+    { name: "Pass, Rygg Biceps Vader", muscles: ["Rygg Lats", "Rygg Mitt", "Ländrygg", "Biceps", "Vader"] },
+    { name: "Pass, Axlar Ben Underarmar", muscles: ["Axlar", "Ben", "Underarmar"] }
   ];
 
   const allData = window.allTrainingData;
