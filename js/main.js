@@ -26,6 +26,15 @@ let muscleExerciseChart;  // graf i muskelgrupper
 let weightChart;          // kroppsviktgraf
 let restTimerAnimation;
 window.allTrainingData = []; // cache för alla träningsrader
+// ---- chart hantering ----
+let exerciseChartInstance = null;
+
+function clearExerciseChart() {
+    if (exerciseChartInstance) {
+        exerciseChartInstance.destroy();  // stäng ner gamla grafen
+        exerciseChartInstance = null;
+    }
+}
 
 // ---------------- Data Fetch & Cache ----------------
 async function fetchAllData() {
@@ -215,7 +224,6 @@ async function loadExerciseChart(exerciseName) {
   const msg = document.getElementById("exerciseChartMessageExercise");
 
   try {
-    // Hämta lokalt cache:ad data om det finns
     const data = window.cachedData || [];
     if (!data.length) {
       clearExerciseChart();
@@ -224,7 +232,6 @@ async function loadExerciseChart(exerciseName) {
       return;
     }
 
-    // Filtrera övningens värden
     const rows = data.slice(1)
       .filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
 
@@ -236,46 +243,41 @@ async function loadExerciseChart(exerciseName) {
     }
 
     msg.style.display = "none";
-    rows.sort((a,b) => new Date(a[6]) - new Date(b[6]));
+    rows.sort((a, b) => new Date(a[6]) - new Date(b[6]));
 
     const chartData = rows.map(r => ({
-      x: r[6].substring(0,10),
+      x: r[6].substring(0, 10),
       y: parseFloat(r[1])
     }));
 
-    // Rensa gammal graf
-    if (exerciseChart) exerciseChart.destroy();
+    // Rensa gammal graf via funktionen
+    clearExerciseChart();
 
-    // Gradientfyllning
     const gradient = ctx.createLinearGradient(0, 0, 0, 320);
     gradient.addColorStop(0, 'rgba(74, 222, 128, 0.6)');
     gradient.addColorStop(1, 'rgba(74, 222, 128, 0)');
 
-    // Ny graf
     exerciseChart = new Chart(ctx, {
       type: 'line',
       data: {
         datasets: [{
           label: exerciseName,
           data: chartData,
-          borderColor: '#4ade80',          // ljusgrön linje
-          backgroundColor: gradient,       // gradientfyllning
+          borderColor: '#4ade80',
+          backgroundColor: gradient,
           pointBackgroundColor: '#fff',
           pointBorderColor: '#4ade80',
           pointRadius: 4,
           pointHoverRadius: 6,
           borderWidth: 2,
-          tension: 0.4,                    // mjuka kurvor
+          tension: 0.4,
           fill: true
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: {
-          duration: 800,
-          easing: "easeOutQuart"
-        },
+        animation: { duration: 800, easing: "easeOutQuart" },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -308,7 +310,6 @@ async function loadExerciseChart(exerciseName) {
     msg.style.display = "block";
   }
 }
-
 
 // ---------------- Resten: loadExerciseHistory, loadLatestWeight, loadMuscleGroups, loadData, logExercise, loadPassMenu ----------------
 // (de ändras bara så att de använder window.allTrainingData istället för att göra nya fetch-anrop!)
