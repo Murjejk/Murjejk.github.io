@@ -190,33 +190,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // LÄGG TILL TRÄNINGSLOGG
   document.getElementById("logForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const today = new Date().toISOString().split("T")[0];
-    const formData = new FormData();
-    formData.append("exercise", document.getElementById("exercise").value);
-    formData.append("weight", document.getElementById("weight").value);
-    formData.append("reps", document.getElementById("reps").value);
-    formData.append("primary", document.getElementById("primary").value);
-    formData.append("secondary", document.getElementById("secondary").value);
-    formData.append("effort", document.getElementById("effort").value);
-    formData.append("date", today);
+  e.preventDefault();
+  const today = new Date().toISOString().split("T")[0];
 
-    try {
-      const response = await fetch(API_URL, { method: "POST", body: formData });
-      const result = await response.json();
-      if (result.status === "success") {
-        document.getElementById("logForm").reset();
-        await fetchAllData(); // uppdatera cache
-        loadData();
-        loadMuscleGroups();
-        const exName = formData.get("exercise");
-        if (exName) loadExerciseChart(exName); // graf auto-uppdateras
-      } else alert("Kunde inte spara träningsposten.");
-    } catch (err) {
-      alert("Fel vid anslutning till Google Sheets: " + err);
-    }
-  });
+  // Hämta fältvärden och sätt default om tomma
+  const exerciseName = document.getElementById("exercise").value.trim();
+  const weight = document.getElementById("weight").value.trim() || "0"; // default 0 kg
+  const reps = document.getElementById("reps").value.trim() || "10";   // default 10 reps
+  const primary = document.getElementById("primary").value.trim() || "Okänd";
+  const secondary = document.getElementById("secondary").value.trim() || "Okänd";
+  const effort = document.getElementById("effort").value.trim() || "Rätt";
+
+  const formData = new FormData();
+  formData.append("exercise", exerciseName);
+  formData.append("weight", weight);
+  formData.append("reps", reps);
+  formData.append("primary", primary);
+  formData.append("secondary", secondary);
+  formData.append("effort", effort);
+  formData.append("date", today);
+
+  try {
+    const response = await fetch(API_URL, { method: "POST", body: formData });
+    const result = await response.json();
+    if (result.status === "success") {
+      document.getElementById("logForm").reset();
+      await fetchAllData(); // uppdatera cache
+      loadData();
+      loadMuscleGroups();
+      if (exerciseName) loadExerciseChart(exerciseName);
+    } else alert("Kunde inte spara träningsposten.");
+  } catch (err) {
+    alert("Fel vid anslutning till Google Sheets: " + err);
+  }
 });
+
 
 async function loadExerciseChart(exerciseName) {
   const ctx = document.getElementById("exerciseChartExercise").getContext("2d");
