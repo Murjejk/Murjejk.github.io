@@ -41,11 +41,13 @@ main {
 
 /* Card med ljusare semitransparent bakgrund */
 .card {
-  background: rgba(80, 80, 80, 0.45); /* ljusare grå med transparens */
-  padding: 0.8rem;
-  border-radius: 8px;
-  margin-bottom: 0.8rem;
-  border: 1px solid #555;
+  background: rgba(50, 50, 50, 0.6); /* Unified background color */
+  padding: 1.2rem; /* Increased padding for more whitespace */
+  border-radius: 12px; /* Slightly larger border-radius for a softer look */
+  margin-bottom: 1rem; /* Increased margin for better separation */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for a subtle highlight */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Softer, more diffused shadow */
 }
 
 h2, h3 {
@@ -354,11 +356,7 @@ canvas:not(#weightChart) {
 ============================== */
 /* === Passkort === */
 .pass-card {
-  background: rgba(40, 40, 40, 0.5); /* matcha din övriga design */
-  border-radius: 10px;
-  margin-bottom: 1rem;
   overflow: hidden;
-  border: 1px solid #555;
   transition: all 0.3s ease;
 }
 
@@ -412,10 +410,6 @@ canvas:not(#weightChart) {
    Muscel
 ============================== */
 .muscle-card {
-  background: rgba(60, 60, 60, 0.6);
-  border: 1px solid #555;
-  border-radius: 10px;
-  margin-bottom: 1rem;
   overflow: hidden;
 }
 
@@ -575,13 +569,6 @@ canvas:not(#weightChart) {
 /* Welcome-section */
 #welcome.card {
   text-align: center;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
-  margin: 2rem auto;
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -616,11 +603,7 @@ canvas:not(#weightChart) {
 /* Container runt tabellen */
 #weightHistory {
   display: inline-block;                 /* bara runt innehållet */
-  background: rgba(40, 40, 40, 0.8);     /* mörk semitransparent bakgrund */
-  padding: 0.5rem 0.8rem;               /* inre marginal */
-  border-radius: 8px;                    /* rundade hörn */
   margin: 1rem 0;                        /* vertikalt mellanrum */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* subtil skugga */
 }
 
 /* Tabellen inuti */
@@ -692,12 +675,6 @@ canvas:not(#weightChart) {
 
 /* Container för övningsgraf */
 #exerciseChartContainer {
-  background: rgba(30, 30, 30, 0.85); /* mörk kortbakgrund */
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  max-width: 650px;
   text-align: center;
 }
 
@@ -715,3 +692,4 @@ canvas:not(#weightChart) {
   font-style: italic;
   font-size: 0.9rem;
 }
+"}
