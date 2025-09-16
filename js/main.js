@@ -279,8 +279,20 @@ async function loadExerciseChart(exerciseName) {
         tooltip: { backgroundColor: "rgba(0,0,0,0.8)", titleColor:"#fff", bodyColor:"#fff", padding:10, displayColors:false }
       },
       scales: {
-        x: { type:"time", time:{ unit:"week", tooltipFormat:"yyyy-MM-dd" }, ticks:{ color:'#fff', font:{ size:12 } }, grid:{ color:"rgba(255,255,255,0.15)" } },
-        y: { ticks:{ color:'#fff', font:{ size:12 } }, grid:{ color:"rgba(255,255,255,0.15)" } }
+        x: {
+          type: "time",
+          time: { unit:"week", tooltipFormat:"yyyy-MM-dd" },
+          ticks:{ color:'#fff', font:{ size:12 } },
+          grid:{ color:"rgba(255,255,255,0.15)" },
+          min: "2025-09-01",               // startdatum
+          max: "2025-11-24"                // 12 veckor framåt
+        },
+        y: {
+          ticks:{ color:'#fff', font:{ size:12 } },
+          grid:{ color:"rgba(255,255,255,0.15)" },
+          min: 10,                          // fast lägsta vikt
+          max: 100                          // fast högsta vikt
+        }
       }
     }
   });
