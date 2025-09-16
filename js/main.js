@@ -231,7 +231,7 @@ async function loadExerciseChart(exerciseName) {
     return;
   }
 
-  const rows = data.filter(r => r[0].trim().toLowerCase() === exerciseName.trim().toLowerCase());
+ const rows = data.filter(r => r[0].trim().toLowerCase().includes(exerciseName.trim().toLowerCase()));
 
   if (!rows.length) {
     clearExerciseChart();
