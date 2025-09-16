@@ -244,6 +244,18 @@ async function loadExerciseChart(exerciseName) {
   rows.sort((a, b) => new Date(a[6]) - new Date(b[6]));
   const chartData = rows.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
 
+  // Beräkna y-axel marginaler
+const yValues = chartData.map(d => d.y);
+const yMin = Math.min(...yValues);
+const yMax = Math.max(...yValues);
+
+// Marginaler: 5% under, 20% över
+const marginBottom = (yMax - yMin) * 0.05;
+const marginTop = (yMax - yMin) * 0.2;
+
+const yAxisMin = yMin - marginBottom;
+const yAxisMax = yMax + marginTop;
+  
   // Gradient
   const gradient = ctx.createLinearGradient(0, 0, 0, 320);
   gradient.addColorStop(0, 'rgba(74, 222, 128, 0.6)');
@@ -279,20 +291,13 @@ async function loadExerciseChart(exerciseName) {
         tooltip: { backgroundColor: "rgba(0,0,0,0.8)", titleColor:"#fff", bodyColor:"#fff", padding:10, displayColors:false }
       },
       scales: {
-        x: {
-          type: "time",
-          time: { unit:"week", tooltipFormat:"yyyy-MM-dd" },
-          ticks:{ color:'#fff', font:{ size:12 } },
-          grid:{ color:"rgba(255,255,255,0.15)" },
-          min: "2025-09-01",               // startdatum
-          max: "2025-11-24"                // 12 veckor framåt
-        },
+       x: { type:"time", time:{ unit:"week", tooltipFormat:"yyyy-MM-dd" }, ticks:{ color:'#fff', font:{ size:12 } }, grid:{ color:"rgba(255,255,255,0.15)" } },
         y: {
-          ticks:{ color:'#fff', font:{ size:12 } },
-          grid:{ color:"rgba(255,255,255,0.15)" },
-          min: 10,                          // fast lägsta vikt
-          max: 100                          // fast högsta vikt
-        }
+        min: yAxisMin,
+        max: yAxisMax,
+        ticks: { color:'#fff', font:{ size:12 } },
+        grid: { color:"rgba(255,255,255,0.15)" }
+      }
       }
     }
   });
