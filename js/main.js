@@ -224,7 +224,7 @@ async function loadExerciseChart(exerciseName) {
   const msg = document.getElementById("exerciseChartMessageExercise");
 
   try {
-    const data = window.cachedData || [];
+    const data = window.allTrainingData || [];
     if (!data.length) {
       clearExerciseChart();
       msg.style.display = "block";
