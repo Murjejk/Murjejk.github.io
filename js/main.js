@@ -311,8 +311,8 @@ const yAxisMax = yMax + marginTop;
   });
 
   msg.style.display = "none";
-  } // <-- stänger loadExerciseChart
-}
+} // <-- stänger loadExerciseChart
+
 
 
 // ---------------- Resten: loadExerciseHistory, loadLatestWeight, loadMuscleGroups, loadData, logExercise, loadPassMenu ----------------
@@ -571,3 +571,4 @@ async function loadPassMenu() {
   });
 }
 
+}); // <-- stänger DOMContentLoaded
