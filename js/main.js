@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Fel vid anslutning till Google Sheets: " + err);
   }
 });
-
+}); // <-- stänger DOMContentLoaded
 
 async function loadExerciseChart(exerciseName) {
   const ctx = document.getElementById("exerciseChartExercise").getContext("2d");
@@ -570,5 +570,3 @@ async function loadPassMenu() {
     container.appendChild(card);
   });
 }
-
-}); // <-- stänger DOMContentLoaded
