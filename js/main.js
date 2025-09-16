@@ -311,6 +311,7 @@ const yAxisMax = yMax + marginTop;
   });
 
   msg.style.display = "none";
+  } // <-- stänger loadExerciseChart
 }
 
 
