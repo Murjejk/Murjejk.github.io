@@ -672,6 +672,7 @@ canvas:not(#weightChart) {
   .pass-exercises li {
     padding-right: 35px;
   }
+}
 
 /* Container för övningsgraf */
 #exerciseChartContainer {
@@ -692,4 +693,3 @@ canvas:not(#weightChart) {
   font-style: italic;
   font-size: 0.9rem;
 }
-"}
