@@ -346,22 +346,79 @@ function loadLatestWeight() {
   tableHTML += "</tbody></table>";
   historyContainer.innerHTML = tableHTML;
 
-  // Graf
-  const ctx = document.getElementById("weightChart").getContext("2d");
+  // --- START MINIMAL CHANGE ---
+  const ctx = document.getElementById("weightHistoryChart").getContext("2d"); // Use new canvas ID
+  const msg = document.getElementById("weightChartMessage"); // Use new message ID
+
+  if (rows.length === 0) {
+    if (weightChart) weightChart.destroy();
+    msg.style.display = "block";
+    msg.textContent = "Ingen viktdata att visa.";
+    return;
+  }
+
   const chartData = rows.map(r => ({ x: r[6].substring(0,10), y: parseFloat(r[1]) }));
+
+  const yValues = chartData.map(d => d.y);
+  let yMin = Math.min(...yValues);
+  let yMax = Math.max(...yValues);
+
+  if (yMin === yMax) {
+    yMin = yMin - 1;
+    yMax = yMax + 1;
+  } else {
+    const marginBottom = (yMax - yMin) * 0.2;
+    const marginTop = (yMax - yMin) * 0.4;
+    yMin = yMin - marginBottom;
+    yMax = yMax + marginTop;
+  }
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+  gradient.addColorStop(0, 'rgba(246, 234, 59, 0.5)'); // Yellow theme
+  gradient.addColorStop(1, 'rgba(246, 234, 59, 0)');  // Yellow theme
+
   if (weightChart) weightChart.destroy();
+
   weightChart = new Chart(ctx, {
-    type: "line",
-    data: { datasets: [{ label: "Kroppsvikt", data: chartData, borderColor: "#f6ea3b", backgroundColor: "rgba(246,234,59,0.25)", tension: 0.3, fill: true }] },
+    type: 'line',
+    data: {
+      datasets: [{
+        label: "Kroppsvikt", // Hardcoded label
+        data: chartData,
+        borderColor: '#f6ea3b', // Yellow theme
+        backgroundColor: gradient,
+        pointBackgroundColor:'#fff',
+        pointBorderColor:'#f6ea3b', // Yellow theme
+        pointRadius:4,
+        pointHoverRadius:6,
+        borderWidth:2,
+        tension:0.4,
+        fill:true
+      }]
+    },
     options: {
-      responsive: false,
-      plugins: { legend: { display: false } },
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 800, easing: "easeOutQuart" },
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: "rgba(0,0,0,0.8)", titleColor:"#fff", bodyColor:"#fff", padding:10, displayColors:false }
+      },
       scales: {
-        x: { type: "time", time: { unit: "week" }, ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.2)" } },
-        y: { ticks: { color: '#fff' }, grid: { color: "rgba(255,255,255,0.2)" } }
+       x: { type:"time", time:{ unit:"week", tooltipFormat:"yyyy-MM-dd" }, ticks:{ color:'#fff', font:{ size:12 } }, grid:{ color:"rgba(255,255,255,0.15)" } },
+        y: {
+        min: yMin,
+        max: yMax,
+        ticks: { color:'#fff', font:{ size:12 } },
+        grid: { color:"rgba(255,255,255,0.15)" }
+      }
       }
     }
   });
+
+  msg.style.display = "none";
+  // --- END MINIMAL CHANGE ---
+
 }
 
 // ---------------- Load Muscle Groups ----------------

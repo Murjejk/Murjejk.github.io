@@ -41,13 +41,13 @@ main {
 
 /* Card med ljusare semitransparent bakgrund */
 .card {
-  background: rgba(50, 50, 50, 0.6); /* Unified background color */
+  background: rgba(103, 131, 133, 0.6); /* Unified background color */
   padding: 1.2rem; /* Increased padding for more whitespace */
   border-radius: 12px; /* Slightly larger border-radius for a softer look */
   margin-bottom: 1rem; /* Increased margin for better separation */
   border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for a subtle highlight */
-  backdrop-filter: blur(10px); /* Frosted glass effect */
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Softer, more diffused shadow */
+  backdrop-filter: blur(4px); /* Frosted glass effect */
+  box-shadow: 0 8px 32px 0 rgba(12, 29, 34, 0.37); /* Softer, more diffused shadow */
 }
 
 h2, h3 {
