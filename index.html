@@ -74,24 +74,24 @@
 </section>
 
   
-  <!-- KROPPSVIKT -->
-<section id="kroppsvikt" class="card">
-  <h2>Kroppsvikt</h2>
-  <p id="latestWeight">Laddar senaste vikt...</p>
+<!-- KROPPSVIKT -->
+<section id="kroppsvikt">
+  <div class="card">
+    <h2>Kroppsvikt</h2>
+    <p id="latestWeight">Laddar senaste vikt...</p>
 
-  <form id="weightForm">
-    <input type="number" id="newWeight" placeholder="Kroppsvikt kg">
-    <button type="submit">Spara vikt</button>
-  </form>
+    <form id="weightForm">
+      <input type="number" id="newWeight" placeholder="Kroppsvikt kg">
+      <button type="submit">Spara vikt</button>
+    </form>
+    <h3>Historik</h3>
+    <div id="weightHistory"></div>
+  </div>
 
-  <!-- Minimalt nödvändig ändring för grafen -->
   <div id="weightChartContainer">
     <canvas id="weightHistoryChart"></canvas>
     <p id="weightChartMessage" class="empty-message" style="display:none;">Ingen viktdata att visa.</p>
   </div>
-
-  <h3>Historik</h3>
-  <div id="weightHistory"></div>
 </section>
   
 <!-- VILOTID -->

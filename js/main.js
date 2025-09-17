@@ -346,9 +346,8 @@ function loadLatestWeight() {
   tableHTML += "</tbody></table>";
   historyContainer.innerHTML = tableHTML;
 
-  // --- START MINIMAL CHANGE ---
-  const ctx = document.getElementById("weightHistoryChart").getContext("2d"); // Use new canvas ID
-  const msg = document.getElementById("weightChartMessage"); // Use new message ID
+  const ctx = document.getElementById("weightHistoryChart").getContext("2d");
+  const msg = document.getElementById("weightChartMessage");
 
   if (rows.length === 0) {
     if (weightChart) weightChart.destroy();
@@ -374,8 +373,8 @@ function loadLatestWeight() {
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 320);
-  gradient.addColorStop(0, 'rgba(246, 234, 59, 0.5)'); // Yellow theme
-  gradient.addColorStop(1, 'rgba(246, 234, 59, 0)');  // Yellow theme
+  gradient.addColorStop(0, 'rgba(74, 222, 128, 0.6)');
+  gradient.addColorStop(1, 'rgba(74, 222, 128, 0)');
 
   if (weightChart) weightChart.destroy();
 
@@ -383,12 +382,12 @@ function loadLatestWeight() {
     type: 'line',
     data: {
       datasets: [{
-        label: "Kroppsvikt", // Hardcoded label
+        label: "Kroppsvikt",
         data: chartData,
-        borderColor: '#f6ea3b', // Yellow theme
+        borderColor: '#4ade80',
         backgroundColor: gradient,
         pointBackgroundColor:'#fff',
-        pointBorderColor:'#f6ea3b', // Yellow theme
+        pointBorderColor:'#4ade80',
         pointRadius:4,
         pointHoverRadius:6,
         borderWidth:2,
@@ -417,8 +416,6 @@ function loadLatestWeight() {
   });
 
   msg.style.display = "none";
-  // --- END MINIMAL CHANGE ---
-
 }
 
 // ---------------- Load Muscle Groups ----------------
