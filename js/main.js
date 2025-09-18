@@ -451,8 +451,9 @@ async function loadMuscleGroups() {
       const exLi = document.createElement("li");
       exLi.textContent = ex;
       exLi.onclick = ev => { 
-        ev.stopPropagation(); 
-        loadExerciseHistory(muscle, ex); 
+        ev.stopPropagation();
+        loadExerciseChart(ex);
+        showSection('ovningar', document.getElementById('btnOvningar'));
       };
       exUl.appendChild(exLi);
     });
