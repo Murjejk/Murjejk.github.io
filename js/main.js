@@ -328,11 +328,11 @@ async function loadExerciseChart(exerciseName) {
   // Sortera för tabellen (senaste först)
   const sortedForTable = [...rows].sort((a, b) => new Date(b[6]) - new Date(a[6]));
 
-  let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th><th>Reps</th><th>Insats</th></tr></thead><tbody>`;
+  let tableHTML = `<table><thead><tr><th>Övning</th><th>Vikt</th><th>Reps</th><th>Primär</th><th>Sekundär</th><th>Insats</th><th>Datum</th></tr></thead><tbody>`;
   sortedForTable.forEach(r => {
-    // Kolumner: 1=Vikt, 2=Reps, 5=Insats, 6=Datum
-    tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[5]}</td></tr>`;
+      tableHTML += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6].substring(0,10)}</td></tr>`;
   });
+    
   tableHTML += "</tbody></table>";
   tableContainer.innerHTML = tableHTML;
 
