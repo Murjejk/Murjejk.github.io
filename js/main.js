@@ -434,12 +434,21 @@ async function loadMuscleGroups() {
   data.forEach(r => {
     const primary = r[3].trim();
     const exercise = r[0].trim();
-    if (!muscles[primary]) muscles[primary] = [];
-    if (!muscles[primary].includes(exercise)) muscles[primary].push(exercise);
+    if (!muscles[primary]) muscles[primary] = new Map();
+    const exerciseData = {
+      name: exercise,
+      muscle: primary,
+      latestDate: r[6]?.substring(0, 10),
+      latestWeight: r[1] || null
+    };
+
+    if (!muscles[primary].has(exercise) || new Date(exerciseData.latestDate) > new Date(muscles[primary].get(exercise).latestDate)) {
+      muscles[primary].set(exercise, exerciseData);
+    }
   });
 
   const ul = document.createElement("ul");
-  for (const [muscle, exercises] of Object.entries(muscles)) {
+  for (const [muscle, exercisesMap] of Object.entries(muscles)) {
     const li = document.createElement("li");
     li.className = "muscle-card";
     li.innerHTML = `<span class="muscle-title">${muscle}</span><span class="arrow">&#9662;</span>`;
@@ -447,13 +456,15 @@ async function loadMuscleGroups() {
     const exUl = document.createElement("ul");
     exUl.className = "exercises";
 
+    const exercises = Array.from(exercisesMap.values());
+    exercises.sort((a,b) => (b.latestDate ? new Date(b.latestDate) : 0) - (a.latestDate ? new Date(a.latestDate) : 0));
+
     exercises.forEach(ex => {
       const exLi = document.createElement("li");
-      exLi.textContent = ex;
+      exLi.textContent = ex.name;
       exLi.onclick = ev => { 
         ev.stopPropagation();
-        loadExerciseChart(ex);
-        showSection('ovningar', document.getElementById('btnOvningar'));
+        prefillExercise(ex);
       };
       exUl.appendChild(exLi);
     });
