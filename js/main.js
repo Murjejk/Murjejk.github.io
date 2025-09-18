@@ -129,8 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         const name = exerciseInput.value.trim();
-        if (name.length > 1) loadExerciseChart(name);
-        else clearExerciseChart();
+        if (name.length > 1) {
+          loadExerciseChart(name);
+        } else {
+          clearExerciseChart();
+          loadData(); // Återställ den fullständiga listan
+        }
       }, 400);
     });
   }
@@ -316,6 +320,22 @@ async function loadExerciseChart(exerciseName) {
   });
 
   msg.style.display = "none";
+
+  // --- SKAPA OCH VISA HISTORIK-TABELL ---
+  const tableContainer = document.getElementById("tableContainer");
+  if (!tableContainer) return;
+
+  // Sortera för tabellen (senaste först)
+  const sortedForTable = [...rows].sort((a, b) => new Date(b[6]) - new Date(a[6]));
+
+  let tableHTML = `<table><thead><tr><th>Datum</th><th>Vikt (kg)</th><th>Reps</th><th>Insats</th></tr></thead><tbody>`;
+  sortedForTable.forEach(r => {
+    // Kolumner: 1=Vikt, 2=Reps, 5=Insats, 6=Datum
+    tableHTML += `<tr><td>${r[6].substring(0,10)}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[5]}</td></tr>`;
+  });
+  tableHTML += "</tbody></table>";
+  tableContainer.innerHTML = tableHTML;
+
 } // <-- stänger loadExerciseChart
 
 
