@@ -625,7 +625,7 @@ table {
 
 /* Header */
 table thead {
-  background: #f8f8f8;
+  background: rgba(248, 248, 248, 0.5);
 }
 
 table thead th {
