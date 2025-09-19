@@ -29,23 +29,23 @@
 
 <main>
 <!-- Välkomsttext -->
-<section id="welcome" class="active card">
+<section id="welcome" class="glass-card active">
   <h2>Lets go!</h2>
   <p>Du är nu inloggad. Välj ett pass i menyn nedan för att börja logga din träning 💪</p>
 </section>
 <!-- PASS -->
-<section id="pass" class="card">
+<section id="pass" class="glass-card">
   <h2>Välj Pass</h2>
   <div id="passList"></div>
 </section>
 
   <!-- MUSKELGRUPP -->
-  <section id="muskel" class="card">
+  <section id="muskel" class="glass-card">
     <h2>Muskelgrupper</h2>
   </section>
 
   <!-- LÄGG TILL ÖVNING -->
-<section id="ovningar" class="card">
+<section id="ovningar" class="glass-card">
   <h2>Lägg till övning</h2>
   <form id="logForm">
     <input type="text" id="exercise" name="exercise" placeholder="Exercise" required>
@@ -68,14 +68,16 @@
 </div>
 
   <h3>Träningslogg</h3>
-  <div id="tableContainer">
-    <p class="empty-message">Laddar poster...</p>
+  <div class="glass-card table-wrapper">
+    <div id="tableContainer">
+      <p class="empty-message">Laddar poster...</p>
+    </div>
   </div>
 </section>
 
   
 <!-- KROPPSVIKT -->
-<section id="kroppsvikt">
+<section id="kroppsvikt" class="glass-card">
   <div class="card">
     <h2>Kroppsvikt</h2>
     <p id="latestWeight">Laddar senaste vikt...</p>
@@ -85,17 +87,17 @@
       <button type="submit">Spara vikt</button>
     </form>
     <h3>Historik</h3>
-    <div id="weightHistory"></div>
+    <div class="glass-card table-wrapper" id="weightHistory"></div>
   </div>
 
-  <div id="weightChartContainer">
+  <div id="weightChartContainer" class="glass-card">
     <canvas id="weightHistoryChart"></canvas>
     <p id="weightChartMessage" class="empty-message" style="display:none;">Ingen viktdata att visa.</p>
   </div>
 </section>
   
 <!-- VILOTID -->
-<section id="vilo" class="card">
+<section id="vilo" class="glass-card">
   <h2>Vilotid</h2>
 
   <div class="timer-controls">
