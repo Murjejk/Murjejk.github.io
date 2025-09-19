@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Hämta loggdata från Sheets
   async function fetchLogData() {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbyfXAFUITZsCjiZj4T_8MuY0ROhvN2VbcPFkiW4Lw5qdWntyVuvIy2nE9s3eSpCLsr6/exec");
+    const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec");
     const data = await res.json();
     return data;
   }
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       date: updatedRow[6]
     });
 
-    await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
       method: "POST",
       body: params
     });
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
       rowIndex: rowIndex
     });
 
-    await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
       method: "POST",
       body: params
     });
