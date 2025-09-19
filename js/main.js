@@ -18,7 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const API_URL = "https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwg4h_zecX0QJl-n-O_9wdc9E5cz72Pz4pI_3tCrbe6bztKsBm8ydgyLZKrl3iPZdL4/exec";
 
 // ---------------- Globals ----------------
 let exerciseChart;        // graf i Lägg till träning
