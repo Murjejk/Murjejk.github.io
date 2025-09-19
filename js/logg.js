@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Hämta loggdata från Sheets
   async function fetchLogData() {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec");
+    const res = await fetch("https://script.google.com/macros/s/AKfycbwg4h_zecX0QJl-n-O_9wdc9E5cz72Pz4pI_3tCrbe6bztKsBm8ydgyLZKrl3iPZdL4/exec");
     const data = await res.json();
     return data;
   }
@@ -109,7 +109,7 @@ async function saveRow(rowIndex, updatedRow) {
     date: updatedRow[6]
   });
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbwg4h_zecX0QJl-n-O_9wdc9E5cz72Pz4pI_3tCrbe6bztKsBm8ydgyLZKrl3iPZdL4/exec", {
     method: "POST",
     body: params,
     headers: {
@@ -130,7 +130,7 @@ async function deleteRow(rowIndex) {
     rowIndex: rowIndex
   });
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbwg4h_zecX0QJl-n-O_9wdc9E5cz72Pz4pI_3tCrbe6bztKsBm8ydgyLZKrl3iPZdL4/exec", {
     method: "POST",
     body: params,
     headers: {
