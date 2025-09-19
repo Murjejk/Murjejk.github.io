@@ -9,19 +9,63 @@ body {
   font-size: 0.9rem;
   min-height: 100vh;
 
-  /* Bild över gradient */
   background: 
     url('../assets/images/training.png') no-repeat,
     linear-gradient(to bottom, rgba(26,26,26,0.8), rgba(176,176,176,0.8));
-  
-  background-position: 20px 50px; /* flytta bilden */
-  background-size: auto;           /* naturlig storlek */
+  background-position: 20px 50px;
+  background-size: auto;
 }
+
+h2, h3 {
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+/* ==============================
+   Liquid Glass – global kortstil
+============================== */
+.glass-card {
+  position: relative;
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 20px;
+  isolation: isolate;
+  box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  z-index: 0;
+}
+
+/* Inre lager */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  box-shadow: inset 0 0 20px -5px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 0;
+}
+
+/* Yttre lager */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 28px;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  filter: url(#glass-distortion);
+  z-index: -1;
+}
+
 /* ==============================
    Header
 ============================== */
 header {
-  background: #2a2a2a;
+  background: rgba(42, 42, 42, 0.7);
   color: #f1f1f1;
   text-align: left;
   padding: 0.8rem 1rem;
@@ -35,24 +79,8 @@ header {
 ============================== */
 main {
   padding: 0.8rem;
-  margin-bottom: 70px; /* space for navbar */
+  margin-bottom: 70px;
   background: transparent;
-}
-
-/* Card med ljusare semitransparent bakgrund */
-.card {
-  background: rgba(103, 131, 133, 0.6); /* Unified background color */
-  padding: 1.2rem; /* Increased padding for more whitespace */
-  border-radius: 12px; /* Slightly larger border-radius for a softer look */
-  margin-bottom: 1rem; /* Increased margin for better separation */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for a subtle highlight */
-  backdrop-filter: blur(4px); /* Frosted glass effect */
-  box-shadow: 0 8px 32px 0 rgba(12, 29, 34, 0.37); /* Softer, more diffused shadow */
-}
-
-h2, h3 {
-  color: #fff;
-  margin-bottom: 0.6rem;
 }
 
 /* ==============================
@@ -72,7 +100,7 @@ ul li {
 }
 
 ul li:hover {
-  background: #333;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .exercises {
@@ -105,10 +133,10 @@ form input,
 form select,
 form button {
   padding: 0.5rem;
-  border: 1px solid #555;
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 6px;
   font-size: 0.75rem;
-  background: rgba(30, 30, 30, 0.85);
+  background: rgba(30, 30, 30, 0.6);
   color: #f1f1f1;
 }
 
@@ -158,12 +186,12 @@ nav button {
 nav button img {
   width: 48px;
   height: 48px;
-  filter: brightness(0.7); /* standard inaktiv ikon */
+  filter: brightness(0.7);
   transition: filter 0.2s;
 }
 
 nav button.active img {
-  filter: brightness(1.2); /* ljusare när aktiv */
+  filter: brightness(1.2);
 }
 
 /* ==============================
@@ -180,485 +208,41 @@ section.active {
 /* ==============================
    Canvas graf
 ============================== */
-#exerciseChartContainerExercise,
-#weightChartContainer {
-    margin-top: 1.5rem; /* Add some space above the charts */
-}
-
 canvas {
   width: 100% !important;
   height: 320px !important;
 }
 
 /* ==============================
-   Responsive / mobilvänligt
-============================== */
-@media (max-width: 480px) {
-  body {
-    font-size: 0.85rem;
-  }
-
-  nav button img {
-    width: 36px;
-    height: 36px;
-  }
-
-  form input, form select, form button {
-    font-size: 0.8rem;
-  }
-
-  table {
-    font-size: 0.75rem;
-  }
-}
-
-.nav-credit {
-  position: fixed;
-  bottom: 72px;       /* precis ovanför nav (som är ~70px hög) */
-  right: 10px;
-  font-size: 0.65rem;
-  color: #fff;
-  opacity: 0.7;
-  font-style: italic;
-  pointer-events: none;
-}
-
-/* ==============================
-   Vilotid cirkulär timer
-============================== */
-/* Timer input + button */
-.timer-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  align-items: left;   /* 🔹 centrera allt i kolumnen */
-}
-
-.timer-controls input {
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #555;
-  background: rgba(30,30,30,0.85);
-  color: #fff;
-  font-size: 1rem;
-  width: 130px;           /* 🔹 fast bredd */
-  text-align: left;     /* 🔹 snyggare inmatning */
-}
-
-.timer-controls button {
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: none;
-  background: #454545;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  width: 150px;           /* 🔹 samma bredd som input */
-}
-
-.timer-controls button:hover {
-  background: #2563eb;
-}
-
-
-/* Circle timer */
-.circle-timer {
-  width: 90vw;          /* fyller nästan hela mobilskärmens bredd */
-  max-width: 300px;     /* inte större än 300px */
-  margin: 1rem auto;
-  position: relative;
-}
-
-.circle-timer svg {
-  width: 100%;
-  height: auto;
-  transform: rotate(-90deg);
-}
-
-.circle-timer circle {
-  fill: none;
-  stroke-width: 12;
-}
-
-.circle-timer circle.bg {
-  stroke: rgba(255,255,255,0.2);
-}
-
-.circle-timer circle.progress {
-  stroke: rgba(5, 255, 126,0.6);
-  stroke-linecap: square;
-  stroke-dasharray: 339.292; /* 2*PI*radius (54) */
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.3s linear;
-}
-
-#timerText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 5rem;
-  color: #fff;
-  font-weight: bold;
-}
-
-/* ==============================
-   pass
-============================== */
-/* === Passkort === */
-.pass-card {
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-/* Header med passnamn */
-.pass-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  color: #fff;
-  background: rgba(60, 60, 60, 0.5);
-}
-
-/* Pilen */
-.pass-header .arrow {
-  transition: transform 0.3s ease;
-  font-size: 1.2rem;
-  color: #ccc;
-}
-
-/* När kortet är öppet */
-.pass-card.open .pass-header {
-  background: rgba(80, 80, 80, 0.5);
-}
-
-/* Övningslistan */
-.pass-exercises {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: rgba(30, 30, 30, 0.4);
-}
-
-.pass-exercises li {
-  padding: 0.8rem 1rem;
-  border-top: 1px solid #444;
-  cursor: pointer;
-  color: #ddd;
-  transition: background 0.2s ease;
-}
-
-.pass-exercises li:hover {
-  background: rgba(100, 100, 100, 0.4);
-  color: #fff;
-}
-
-/* ==============================
-   Muscel
-============================== */
-.muscle-card {
-  overflow: hidden;
-}
-
-.muscle-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8rem;
-  font-size: 1.1rem;
-  color: #fff;
-  cursor: pointer;
-  background: rgba(80, 80, 80, 0.8);
-  transition: background 0.2s;
-}
-
-.muscle-header:hover {
-  background: rgba(100, 100, 100, 0.9);
-}
-
-.muscle-header span {
-  font-weight: bold;
-}
-
-.exercise-list {
-  display: none;
-  padding: 0.8rem;
-  background: rgba(40, 40, 40, 0.7);
-}
-
-.exercise-list li {
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #444;
-  font-size: 0.95rem;
-  color: #ccc;
-  cursor: pointer;
-}
-
-.exercise-list li:hover {
-  color: #3b82f6;
-}
-
-.muscle-card.open .exercise-list {
-  display: block;
-}
-.arrow {
-  float: right;
-  display: inline-block;
-  transition: transform 0.3s ease; /* mjuk rotation */
-}
-
-/* När kortet är öppet */
-.muscle-card.open .arrow {
-  transform: rotate(180deg);
-}
-
-/* === Login overlay === */
-#loginOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(20,20,20,0.75), rgba(40,40,40,0.75));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  animation: fadeIn 0.5s ease forwards;
-}
-
-/* Login-box */
-.login-box {
-  background: rgba(30, 30, 30, 0.85);
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 320px;
-  width: 95%;
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-  transform: translateY(-20px);
-  animation: slideIn 0.4s ease forwards;
-}
-
-.login-box h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-}
-
-/* Inputs */
-.login-box input {
-  width: 90%;
-  padding: 0.6rem 0.75rem;
-  margin: 0.5rem 0;
-  border-radius: 8px;
-  border: 1px solid #555;
-  background: rgba(40,40,40,0.85);
-  color: #fff;
-  font-size: 1rem;
-  transition: border-color 0.3s, background 0.3s;
-}
-.login-box input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: rgba(50,50,50,0.9);
-}
-
-/* Buttons */
-.login-box button {
-  width: 100%;
-  padding: 0.6rem;
-  margin-top: 0.5rem;
-  border-radius: 8px;
-  border: none;
-  background: #3b82f6;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.login-box button:hover {
-  background: #2563eb;
-  transform: scale(1.03);
-}
-
-/* Error messages */
-.error {
-  color: #f87171;
-  margin-top: 0.5rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  animation: shake 0.3s;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-/* Optional: add a small subtle shadow on inputs */
-.login-box input {
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
-}
-
-/* Welcome-section */
-#welcome.card {
-  text-align: center;
-  animation: fadeInUp 0.8s ease-out;
-}
-
-#welcome h2 {
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-
-#welcome p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: #ddd;
-}
-
-/* Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Snabbloggning-knapp i pass */
-.quick-log-btn {
-  float: right;                  /* Placerar till höger */
-  padding: 2px 8px;
-  border: none;
-  border-radius: 4px;
-  background: #757575;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background 0.2s ease;
-}
-
-.quick-log-btn:hover {
-  background: #2563eb;
-}
-
-/* Säkerställ att texten inte överlappar på mobil */
-.pass-exercises li {
-  position: relative;
-  padding-right: 40px; /* utrymme för knappen */
-}
-
-@media (max-width: 480px) {
-  .quick-log-btn {
-    font-size: 0.7rem;
-    padding: 2px 6px;
-  }
-  .pass-exercises li {
-    padding-right: 35px;
-  }
-}
-
-/* Container för övningsgraf */
-#exerciseChartContainer {
-  text-align: center;
-}
-
-/* Själva grafytan */
-#exerciseChart {
-  width: 100% !important;
-  height: 320px !important; /* fixad höjd för konsekvent layout */
-  border: 1px solid #ccc;
-}
-
-/* Meddelande under grafen */
-.chart-message {
-  margin-top: 12px;
-  color: #aaa;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-/* ==============================
-   Tabeller – global minimalistisk stil
+   Tabeller – Liquid glass
 ============================== */
 .table-wrapper {
   overflow-x: auto;
   margin: 20px 0;
 }
 
-table {
+.glass-card table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
   font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
 }
 
-/* Header */
-table thead {
-  background: #f8f8f8;
-}
-
-table thead th {
-  padding: 12px 15px;
+.glass-card th,
+.glass-card td {
+  padding: 0.75rem 1rem;
   text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: white;
+}
+
+.glass-card th {
   font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #eaeaea;
+  color: rgba(255,255,255,0.8);
 }
 
-/* Rader */
-table tbody tr {
-  border-bottom: 1px solid #eaeaea;
-  transition: background 0.2s ease;
-}
-
-table tbody tr:hover {
-  background: #f9f9f9;
-}
-
-/* Celler */
-table td {
-  padding: 12px 15px;
-  color: #555;
-  text-align: center;
-}
-
-/* Tom meddelande */
-.empty-message {
-  text-align: center;
-  margin-top: 0.6rem;
-  color: #aaa;
-  font-size: 0.8rem;
+.glass-card tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Ikoner (redigera, radera) */
@@ -669,6 +253,21 @@ table td .icon-btn {
   padding: 5px;
   margin: 0 2px;
   transition: transform 0.2s ease;
+  color: #fff;
+}
+
+table td .icon-btn:hover {
+  transform: scale(1.2);
+}
+
+/* ==============================
+   Responsive
+============================== */
+@media (max-width: 480px) {
+  body { font-size: 0.85rem; }
+  nav button img { width: 36px; height: 36px; }
+  form input, form select, form button { font-size: 0.8rem; }
+  table { font-size: 0.75rem; }
 }
 
 table td .icon-btn:hover {
