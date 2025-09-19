@@ -131,40 +131,6 @@ form button:hover {
 }
 
 /* ==============================
-   Tables
-============================== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  display: block;
-  overflow-x: auto;
-}
-
-th,
-td {
-  border: 1px solid #555;
-  padding: 0.4rem;
-  text-align: center;
-}
-
-th {
-  background: rgba(60, 60, 60, 0.85);
-}
-
-tr:nth-child(even) {
-  background: rgba(70, 70, 70, 0.85);
-}
-
-.empty-message {
-  text-align: center;
-  margin-top: 0.6rem;
-  color: #aaa;
-  font-size: 0.8rem;
-}
-
-/* ==============================
    Bottom nav with icons
 ============================== */
 nav {
@@ -583,49 +549,6 @@ canvas {
     transform: translateY(0);
   }
 }
-/* ==============================
-   Vikt-historik container & tabell
-============================== */
-
-/* Container runt tabellen */
-#weightHistory {
-  display: inline-block;                 /* bara runt innehållet */
-  margin: 1rem 0;                        /* vertikalt mellanrum */
-}
-
-/* Tabellen inuti */
-#weightHistory table {
-  border-collapse: collapse;
-  margin: 0 auto;                         /* centrera tabellen i div:en */
-  font-size: 0.85rem;
-  width: auto;                             /* tabellen anpassar bredd efter innehåll */
-  border-radius: 8px;                      /* rundade hörn */
-  overflow: hidden;                        /* klipper hörn och runda kanter */
-}
-
-/* Tabellceller */
-#weightHistory th,
-#weightHistory td {
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid #444;
-  text-align: center;
-}
-
-/* Rubrikrader */
-#weightHistory th {
-  background: rgba(60, 60, 60, 0.9);
-  font-weight: bold;
-  color: #fff;
-}
-
-/* Varannan rad i tabellen */
-#weightHistory tr:nth-child(even) {
-  background: rgba(80, 80, 80, 0.4);
-}
-
-#weightHistory tr:nth-child(odd) {
-  background: rgba(60, 60, 60, 0.4);
-}
 
 /* Snabbloggning-knapp i pass */
 .quick-log-btn {
@@ -679,4 +602,75 @@ canvas {
   color: #aaa;
   font-style: italic;
   font-size: 0.9rem;
+}
+
+/* ==============================
+   Tabeller – global minimalistisk stil
+============================== */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Header */
+table thead {
+  background: #f8f8f8;
+}
+
+table thead th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #eaeaea;
+}
+
+/* Rader */
+table tbody tr {
+  border-bottom: 1px solid #eaeaea;
+  transition: background 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* Celler */
+table td {
+  padding: 12px 15px;
+  color: #555;
+  text-align: center;
+}
+
+/* Tom meddelande */
+.empty-message {
+  text-align: center;
+  margin-top: 0.6rem;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+/* Ikoner (redigera, radera) */
+table td .icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0 2px;
+  transition: transform 0.2s ease;
+}
+
+table td .icon-btn:hover {
+  transform: scale(1.2);
 }
