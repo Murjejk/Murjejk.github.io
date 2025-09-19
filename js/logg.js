@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 1. Hämta loggdata från Sheets
   async function fetchLogData() {
-    const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec");
+    const res = await fetch("https://script.google.com/macros/s/AKfycbyfXAFUITZsCjiZj4T_8MuY0ROhvN2VbcPFkiW4Lw5qdWntyVuvIy2nE9s3eSpCLsr6/exec");
     const data = await res.json();
     return data;
   }
