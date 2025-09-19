@@ -109,7 +109,7 @@ async function saveRow(rowIndex, updatedRow) {
     date: updatedRow[6]
   });
 
-  const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
     method: "POST",
     body: params,
     headers: {
@@ -130,7 +130,7 @@ async function deleteRow(rowIndex) {
     rowIndex: rowIndex
   });
 
-  const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
     method: "POST",
     body: params,
     headers: {
