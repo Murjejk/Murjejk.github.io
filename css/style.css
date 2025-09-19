@@ -1,10 +1,6 @@
 /* ==============================
-   Global styling + box-sizing
+   Global styling
 ============================== */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
 body {
   font-family: Helvetica, Arial, sans-serif;
   margin: 0;
@@ -12,8 +8,6 @@ body {
   color: #ddd;
   font-size: 0.9rem;
   min-height: 100vh;
-  overflow-x: hidden; /* ingen horisontell scroll */
-
   background: 
     url('../assets/images/training.png') no-repeat,
     linear-gradient(to bottom, rgba(26,26,26,0.8), rgba(176,176,176,0.8));
@@ -39,12 +33,12 @@ h2, h3 {
   box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.05);
-  overflow: hidden;
   margin-bottom: 1rem;
   z-index: 0;
+  /* OBS: overflow hidden tas bort för att dropdown ska funka */
 }
 
-/* Inre lager */
+/* Inre lager – subtil reflektion */
 .glass-card::before {
   content: '';
   position: absolute;
@@ -55,11 +49,11 @@ h2, h3 {
   z-index: 0;
 }
 
-/* Yttre lager */
+/* Yttre lager – frosted glass */
 .glass-card::after {
   content: '';
   position: absolute;
-  inset: 0; /* fixar overflow */
+  inset: 0;
   border-radius: 28px;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -90,42 +84,6 @@ main {
 }
 
 /* ==============================
-   Lists
-============================== */
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 0.8rem;
-}
-
-ul li {
-  padding: 0.5rem;
-  border-bottom: 1px solid #555;
-  cursor: pointer;
-}
-
-ul li:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.exercises {
-  display: none;
-  padding-left: 1rem;
-  font-size: 0.7rem;
-}
-
-.exercises li {
-  border: none;
-  padding: 0.3rem 0;
-  color: #bbb;
-}
-
-.exercises li:hover {
-  color: #3b82f6;
-}
-
-/* ==============================
    Forms
 ============================== */
 form {
@@ -148,8 +106,14 @@ form button {
 
 form input,
 form select {
-  flex: 1 1 auto;
-  min-width: 0; /* fixar flex overflow */
+  flex: 1;
+  min-width: 100px;
+}
+
+form select {
+  /* Viktigt för dropdowns att visa hela listan */
+  position: relative;
+  z-index: 1;
 }
 
 form button {
@@ -165,7 +129,54 @@ form button:hover {
 }
 
 /* ==============================
-   Bottom nav with icons
+   Tables – Liquid Glass
+============================== */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.glass-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.glass-card th,
+.glass-card td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: white;
+}
+
+.glass-card th {
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+.glass-card tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Ikoner (redigera, radera) */
+table td .icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0 2px;
+  transition: transform 0.2s ease;
+  color: #fff;
+}
+
+table td .icon-btn:hover {
+  transform: scale(1.2);
+}
+
+/* ==============================
+   Bottom nav
 ============================== */
 nav {
   position: fixed;
@@ -220,53 +231,6 @@ canvas {
 }
 
 /* ==============================
-   Tabeller – Liquid glass
-============================== */
-.table-wrapper {
-  overflow-x: auto;
-  margin: 20px 0;
-}
-
-.glass-card table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-.glass-card th,
-.glass-card td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  color: white;
-}
-
-.glass-card th {
-  font-weight: 600;
-  color: rgba(255,255,255,0.8);
-}
-
-.glass-card tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Ikoner (redigera, radera) */
-table td .icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  margin: 0 2px;
-  transition: transform 0.2s ease;
-  color: #fff;
-}
-
-table td .icon-btn:hover {
-  transform: scale(1.2);
-}
-
-/* ==============================
    Responsive
 ============================== */
 @media (max-width: 480px) {
@@ -275,3 +239,4 @@ table td .icon-btn:hover {
   form input, form select, form button { font-size: 0.8rem; }
   table { font-size: 0.75rem; }
 }
+
