@@ -46,7 +46,8 @@ h2, h3 {
   border-radius: 20px;
   box-shadow: inset 0 0 20px -5px rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.05);
-  z-index: 0;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Yttre lager */
@@ -57,8 +58,8 @@ h2, h3 {
   border-radius: 28px;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  filter: url(#glass-distortion);
-  z-index: -1;
+  z-index: -2;
+  pointer-events: none;
 }
 
 /* ==============================
@@ -127,6 +128,8 @@ form {
   flex-wrap: wrap;
   gap: 0.4rem;
   font-size: 0.8rem;
+  position: relative;
+  z-index: 1; /* säkerställer att inputs ligger ovanför pseudo-element */
 }
 
 form input,
@@ -171,6 +174,7 @@ nav {
   justify-content: space-around;
   padding: 0.3rem 0;
   border-top: 1px solid #444;
+  z-index: 2;
 }
 
 nav button {
@@ -261,6 +265,56 @@ table td .icon-btn:hover {
 }
 
 /* ==============================
+   Login overlay
+============================== */
+#loginOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(20,20,20,0.75), rgba(40,40,40,0.75));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.login-box {
+  position: relative;
+  background: rgba(30, 30, 30, 0.85);
+  padding: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 320px;
+  width: 95%;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+}
+
+/* Login Glass Pseudo */
+.login-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 20px -5px rgba(255,255,255,0.6);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.login-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* ==============================
    Responsive
 ============================== */
 @media (max-width: 480px) {
@@ -268,8 +322,4 @@ table td .icon-btn:hover {
   nav button img { width: 36px; height: 36px; }
   form input, form select, form button { font-size: 0.8rem; }
   table { font-size: 0.75rem; }
-}
-
-table td .icon-btn:hover {
-  transform: scale(1.2);
 }
