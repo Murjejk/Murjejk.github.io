@@ -24,21 +24,23 @@
     <h1>Träningslogg</h1>
     <button id="toggleEdit">Ändra fält</button>
     <div id="loggContainer">
-      <table id="loggTable">
-        <thead>
-          <tr>
-            <th>Datum</th>
-            <th>Övning</th>
-            <th>Reps</th>
-            <th>Vikt</th>
-            <th>Kommentar</th>
-            <th>Redigera</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Data laddas från Sheets -->
-        </tbody>
-      </table>
+      <div class="table-wrapper">
+  <table id="loggTable">
+    <thead>
+      <tr>
+        <th>Övning</th>
+        <th>Vikt</th>
+        <th>Reps</th>
+        <th>Primär</th>
+        <th>Sekundär</th>
+        <th>Insats</th>
+        <th>Datum</th>
+        <th>Åtgärder</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
     </div>
   </main>
 </body>
