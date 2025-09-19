@@ -95,38 +95,55 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Spara rad till Sheets
-  async function saveRow(rowIndex, updatedRow) {
-    const params = new URLSearchParams({
-      action: "updateRow",
-      rowIndex: rowIndex,
-      exercise: updatedRow[0],
-      weight: updatedRow[1],
-      reps: updatedRow[2],
-      primary: updatedRow[3],
-      secondary: updatedRow[4],
-      effort: updatedRow[5],
-      date: updatedRow[6]
-    });
+// Spara rad till Sheets
+async function saveRow(rowIndex, updatedRow) {
+  const params = new URLSearchParams({
+    action: "updateRow",
+    rowIndex: rowIndex,
+    exercise: updatedRow[0],
+    weight: updatedRow[1],
+    reps: updatedRow[2],
+    primary: updatedRow[3],
+    secondary: updatedRow[4],
+    effort: updatedRow[5],
+    date: updatedRow[6]
+  });
 
-    await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
-      method: "POST",
-      body: params
-    });
+  const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  });
+
+  const data = await res.json();
+  if (data.status !== "updated") {
+    console.error("Uppdateringen misslyckades:", data);
   }
+}
 
-  // Radera rad i Sheets
-  async function deleteRow(rowIndex) {
-    const params = new URLSearchParams({
-      action: "deleteRow",
-      rowIndex: rowIndex
-    });
+// Radera rad i Sheets
+async function deleteRow(rowIndex) {
+  const params = new URLSearchParams({
+    action: "deleteRow",
+    rowIndex: rowIndex
+  });
 
-    await fetch("https://script.google.com/macros/s/AKfycbxn7t97f8VWskY7QgdpiTk_ga1jPZ2WyWsJARKv3_7tt9d9zt2-RnyX272PSb4F3WlQ/exec", {
-      method: "POST",
-      body: params
-    });
+  const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  });
+
+  const data = await res.json();
+  if (data.status !== "deleted") {
+    console.error("Raderingen misslyckades:", data);
   }
+}
+
 
   // Init
   fetchLogData().then(data => {
