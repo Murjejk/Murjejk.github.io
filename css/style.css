@@ -304,16 +304,22 @@ canvas {
   font-weight: bold;
 }
 
-/* ==============================
-   pass
-============================== */
-/* === Passkort === */
+/* === Passkort med runda hörn och skugga === */
 .pass-card {
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;          
+  margin-bottom: 1rem;          
+  background: rgba(60, 60, 60, 0.5); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Mjuk skugga */
 }
 
-/* Header med passnamn */
+/* Lägg till liten hover-effekt för skuggan */
+.pass-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Mer “flytande” när musen är över */
+}
+
+/* Header med rundade övre hörn */
 .pass-header {
   display: flex;
   justify-content: space-between;
@@ -324,26 +330,18 @@ canvas {
   cursor: pointer;
   color: #fff;
   background: rgba(60, 60, 60, 0.5);
+  border-radius: 12px 12px 0 0; 
+  transition: background 0.2s ease;
 }
 
-/* Pilen */
-.pass-header .arrow {
-  transition: transform 0.3s ease;
-  font-size: 1.2rem;
-  color: #ccc;
-}
-
-/* När kortet är öppet */
-.pass-card.open .pass-header {
-  background: rgba(80, 80, 80, 0.5);
-}
-
-/* Övningslistan */
+/* Övningslistan med rundade nedre hörn */
 .pass-exercises {
   list-style: none;
   margin: 0;
   padding: 0;
   background: rgba(30, 30, 30, 0.4);
+  border-radius: 0 0 12px 12px; 
+  overflow: hidden;             
 }
 
 .pass-exercises li {
@@ -351,7 +349,7 @@ canvas {
   border-top: 1px solid #444;
   cursor: pointer;
   color: #ddd;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .pass-exercises li:hover {
