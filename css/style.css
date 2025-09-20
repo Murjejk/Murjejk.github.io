@@ -41,7 +41,7 @@ main {
 
 /* Card med ljusare semitransparent bakgrund */
 .card {
-  background: rgba(11, 186, 189, 0.3); /* Unified background color */
+  background: rgba(86, 154, 199, 0.1); /* Unified background color */
   padding: 1.2rem; /* Increased padding for more whitespace */
   border-radius: 12px; /* Slightly larger border-radius for a softer look */
   margin-bottom: 1rem; /* Increased margin for better separation */
